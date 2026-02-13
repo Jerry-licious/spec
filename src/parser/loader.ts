@@ -6,7 +6,9 @@ import {readFile} from "node:fs/promises";
 import {ParsingMessage} from "./error";
 import {parse} from "@unified-latex/unified-latex-util-parse";
 
+const packageCommands = ['usepackage', 'RequirePackage']
 const inputCommands = ['input', 'include'];
+const allLoadCommands = [...packageCommands, ...inputCommands];
 
 export class Loader extends DocumentProcessor<string, Promise<Root>, ParsingMessage> {
     visitedFiles: Set<string> = new Set();
@@ -19,8 +21,11 @@ export class Loader extends DocumentProcessor<string, Promise<Root>, ParsingMess
         return {
             ...root,
             content: (await Promise.all(root.content.map(async (node: Node) => {
+                const isPackageLoad = packageCommands.some((command: string) => match.macro(node, command));
+                const isContentLoad = inputCommands.some((command: string) => match.macro(node, command));
+
                 // Only process this if it's an input or an include.
-                if (!inputCommands.some((command: string) => match.macro(node, command))) {
+                if (!isPackageLoad && !isContentLoad) {
                     return [node];
                 }
 
@@ -31,15 +36,27 @@ export class Loader extends DocumentProcessor<string, Promise<Root>, ParsingMess
                     ...node.position!!.start
                 };
 
-                if (!inputCommand.args || !inputCommand.args[0]) {
-                    this.addError({
-                        message: 'No arguments given to the input command.',
-                        location: nodeLocation
-                    });
-                    return [];
+                // Input commands have their argument in position 0.
+                if (isContentLoad) {
+                    if (!inputCommand.args || !inputCommand.args[0]) {
+                        this.addError({
+                            message: 'No arguments given to the input command.',
+                            location: nodeLocation
+                        });
+                        return [];
+                    }
+                } else {
+                    // Use package commands have extra options, so the argument is actually in position 1.
+                    if (!inputCommand.args || !inputCommand.args[1]) {
+                        this.addError({
+                            message: 'No arguments given to the import command.',
+                            location: nodeLocation
+                        });
+                        return [];
+                    }
                 }
 
-                const fileNameArgument = inputCommand.args!![0].content;
+                const fileNameArgument = inputCommand.args!![isContentLoad ? 0 : 1].content;
                 if (!fileNameArgument) {
                     this.addError({
                         message: 'No arguments given to the input command.',
@@ -53,15 +70,34 @@ export class Loader extends DocumentProcessor<string, Promise<Root>, ParsingMess
 
                 // Separate loading section here because in this case we can attribute any problem to the particular input command.
                 let targetFile = join(workingDirectory, fileName);
-                if (!targetFile.endsWith('.tex')) {
-                    targetFile = targetFile + '.tex';
+
+                // Contents end with tex.
+                if (isContentLoad) {
+                    if (!targetFile.endsWith('.tex')) {
+                        targetFile = targetFile + '.tex';
+                    }
+                } else {
+                    // Packages end with sty
+                    if (!targetFile.endsWith('.sty')) {
+                        targetFile = targetFile + '.sty';
+                    }
                 }
 
                 if (this.visitedFiles.has(path.normalize(targetFile))) {
-                    this.addError({
-                        message: `File ${targetFile} has already been visited once.`,
-                        location: nodeLocation
-                    });
+                    if (isContentLoad) {
+                        // Repeated content loads is a problem, so it gets an error.
+                        this.addError({
+                            message: `File ${targetFile} has already been visited once.`,
+                            location: nodeLocation
+                        });
+                    } else {
+                        // But repeated package loads can just be skipped.
+                        this.addWarning({
+                            message: `Package ${targetFile} has already been loaded.`,
+                            location: nodeLocation
+                        })
+                    }
+
                     return [];
                 }
                 this.visitedFiles.add(path.normalize(targetFile));
@@ -70,10 +106,19 @@ export class Loader extends DocumentProcessor<string, Promise<Root>, ParsingMess
                 try {
                     fileContent = await readFile(targetFile, { encoding: 'utf8' });
                 } catch (e) {
-                    this.addError({
-                        message: `Failed to read file ${targetFile}.`,
-                        location: nodeLocation
-                    });
+                    if (isContentLoad) {
+                        // Failing a content load is a problem.
+                        this.addError({
+                            message: `Failed to read file ${targetFile}.`,
+                            location: nodeLocation
+                        });
+                    } else {
+                        // But failing package loads is expected.
+                        this.addWarning({
+                            message: `Failed to load package ${targetFile}. This compiler supports exactly zero TeX packages.`,
+                            location: nodeLocation
+                        });
+                    }
                 }
 
                 return (await this.processContent(fileContent, targetFile)).content

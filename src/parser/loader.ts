@@ -105,6 +105,10 @@ export class Loader extends DocumentProcessor<string, Promise<Root>, ParsingMess
                 let fileContent = ""
                 try {
                     fileContent = await readFile(targetFile, { encoding: 'utf8' });
+                    this.addInfo({
+                        message: `Loaded ${targetFile}.`,
+                        location: nodeLocation
+                    });
                 } catch (e) {
                     if (isContentLoad) {
                         // Failing a content load is a problem.

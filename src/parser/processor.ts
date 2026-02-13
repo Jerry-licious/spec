@@ -2,17 +2,22 @@
 export abstract class DocumentProcessor<I, O, E> {
     errors: E[];
     warnings: E[];
+    infos: E[];
 
     constructor() {
         this.errors = [];
         this.warnings = [];
+        this.infos = [];
     }
 
     addError(err: E) {
         this.errors.push(err);
     }
     addWarning(warning: E) {
-        this.warnings.push(warning)
+        this.warnings.push(warning);
+    }
+    addInfo(info: E) {
+        this.infos.push(info);
     }
 
     abstract process(input: I): O;

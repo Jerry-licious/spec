@@ -9,7 +9,6 @@ import {visit} from "@unified-latex/unified-latex-util-visit";
 
 const packageCommands = ['usepackage', 'RequirePackage']
 const inputCommands = ['input', 'include'];
-const allLoadCommands = [...packageCommands, ...inputCommands];
 
 export class Loader extends DocumentProcessor<string, Promise<Root>, ParsingMessage> {
     visitedFiles: Set<string> = new Set();

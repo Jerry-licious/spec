@@ -113,6 +113,13 @@ export class TexUnitTypeManager extends UnitTypeManager {
         this.registerType(getNonTheoremUnitType('section', 'Section', 'chapter'));
         this.registerType(getNonTheoremUnitType('subsection', 'Subsection', 'section'));
         this.registerType(getNonTheoremUnitType('subsubsection', 'Subsubsection', 'subsection'));
+
+        this.registerType({
+            key: 'proof',
+            environment: true,
+            collectTrailing: [],
+            name: 'Proof',
+        });
     }
 }
 

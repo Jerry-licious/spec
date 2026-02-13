@@ -5,6 +5,7 @@ import path, {join} from "node:path";
 import {readFile} from "node:fs/promises";
 import {ParsingMessage} from "./error";
 import {parse} from "@unified-latex/unified-latex-util-parse";
+import {visit} from "@unified-latex/unified-latex-util-visit";
 
 const packageCommands = ['usepackage', 'RequirePackage']
 const inputCommands = ['input', 'include'];
@@ -17,6 +18,15 @@ export class Loader extends DocumentProcessor<string, Promise<Root>, ParsingMess
     async processContent(content: string, currentFile: string): Promise<Root> {
         const root = parse(content);
         const workingDirectory = path.dirname(currentFile);
+
+        // Tag the node with source file position.
+        visit(root, (node) => {
+            if (match.anyMacro(node) || match.anyEnvironment(node)) {
+                node.meta = {
+                    sourceFile: currentFile,
+                };
+            }
+        })
 
         return {
             ...root,

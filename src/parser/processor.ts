@@ -1,5 +1,5 @@
 // Abstractly processes certain things. While running, collects errors.
-export abstract class DocumentProcessor<I, O, E> {
+export abstract class AbstractProcessor<I, O, E> {
     errors: E[];
     warnings: E[];
     infos: E[];
@@ -22,3 +22,5 @@ export abstract class DocumentProcessor<I, O, E> {
 
     abstract process(input: I): O;
 }
+
+

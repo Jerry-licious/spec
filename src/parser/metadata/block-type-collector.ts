@@ -1,8 +1,8 @@
 import {Node} from "@unified-latex/unified-latex-types";
-import {DocumentVisitor} from "./visitor";
-import {CountManager} from "./counter";
+import {DocumentVisitor} from "../visitor";
+import {CountManager} from "../counter";
 import {match} from "@unified-latex/unified-latex-util-match";
-import {getArgumentTexts} from "./util";
+import {getArgumentTexts} from "../util";
 import {BlockType} from "./block-type";
 
 export class BlockTypeCollector extends DocumentVisitor {

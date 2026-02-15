@@ -1,8 +1,8 @@
-import {DocumentVisitor} from "./visitor";
+import {DocumentVisitor} from "../visitor";
 import {Environment, Macro, Node} from "@unified-latex/unified-latex-types";
 import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {match} from "@unified-latex/unified-latex-util-match";
-import {capitaliseFirstLetter, getArgumentText} from "./util";
+import {capitaliseFirstLetter, getArgumentText} from "../util";
 
 
 // Injects necessary metadata for ref, autoref, and hyperref.

@@ -1,4 +1,4 @@
-import {DocumentVisitor} from "./visitor";
+import {DocumentVisitor} from "../visitor";
 import {Environment, Node} from "@unified-latex/unified-latex-types";
 import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {match} from "@unified-latex/unified-latex-util-match";

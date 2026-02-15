@@ -1,6 +1,6 @@
-import {DocumentVisitor} from "./visitor";
+import {DocumentVisitor} from "../visitor";
 import {Node, Macro} from "@unified-latex/unified-latex-types";
-import {getArgumentText, getContext} from "./util";
+import {getArgumentText, getContext} from "../util";
 
 export abstract class LabelAssigner extends DocumentVisitor {
     witnessedLabels: Set<string>;

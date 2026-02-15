@@ -1,18 +1,18 @@
 import "./parser/loader"
 import {Loader} from "./parser/loader";
 import {parse} from "@unified-latex/unified-latex-util-parse";
-import {BlockTypeCollector} from "./parser/block-type-collector";
-import {MacroLabelAssigner} from "./parser/macro-label-assigner";
-import {EnvironmentLabelAssigner} from "./parser/environment-label-assigner";
-import {EquationLabelAssigner} from "./parser/equation-label-assigner";
-import {TagAssigner} from "./parser/tag-assigner";
-import {Numberer} from "./parser/numberer";
+import {BlockTypeCollector} from "./parser/metadata/block-type-collector";
+import {MacroLabelAssigner} from "./parser/metadata/macro-label-assigner";
+import {EnvironmentLabelAssigner} from "./parser/metadata/environment-label-assigner";
+import {EquationLabelAssigner} from "./parser/metadata/equation-label-assigner";
+import {TagAssigner} from "./parser/metadata/tag-assigner";
+import {Numberer} from "./parser/metadata/numberer";
 import {capitaliseFirstLetter, documentDividers} from "./parser/util";
 import {CountManager} from "./parser/counter";
 import * as util from "node:util";
-import {TheoremTitleAssigner} from "./parser/theorem-title-assigner";
-import {TheoremProofAssigner} from "./parser/theorem-proof-assigner";
-import {RefAssigner} from "./parser/ref-assigner";
+import {TheoremTitleAssigner} from "./parser/metadata/theorem-title-assigner";
+import {TheoremProofAssigner} from "./parser/metadata/theorem-proof-assigner";
+import {RefAssigner} from "./parser/metadata/ref-assigner";
 
 
 console.log('Happy developing ✨')

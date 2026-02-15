@@ -1,8 +1,8 @@
-import {DocumentVisitor} from "./visitor";
+import {DocumentVisitor} from "../visitor";
 import {Node} from "@unified-latex/unified-latex-types";
 import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {match} from "@unified-latex/unified-latex-util-match";
-import {getArgumentText} from "./util";
+import {getArgumentText} from "../util";
 
 
 export class TheoremTitleAssigner extends DocumentVisitor {

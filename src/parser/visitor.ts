@@ -15,23 +15,44 @@ export abstract class DocumentVisitor extends AbstractProcessor<Node, void, Pars
 
     abstract visit(node: Node): void;
 
-    addError(err: ParsingMessage) {
-        super.addError({
-            location: this.currentLocation,
-            ...err
-        });
+    addError(err: ParsingMessage | string) {
+        if (typeof err === "string") {
+            super.addError({
+                location: this.currentLocation,
+                message: err
+            });
+        } else {
+            super.addError({
+                location: this.currentLocation,
+                ...err
+            });
+        }
     }
-    addInfo(info: ParsingMessage) {
-        super.addInfo({
-            location: this.currentLocation,
-            ...info
-        });
+    addInfo(info: ParsingMessage | string) {
+        if (typeof info === "string") {
+            super.addInfo({
+                location: this.currentLocation,
+                message: info
+            });
+        } else {
+            super.addInfo({
+                location: this.currentLocation,
+                ...info
+            });
+        }
     }
-    addWarning(warning: ParsingMessage) {
-        super.addWarning({
-            location: this.currentLocation,
-            ...warning
-        });
+    addWarning(warning: ParsingMessage | string) {
+        if (typeof warning === "string") {
+            super.addWarning({
+                location: this.currentLocation,
+                message: warning
+            });
+        } else {
+            super.addWarning({
+                location: this.currentLocation,
+                ...warning
+            });
+        }
     }
 
     process(input: Node): void {

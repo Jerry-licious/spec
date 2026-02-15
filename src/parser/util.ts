@@ -1,4 +1,4 @@
-import {Argument, Node} from "@unified-latex/unified-latex-types";
+import {Argument, Macro, Node} from "@unified-latex/unified-latex-types";
 import {Location} from "./error";
 
 export function getLocation(node: Node): Location | undefined {
@@ -15,3 +15,8 @@ export function getLocation(node: Node): Location | undefined {
 export function getArgumentText(node: Argument): string {
     return node.content.map((n) => n.type === 'string' ? n.content : '').join('');
 }
+
+export function getArgumentTexts(macro: Macro): string[] {
+    return macro.args ? macro.args.map(getArgumentText) : [];
+}
+

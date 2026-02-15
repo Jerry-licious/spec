@@ -13,7 +13,7 @@ import {getArgumentText, getContext} from "./util";
 // \chapter{A Rude Awakening}
 // \input{rude_awakening}
 // will not give the \chapter a label, even if the inputted file has a label on top.
-export class MacroLabelCollector extends DocumentVisitor {
+export class MacroLabelAssigner extends DocumentVisitor {
     readonly labelRecipients: string[];
     readonly witnessedLabels: Set<string>;
 

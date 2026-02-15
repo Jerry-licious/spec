@@ -92,7 +92,7 @@ export class UnitTypeManager {
         if (type.associatedCounter) {
             if (type.parentKey && this.getType(type.parentKey).associatedCounter) {
                 // I will get to assume that the counter has already been added.
-                this.countManager.addCounter(this.getType(type.parentKey).associatedCounter!!);
+                this.countManager.addCounter(type.associatedCounter, this.getType(type.parentKey).associatedCounter!!);
             } else {
                 this.countManager.addCounter(type.associatedCounter);
             }

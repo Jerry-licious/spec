@@ -4,6 +4,7 @@ import {parse} from "@unified-latex/unified-latex-util-parse";
 import {BlockTypeCollector} from "./parser/block-type-collector";
 import {MacroLabelAssigner} from "./parser/macro-label-assigner";
 import {EnvironmentLabelAssigner} from "./parser/environment-label-assigner";
+import {EquationLabelAssigner} from "./parser/equation-label-assigner";
 
 
 console.log('Happy developing ✨')
@@ -25,7 +26,12 @@ async function main() {
         macroLabelRecipients: macroLabelCollector.labelRecipients,
         witnessedLabels: macroLabelCollector.witnessedLabels,
     });
-    environmentLabelAssigner.process(root);
+    environmentLabelAssigner.process(root)
+
+    const equationLabelAssigner = new EquationLabelAssigner({
+        witnessedLabels: environmentLabelAssigner.witnessedLabels
+    });
+    equationLabelAssigner.process(root);
 
     console.log(loader.errors)
     console.log(envCollector.errors)

@@ -1,6 +1,4 @@
-import {AbstractProcessor} from "./processor";
-import {Node, Environment, Argument} from "@unified-latex/unified-latex-types";
-import {ParsingMessage} from "./error";
+import {Node} from "@unified-latex/unified-latex-types";
 import {DocumentVisitor} from "./visitor";
 import {CountManager} from "./counter";
 import {match} from "@unified-latex/unified-latex-util-match";

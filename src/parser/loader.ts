@@ -1,5 +1,5 @@
 import {AbstractProcessor} from "./processor";
-import {Root, Macro, Node} from "@unified-latex/unified-latex-types";
+import {Macro, Node, Root} from "@unified-latex/unified-latex-types";
 import {match} from "@unified-latex/unified-latex-util-match";
 import path, {join} from "node:path";
 import {readFile} from "node:fs/promises";

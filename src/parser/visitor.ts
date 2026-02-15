@@ -1,4 +1,4 @@
-import {Node, Argument, Macro, Environment} from "@unified-latex/unified-latex-types";
+import {Argument, Node} from "@unified-latex/unified-latex-types";
 import {Location, ParsingMessage} from "./error";
 import {AbstractProcessor} from "./processor";
 import {visit} from "@unified-latex/unified-latex-util-visit";

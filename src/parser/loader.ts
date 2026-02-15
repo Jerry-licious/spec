@@ -1,4 +1,4 @@
-import {DocumentProcessor} from "./processor";
+import {AbstractProcessor} from "./processor";
 import {Root, Macro, Node} from "@unified-latex/unified-latex-types";
 import {match} from "@unified-latex/unified-latex-util-match";
 import path, {join} from "node:path";
@@ -10,7 +10,7 @@ import {visit} from "@unified-latex/unified-latex-util-visit";
 const packageCommands = ['usepackage', 'RequirePackage']
 const inputCommands = ['input', 'include'];
 
-export class Loader extends DocumentProcessor<string, Promise<Root>, ParsingMessage> {
+export class Loader extends AbstractProcessor<string, Promise<Root>, ParsingMessage> {
     visitedFiles: Set<string> = new Set();
 
 
@@ -20,7 +20,7 @@ export class Loader extends DocumentProcessor<string, Promise<Root>, ParsingMess
 
         // Tag the node with source file position.
         visit(root, (node) => {
-            if (match.anyMacro(node) || match.anyEnvironment(node)) {
+            if (!match.argument(node)) {
                 node.meta = {
                     sourceFile: currentFile,
                 };

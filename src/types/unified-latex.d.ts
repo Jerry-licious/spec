@@ -16,7 +16,7 @@ declare module '@unified-latex/unified-latex-types/libs/ast-types' {
         meta?: ElementMetadata;
     }
     interface Macro {
-        meta?: ElementMetadata;
+        meta?: LabeledElementMetadata;
     }
     interface Root {
         meta?: ElementMetadata;
@@ -31,7 +31,7 @@ declare module '@unified-latex/unified-latex-types/libs/ast-types' {
         meta?: ElementMetadata;
     }
     interface Environment {
-        meta?: ElementMetadata;
+        meta?: LabeledElementMetadata;
     }
     interface Comment {
         meta?: ElementMetadata;

@@ -39,8 +39,16 @@ export class Counter {
 export class CountManager {
     counters: Map<string, Counter>;
 
-    constructor() {
+    constructor(defaultCounters: boolean = true) {
         this.counters = new Map();
+
+        if (defaultCounters) {
+            this.addCounter('part');
+            this.addCounter('chapter');
+            this.addCounter('section', 'chapter');
+            this.addCounter('subsection', 'section');
+            this.addCounter('subsubsection', 'subsection');
+        }
     }
 
     hasCounter(key: string): boolean {

@@ -7,11 +7,12 @@ import {EnvironmentLabelAssigner} from "./parser/environment-label-assigner";
 import {EquationLabelAssigner} from "./parser/equation-label-assigner";
 import {TagAssigner} from "./parser/tag-assigner";
 import {Numberer} from "./parser/numberer";
-import {documentDividers} from "./parser/util";
+import {capitaliseFirstLetter, documentDividers} from "./parser/util";
 import {CountManager} from "./parser/counter";
 import * as util from "node:util";
 import {TheoremTitleAssigner} from "./parser/theorem-title-assigner";
 import {TheoremProofAssigner} from "./parser/theorem-proof-assigner";
+import {RefAssigner} from "./parser/ref-assigner";
 
 
 console.log('Happy developing ✨')
@@ -45,7 +46,7 @@ async function main() {
 
     const tagAssigner = new TagAssigner({
         taggableEnvironments: new Set<string>(envCollector.blockTypes.keys()),
-        taggableMacros: new Set<string>(['part', 'chapter', 'section', 'subsection', 'subsubsection'])
+        taggableMacros: new Set<string>(documentDividers)
     });
     tagAssigner.process(root);
 
@@ -54,6 +55,14 @@ async function main() {
         environmentCounters: new Map<string, string>([...envCollector.blockTypes.entries()].map(([k, v]) => [k, v.associatedCounter]))
     });
     numberer.process(root);
+
+    const refAssigner = new RefAssigner({
+        tagNodeMap: tagAssigner.tagNodeMap,
+        labelTagMap: tagAssigner.labelTagMap,
+        macroNames: new Map<string, string>([...documentDividers].map((d) => [d, capitaliseFirstLetter(d)])),
+        environmentNames: new Map<string, string>([...envCollector.blockTypes.entries()].map(([k, v]) => [k, v.name]))
+    });
+    refAssigner.process(root);
 
     const titleAssigner = new TheoremTitleAssigner({
         theorems: new Set<string>(envCollector.blockTypes.keys()),

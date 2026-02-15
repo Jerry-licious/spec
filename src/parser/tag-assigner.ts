@@ -1,5 +1,5 @@
 import {DocumentVisitor} from "./visitor";
-import {Node} from "@unified-latex/unified-latex-types";
+import {Environment, Macro, Node} from "@unified-latex/unified-latex-types";
 import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {match} from "@unified-latex/unified-latex-util-match";
 
@@ -11,7 +11,7 @@ import {match} from "@unified-latex/unified-latex-util-match";
 export class TagAssigner extends DocumentVisitor {
     labelTagMap: Map<string, number>;
     nextAvailableTag: number;
-    tagNodeMap: Map<number, Node>;
+    tagNodeMap: Map<number, Macro | Environment>;
 
     taggableMacros: Set<string>;
     taggableEnvironments: Set<string>;
@@ -25,7 +25,7 @@ export class TagAssigner extends DocumentVisitor {
         super();
 
         this.labelTagMap = labelTagMap ?? new Map();
-        this.tagNodeMap = new Map<number, Node>();
+        this.tagNodeMap = new Map<number, Macro | Environment>();
 
         this.taggableMacros = taggableMacros ?? new Set<string>();
         this.taggableEnvironments = taggableEnvironments ?? new Set<string>();

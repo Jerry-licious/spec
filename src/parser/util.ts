@@ -26,3 +26,6 @@ export function getArgumentTexts(macro: Macro): string[] {
     return macro.args ? macro.args.map(getArgumentText) : [];
 }
 
+export function capitaliseFirstLetter(text: string): string {
+    return text.length === 0 ? text : text.charAt(0).toUpperCase() + text.slice(1);
+}

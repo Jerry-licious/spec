@@ -6,6 +6,7 @@ import {readFile} from "node:fs/promises";
 import {ParsingMessage} from "./error";
 import {parse} from "@unified-latex/unified-latex-util-parse";
 import {visit} from "@unified-latex/unified-latex-util-visit";
+import { printRaw } from "@unified-latex/unified-latex-util-print-raw";
 
 const packageCommands = ['usepackage', 'RequirePackage']
 const inputCommands = ['input', 'include'];
@@ -41,7 +42,8 @@ export class Loader extends AbstractProcessor<string, Promise<Root>, ParsingMess
 
                 const nodeLocation = {
                     filePath: currentFile,
-                    ...node.position!!.start
+                    ...node.position!!.start,
+                    content: printRaw(inputCommand)
                 };
 
                 // Input commands have their argument in position 0.

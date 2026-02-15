@@ -7,6 +7,7 @@ export interface ElementMetadata {
 }
 export interface LabeledElementMetadata extends ElementMetadata {
     label?: string;
+    tag?: number;
 }
 
 

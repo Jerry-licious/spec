@@ -1,8 +1,8 @@
 import {Argument, Node} from "@unified-latex/unified-latex-types";
-import {Location, ParsingMessage} from "./error";
+import {NodeContext, ParsingMessage} from "./error";
 import {AbstractProcessor} from "./processor";
 import {visit, VisitInfo} from "@unified-latex/unified-latex-util-visit";
-import {getLocation} from "./util";
+import {getContext} from "./util";
 import {match} from "@unified-latex/unified-latex-util-match";
 
 // For extracting information from documents. Typically a document visitor will go through the document through the
@@ -11,19 +11,19 @@ import {match} from "@unified-latex/unified-latex-util-match";
 // should never be done through this type of visitors.
 // Which aligns with my plan that these document visitors are "linear", and require the context of the whole document.
 export abstract class DocumentVisitor extends AbstractProcessor<Node, void, ParsingMessage> {
-    currentLocation?: Location;
+    private currentContext?: NodeContext;
 
     abstract visit(node: Node, visitInfo: VisitInfo): void;
 
     addError(err: ParsingMessage | string) {
         if (typeof err === "string") {
             super.addError({
-                location: this.currentLocation,
+                location: this.currentContext,
                 message: err
             });
         } else {
             super.addError({
-                location: this.currentLocation,
+                location: this.currentContext,
                 ...err
             });
         }
@@ -31,12 +31,12 @@ export abstract class DocumentVisitor extends AbstractProcessor<Node, void, Pars
     addInfo(info: ParsingMessage | string) {
         if (typeof info === "string") {
             super.addInfo({
-                location: this.currentLocation,
+                location: this.currentContext,
                 message: info
             });
         } else {
             super.addInfo({
-                location: this.currentLocation,
+                location: this.currentContext,
                 ...info
             });
         }
@@ -44,12 +44,12 @@ export abstract class DocumentVisitor extends AbstractProcessor<Node, void, Pars
     addWarning(warning: ParsingMessage | string) {
         if (typeof warning === "string") {
             super.addWarning({
-                location: this.currentLocation,
+                location: this.currentContext,
                 message: warning
             });
         } else {
             super.addWarning({
-                location: this.currentLocation,
+                location: this.currentContext,
                 ...warning
             });
         }
@@ -59,7 +59,7 @@ export abstract class DocumentVisitor extends AbstractProcessor<Node, void, Pars
         visit(input, (node: Node | Argument, info: VisitInfo) => {
             if (match.argument(node)) return;
 
-            this.currentLocation = getLocation(node);
+            this.currentContext = getContext(node);
 
             this.visit(node, info);
         });

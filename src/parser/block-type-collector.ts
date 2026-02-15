@@ -9,14 +9,10 @@ export class BlockTypeCollector extends DocumentVisitor {
     readonly countManager: CountManager;
     readonly blockTypes: Map<string, BlockType>
 
-    constructor(countManager: CountManager | undefined = undefined) {
+    constructor({ countManager }: { countManager?: CountManager }) {
         super();
 
-        if (countManager) {
-            this.countManager = countManager;
-        } else {
-            this.countManager = new CountManager();
-        }
+        this.countManager = countManager ?? new CountManager();
 
         this.blockTypes = new Map();
     }

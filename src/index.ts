@@ -10,6 +10,7 @@ import {Numberer} from "./parser/numberer";
 import {documentDividers} from "./parser/util";
 import {CountManager} from "./parser/counter";
 import * as util from "node:util";
+import {TheoremTitleAssigner} from "./parser/theorem-title-assigner";
 
 
 console.log('Happy developing ✨')
@@ -52,6 +53,11 @@ async function main() {
         environmentCounters: new Map<string, string>([...envCollector.blockTypes.entries()].map(([k, v]) => [k, v.associatedCounter]))
     });
     numberer.process(root);
+
+    const titleAssigner = new TheoremTitleAssigner({
+        theorems: new Set<string>(envCollector.blockTypes.keys()),
+    });
+    titleAssigner.process(root);
 
     console.log(loader.errors)
     console.log(envCollector.errors)

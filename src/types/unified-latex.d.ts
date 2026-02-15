@@ -1,4 +1,5 @@
 import "@unified-latex/unified-latex-types"
+import {Node, Environment} from "@unified-latex/unified-latex-types"
 
 
 export interface ElementMetadata {
@@ -8,6 +9,10 @@ export interface LabeledElementMetadata extends ElementMetadata {
     label?: string;
     tag?: number;
     numbering?: number[];
+}
+export interface TheoremMetadata extends LabeledElementMetadata {
+    title?: Node[]; // Theorems/lemmas may come with a title.
+    proofs?: Environment[];
 }
 
 
@@ -32,7 +37,7 @@ declare module '@unified-latex/unified-latex-types/libs/ast-types' {
         meta?: ElementMetadata;
     }
     interface Environment {
-        meta?: LabeledElementMetadata;
+        meta?: TheoremMetadata;
     }
     interface Comment {
         meta?: ElementMetadata;

@@ -1,8 +1,8 @@
 // Abstractly processes certain things. While running, collects errors.
 export abstract class AbstractProcessor<I, O, E> {
-    errors: E[];
-    warnings: E[];
-    infos: E[];
+    readonly errors: E[];
+    readonly warnings: E[];
+    readonly infos: E[];
 
     constructor() {
         this.errors = [];

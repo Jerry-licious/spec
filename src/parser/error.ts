@@ -1,10 +1,10 @@
 export interface Location {
-    filePath: string;
-    line: number;
-    column: number;
+    readonly filePath: string;
+    readonly line: number;
+    readonly column: number;
 }
 
 export interface ParsingMessage {
-    location?: Location;
-    message: string;
+    readonly location?: Location;
+    readonly message: string;
 }

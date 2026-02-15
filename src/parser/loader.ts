@@ -11,8 +11,7 @@ const packageCommands = ['usepackage', 'RequirePackage']
 const inputCommands = ['input', 'include'];
 
 export class Loader extends AbstractProcessor<string, Promise<Root>, ParsingMessage> {
-    visitedFiles: Set<string> = new Set();
-
+    readonly visitedFiles: Set<string> = new Set();
 
     async processContent(content: string, currentFile: string): Promise<Root> {
         const root = parse(content);

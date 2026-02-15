@@ -6,8 +6,8 @@ import {getArgumentTexts} from "./util";
 import {BlockType} from "./block-type";
 
 export class BlockTypeCollector extends DocumentVisitor {
-    countManager: CountManager;
-    blockTypes: Map<string, BlockType>
+    readonly countManager: CountManager;
+    readonly blockTypes: Map<string, BlockType>
 
     constructor(countManager: CountManager | undefined = undefined) {
         super();

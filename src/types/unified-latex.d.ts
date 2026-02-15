@@ -5,6 +5,9 @@ export interface ElementMetadata {
     sourceFile?: string;
     numbering?: number[]
 }
+export interface LabeledElementMetadata extends ElementMetadata {
+    label?: string;
+}
 
 
 // I'm not sure why they don't export the base node type, but this will have to do for now.

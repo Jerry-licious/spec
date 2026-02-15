@@ -1,7 +1,7 @@
 import {Argument, Node} from "@unified-latex/unified-latex-types";
 import {Location, ParsingMessage} from "./error";
 import {AbstractProcessor} from "./processor";
-import {visit} from "@unified-latex/unified-latex-util-visit";
+import {visit, VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {getLocation} from "./util";
 import {match} from "@unified-latex/unified-latex-util-match";
 
@@ -13,7 +13,7 @@ import {match} from "@unified-latex/unified-latex-util-match";
 export abstract class DocumentVisitor extends AbstractProcessor<Node, void, ParsingMessage> {
     currentLocation?: Location;
 
-    abstract visit(node: Node): void;
+    abstract visit(node: Node, visitInfo: VisitInfo): void;
 
     addError(err: ParsingMessage | string) {
         if (typeof err === "string") {
@@ -56,12 +56,12 @@ export abstract class DocumentVisitor extends AbstractProcessor<Node, void, Pars
     }
 
     process(input: Node): void {
-        visit(input, (node: Node | Argument) => {
+        visit(input, (node: Node | Argument, info: VisitInfo) => {
             if (match.argument(node)) return;
 
             this.currentLocation = getLocation(node);
 
-            this.visit(node);
+            this.visit(node, info);
         });
     }
 }

@@ -2,7 +2,7 @@
 export class Counter {
     count: number;
     parent?: Counter;
-    children: Counter[];
+    readonly children: Counter[];
 
     constructor(parent: Counter | undefined = undefined) {
         this.count = 0;

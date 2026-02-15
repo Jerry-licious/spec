@@ -18,12 +18,12 @@ export abstract class DocumentVisitor extends AbstractProcessor<Node, void, Pars
     addError(err: ParsingMessage | string) {
         if (typeof err === "string") {
             super.addError({
-                location: this.currentContext,
+                context: this.currentContext,
                 message: err
             });
         } else {
             super.addError({
-                location: this.currentContext,
+                context: this.currentContext,
                 ...err
             });
         }
@@ -31,12 +31,12 @@ export abstract class DocumentVisitor extends AbstractProcessor<Node, void, Pars
     addInfo(info: ParsingMessage | string) {
         if (typeof info === "string") {
             super.addInfo({
-                location: this.currentContext,
+                context: this.currentContext,
                 message: info
             });
         } else {
             super.addInfo({
-                location: this.currentContext,
+                context: this.currentContext,
                 ...info
             });
         }
@@ -44,12 +44,12 @@ export abstract class DocumentVisitor extends AbstractProcessor<Node, void, Pars
     addWarning(warning: ParsingMessage | string) {
         if (typeof warning === "string") {
             super.addWarning({
-                location: this.currentContext,
+                context: this.currentContext,
                 message: warning
             });
         } else {
             super.addWarning({
-                location: this.currentContext,
+                context: this.currentContext,
                 ...warning
             });
         }

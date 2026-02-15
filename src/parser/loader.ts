@@ -49,7 +49,7 @@ export class Loader extends AbstractProcessor<string, Promise<Root>, ParsingMess
                     if (!inputCommand.args || !inputCommand.args[0]) {
                         this.addError({
                             message: 'No arguments given to the input command.',
-                            location: nodeLocation
+                            context: nodeLocation
                         });
                         return [];
                     }
@@ -58,7 +58,7 @@ export class Loader extends AbstractProcessor<string, Promise<Root>, ParsingMess
                     if (!inputCommand.args || !inputCommand.args[1]) {
                         this.addError({
                             message: 'No arguments given to the import command.',
-                            location: nodeLocation
+                            context: nodeLocation
                         });
                         return [];
                     }
@@ -68,7 +68,7 @@ export class Loader extends AbstractProcessor<string, Promise<Root>, ParsingMess
                 if (!fileNameArgument) {
                     this.addError({
                         message: 'No arguments given to the input command.',
-                        location: nodeLocation
+                        context: nodeLocation
                     });
                     return [];
                 }
@@ -96,13 +96,13 @@ export class Loader extends AbstractProcessor<string, Promise<Root>, ParsingMess
                         // Repeated content loads is a problem, so it gets an error.
                         this.addError({
                             message: `File ${targetFile} has already been visited once.`,
-                            location: nodeLocation
+                            context: nodeLocation
                         });
                     } else {
                         // But repeated package loads can just be skipped.
                         this.addWarning({
                             message: `Package ${targetFile} has already been loaded.`,
-                            location: nodeLocation
+                            context: nodeLocation
                         })
                     }
 
@@ -115,20 +115,20 @@ export class Loader extends AbstractProcessor<string, Promise<Root>, ParsingMess
                     fileContent = await readFile(targetFile, { encoding: 'utf8' });
                     this.addInfo({
                         message: `Loaded ${targetFile}.`,
-                        location: nodeLocation
+                        context: nodeLocation
                     });
                 } catch (e) {
                     if (isContentLoad) {
                         // Failing a content load is a problem.
                         this.addError({
                             message: `Failed to read file ${targetFile}.`,
-                            location: nodeLocation
+                            context: nodeLocation
                         });
                     } else {
                         // But failing package loads is expected.
                         this.addWarning({
                             message: `Failed to load package ${targetFile}. This compiler supports exactly zero TeX packages.`,
-                            location: nodeLocation
+                            context: nodeLocation
                         });
                     }
                 }

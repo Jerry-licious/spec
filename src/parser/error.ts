@@ -6,6 +6,6 @@ export interface NodeContext {
 }
 
 export interface ParsingMessage {
-    readonly location?: NodeContext;
+    readonly context?: NodeContext;
     readonly message: string;
 }

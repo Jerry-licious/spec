@@ -14,24 +14,21 @@ import {getArgumentText, getContext} from "./util";
 // \input{rude_awakening}
 // will not give the \chapter a label, even if the inputted file has a label on top.
 export class MacroLabelAssigner extends DocumentVisitor {
-    readonly labelRecipients: string[];
+    readonly labelRecipients: Set<string>;
     readonly witnessedLabels: Set<string>;
 
-    constructor(labelRecipients: string[] | undefined = []) {
+    constructor({labelRecipients, witnessedLabels}: {
+        labelRecipients?: Set<string>;
+        witnessedLabels?: Set<string>;
+    }) {
         super();
 
-        if (labelRecipients) {
-            this.labelRecipients = labelRecipients;
-        } else {
-            this.labelRecipients = [];
-        }
-
-        this.witnessedLabels = new Set<string>();
+        this.labelRecipients = labelRecipients ?? new Set<string>();
+        this.witnessedLabels = witnessedLabels ?? new Set<string>();
     }
 
     visit(node: Node, visitInfo: VisitInfo): void {
-        // The first check here is redundant, but it makes the type system happy.
-        if (!match.anyMacro(node) || !this.labelRecipients.some((m) => match.macro(node, m))) return;
+        if (!match.anyMacro(node) || !this.labelRecipients.has(node.content)) return;
         if (typeof visitInfo.index !== 'number' || !visitInfo.containingArray) {
             this.addWarning('Element has no siblings, and cannot receive a label.');
             return;
@@ -39,10 +36,11 @@ export class MacroLabelAssigner extends DocumentVisitor {
 
         let label: string | undefined = undefined;
         for (const sibling of visitInfo.containingArray.slice(visitInfo.index + 1)) {
-            // If another label recipient is a sibling, stop searching for labels.
-            if (this.labelRecipients.some((m) => match.macro(sibling, m))) break;
             // If an environment is encountered, stop searching for any labels.
             if (match.anyEnvironment(sibling)) break;
+            // If another label recipient is a sibling, stop searching for labels.
+            if (match.anyMacro(sibling) && this.labelRecipients.has(sibling.content)) break;
+
             if (!match.macro(sibling, 'label')) continue;
 
             if (!sibling.args || sibling.args.length < 3 || !sibling.args[2]) {
@@ -72,7 +70,7 @@ export class MacroLabelAssigner extends DocumentVisitor {
         }
 
         if (this.witnessedLabels.has(label)) {
-            this.addWarning(`The label ${label} is already used. As such, this element received no label.`);
+            this.addWarning(`The label ${label} is already used. As such, this macro received no label.`);
             return;
         }
 

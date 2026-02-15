@@ -11,6 +11,7 @@ import {documentDividers} from "./parser/util";
 import {CountManager} from "./parser/counter";
 import * as util from "node:util";
 import {TheoremTitleAssigner} from "./parser/theorem-title-assigner";
+import {TheoremProofAssigner} from "./parser/theorem-proof-assigner";
 
 
 console.log('Happy developing ✨')
@@ -58,6 +59,11 @@ async function main() {
         theorems: new Set<string>(envCollector.blockTypes.keys()),
     });
     titleAssigner.process(root);
+
+    const proofAssigner = new TheoremProofAssigner({
+        theorems: new Set<string>(envCollector.blockTypes.keys()),
+    });
+    proofAssigner.process(root);
 
     console.log(loader.errors)
     console.log(envCollector.errors)

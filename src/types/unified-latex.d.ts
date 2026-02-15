@@ -3,11 +3,11 @@ import "@unified-latex/unified-latex-types"
 
 export interface ElementMetadata {
     sourceFile?: string;
-    numbering?: number[]
 }
 export interface LabeledElementMetadata extends ElementMetadata {
     label?: string;
     tag?: number;
+    numbering?: number[];
 }
 
 

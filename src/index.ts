@@ -6,6 +6,10 @@ import {MacroLabelAssigner} from "./parser/macro-label-assigner";
 import {EnvironmentLabelAssigner} from "./parser/environment-label-assigner";
 import {EquationLabelAssigner} from "./parser/equation-label-assigner";
 import {TagAssigner} from "./parser/tag-assigner";
+import {Numberer} from "./parser/numberer";
+import {documentDividers} from "./parser/util";
+import {CountManager} from "./parser/counter";
+import * as util from "node:util";
 
 
 console.log('Happy developing ✨')
@@ -16,11 +20,13 @@ async function main() {
 
     const root = await loader.process('./text.tex');
 
-    const envCollector = new BlockTypeCollector();
+    const countManager = new CountManager();
+
+    const envCollector = new BlockTypeCollector({countManager});
     envCollector.process(root);
 
     const macroLabelCollector = new MacroLabelAssigner({
-        labelRecipients: new Set<string>(['part', 'chapter', 'section', 'subsection', 'subsubsection']),
+        labelRecipients: new Set<string>(documentDividers),
     });
     macroLabelCollector.process(root);
 
@@ -41,6 +47,12 @@ async function main() {
     });
     tagAssigner.process(root);
 
+    const numberer = new Numberer({
+        countManager,
+        environmentCounters: new Map<string, string>([...envCollector.blockTypes.entries()].map(([k, v]) => [k, v.associatedCounter]))
+    });
+    numberer.process(root);
+
     console.log(loader.errors)
     console.log(envCollector.errors)
     console.log(macroLabelCollector.warnings)
@@ -49,7 +61,7 @@ async function main() {
     console.log(environmentLabelAssigner.witnessedLabels)
     console.log(tagAssigner.witnessedTags)
     console.log(tagAssigner.labelTagMap)
-    console.log(root);
+    console.log(util.inspect(root, { depth: 4 }));
 }
 
 main().catch(console.error);

@@ -71,7 +71,7 @@ async function main() {
     console.log(macroLabelCollector.witnessedLabels)
     console.log(environmentLabelAssigner.warnings)
     console.log(environmentLabelAssigner.witnessedLabels)
-    console.log(tagAssigner.witnessedTags)
+    console.log(tagAssigner.tagNodeMap)
     console.log(tagAssigner.labelTagMap)
     console.log(util.inspect(root, { depth: 4 }));
 }

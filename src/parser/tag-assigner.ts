@@ -11,7 +11,7 @@ import {match} from "@unified-latex/unified-latex-util-match";
 export class TagAssigner extends DocumentVisitor {
     labelTagMap: Map<string, number>;
     nextAvailableTag: number;
-    witnessedTags: Set<number>;
+    tagNodeMap: Map<number, Node>;
 
     taggableMacros: Set<string>;
     taggableEnvironments: Set<string>;
@@ -25,7 +25,7 @@ export class TagAssigner extends DocumentVisitor {
         super();
 
         this.labelTagMap = labelTagMap ?? new Map();
-        this.witnessedTags = new Set<number>();
+        this.tagNodeMap = new Map<number, Node>();
 
         this.taggableMacros = taggableMacros ?? new Set<string>();
         this.taggableEnvironments = taggableEnvironments ?? new Set<string>();
@@ -62,6 +62,6 @@ export class TagAssigner extends DocumentVisitor {
         }
 
         // At this point the tag should be assigned already.
-        this.witnessedTags.add(node.meta.tag!!);
+        this.tagNodeMap.set(node.meta.tag!!, node);
     }
 }

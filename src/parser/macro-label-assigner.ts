@@ -1,8 +1,7 @@
-import {DocumentVisitor} from "./visitor";
 import {Node} from "@unified-latex/unified-latex-types";
 import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {match} from "@unified-latex/unified-latex-util-match";
-import {getArgumentText, getContext} from "./util";
+import {LabelAssigner} from "./label-assigner";
 
 
 
@@ -13,18 +12,16 @@ import {getArgumentText, getContext} from "./util";
 // \chapter{A Rude Awakening}
 // \input{rude_awakening}
 // will not give the \chapter a label, even if the inputted file has a label on top.
-export class MacroLabelAssigner extends DocumentVisitor {
+export class MacroLabelAssigner extends LabelAssigner {
     readonly labelRecipients: Set<string>;
-    readonly witnessedLabels: Set<string>;
 
     constructor({labelRecipients, witnessedLabels}: {
         labelRecipients?: Set<string>;
         witnessedLabels?: Set<string>;
     }) {
-        super();
+        super({witnessedLabels});
 
         this.labelRecipients = labelRecipients ?? new Set<string>();
-        this.witnessedLabels = witnessedLabels ?? new Set<string>();
     }
 
     visit(node: Node, visitInfo: VisitInfo): void {
@@ -43,41 +40,11 @@ export class MacroLabelAssigner extends DocumentVisitor {
 
             if (!match.macro(sibling, 'label')) continue;
 
-            if (!sibling.args || sibling.args.length < 3 || !sibling.args[2]) {
-                this.addWarning({
-                    context: getContext(sibling),
-                    message: 'Invalid label.'
-                });
-                break;
-            }
-
-            // The content of the label is determined to be at location 2.
-            const labelContent = getArgumentText(sibling.args[2]);
-            if (!labelContent) {
-                this.addWarning({
-                    context: getContext(sibling),
-                    message: 'Invalid label.'
-                });
-            }
-
-            label = labelContent;
+            label = this.parseLabel(sibling);
             break;
         }
 
-        if (!label) {
-            this.addWarning('Element received no label.');
-            return;
-        }
-
-        if (this.witnessedLabels.has(label)) {
-            this.addWarning(`The label ${label} is already used. As such, this macro received no label.`);
-            return;
-        }
-
-        node.meta = {
-            ...node.meta, label
-        }
-        this.witnessedLabels.add(label);
+        this.assignLabel(node, label);
     }
 }
 

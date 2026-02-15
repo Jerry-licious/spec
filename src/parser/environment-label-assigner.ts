@@ -1,15 +1,13 @@
-import {DocumentVisitor} from "./visitor";
 import {Node} from "@unified-latex/unified-latex-types";
 import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {match} from "@unified-latex/unified-latex-util-match";
-import {getArgumentText, getContext} from "./util";
+import {LabelAssigner} from "./label-assigner";
 
 
 // Assigns labels to environments. Will go through the environment's direct children to seek for any labels.
 // Has a black and whitelist to adjust what environments should receive labels.
 // Uses the macro label recipient to avoid conflicts with labels from macros.
-export class EnvironmentLabelAssigner extends DocumentVisitor{
-    readonly witnessedLabels: Set<string>;
+export class EnvironmentLabelAssigner extends LabelAssigner {
     readonly blackList: Set<string>;
     readonly whiteList: Set<string>;
     readonly macroLabelRecipients: Set<string>;
@@ -20,9 +18,8 @@ export class EnvironmentLabelAssigner extends DocumentVisitor{
         whiteList?: Set<string>;
         macroLabelRecipients?: Set<string>;
     }) {
-        super();
+        super({witnessedLabels});
 
-        this.witnessedLabels = witnessedLabels ?? new Set<string>();
         this.blackList = blackList ?? new Set<string>();
         this.whiteList = whiteList ?? new Set<string>();
         this.macroLabelRecipients = macroLabelRecipients ?? new Set<string>();
@@ -51,41 +48,11 @@ export class EnvironmentLabelAssigner extends DocumentVisitor{
             if (this.macroLabelRecipients.has(child.content)) break;
             if (!match.macro(child, 'label')) continue;
 
-            if (!child.args || child.args.length < 3 || !child.args[2]) {
-                this.addWarning({
-                    context: getContext(child),
-                    message: 'Invalid label.'
-                });
-                break;
-            }
-
-            // The content of the label is determined to be at location 2.
-            const labelContent = getArgumentText(child.args[2]);
-            if (!labelContent) {
-                this.addWarning({
-                    context: getContext(child),
-                    message: 'Invalid label.'
-                });
-            }
-
-            label = labelContent;
+            label = this.parseLabel(child);
             break;
         }
 
-        if (!label) {
-            this.addWarning('Environment received no label.');
-            return;
-        }
-        if (this.witnessedLabels.has(label)) {
-            this.addWarning(`The label ${label} is already used. As such, this environment received no label.`);
-            return;
-        }
-
-        node.meta = {
-            ...node.meta, label
-        };
-
-        this.witnessedLabels.add(label);
+        this.assignLabel(node, label)
     }
 }
 

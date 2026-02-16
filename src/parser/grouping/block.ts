@@ -1,7 +1,7 @@
 import {IRUnit} from "./unit";
 import {Node} from "@unified-latex/unified-latex-types";
 
-
+// To reuse rendering code, the "mainContent" of a block will not be its content, but will just be the original node itself.
 export class BlockEnv extends IRUnit {
     proofs: Node[];
 

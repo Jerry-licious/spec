@@ -63,7 +63,7 @@ export class BlockCollector extends DocumentVisitor {
         this.blocks.set(node.meta.tag, new BlockEnv({
             name: blockName,
             title: node.meta.title ?? [],
-            mainContent: node.content,
+            mainContent: [node],
             sourceNodeName: node.env,
             label: node.meta.label,
             tag: node.meta.tag,

@@ -34,6 +34,8 @@ First $x^2\\frac{x}{y}\\test$ lemma. \\textbf{Hello}.
 More text.
 \\begin{theorem}
 Second theorem.
+
+second paragraph
 \\end{theorem}
 \\end{document}`;
 

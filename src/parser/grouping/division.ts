@@ -1,4 +1,4 @@
-import {IRNode} from "./node";
+import {IRUnit} from "./unit";
 import {Node} from "@unified-latex/unified-latex-types";
 
 
@@ -15,11 +15,11 @@ import {Node} from "@unified-latex/unified-latex-types";
 // The above code should have Paragraph... included as its main content.
 // In addition, divisions will include children: parts will keep a list of its chapters and chapters will keep a list of
 // its sections.
-export class Division extends IRNode {
-    children: IRNode[];
+export class Division extends IRUnit {
+    children: IRUnit[];
 
     constructor(args: {
-        parent?: IRNode;
+        parent?: IRUnit;
         mainContent: Node[];
         sourceNodeName: string;
         name: string;
@@ -27,7 +27,7 @@ export class Division extends IRNode {
         label?: string;
         tag: number;
         numbering: number[];
-        children?: IRNode[];
+        children?: IRUnit[];
     }) {
         super({
             ...args,
@@ -37,7 +37,7 @@ export class Division extends IRNode {
         this.children = args.children ?? [];
     }
 
-    addChild(child: IRNode) {
+    addChild(child: IRUnit) {
         this.children.push(child);
         child.parent = this;
     }

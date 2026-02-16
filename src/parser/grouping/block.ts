@@ -1,12 +1,12 @@
-import {IRNode} from "./node";
+import {IRUnit} from "./unit";
 import {Node} from "@unified-latex/unified-latex-types";
 
 
-export class BlockEnv extends IRNode {
+export class BlockEnv extends IRUnit {
     proofs: Node[];
 
     constructor(args: {
-        parent?: IRNode;
+        parent?: IRUnit;
         mainContent: Node[];
         sourceNodeName: string;
         name: string;

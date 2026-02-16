@@ -5,12 +5,13 @@ import {createHash} from "crypto";
 
 // IR units are intermediate representations that come with more structure than merely attaching nodes with metadata.
 // IR units are expected to have tags and numbers.
-export abstract class IRNode {
+// They are "units" because each unit comes with its own tag and page.
+export abstract class IRUnit {
     readonly tag: number;
     readonly numbering: number[];
 
     // The parent is typically assigned *after* the unit is created, so it's not read-only.
-    parent?: IRNode;
+    parent?: IRUnit;
 
     // From what kind of node did this unit originate?
     readonly sourceNodeType: 'environment' | 'macro';
@@ -26,7 +27,7 @@ export abstract class IRNode {
     readonly mainContent: Node[];
 
     constructor({parent, mainContent, sourceNodeType, sourceNodeName, name, label, title, tag, numbering}: {
-        parent?: IRNode;
+        parent?: IRUnit;
         mainContent?: Node[];
         sourceNodeType: 'environment' | 'macro';
         sourceNodeName: string;

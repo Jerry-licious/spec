@@ -7,6 +7,7 @@ import {Node} from "@unified-latex/unified-latex-types";
 import {match} from "@unified-latex/unified-latex-util-match";
 import {printRaw} from "@unified-latex/unified-latex-util-print-raw";
 import {htmlLike} from "@unified-latex/unified-latex-util-html-like";
+import {classes} from "./classes";
 
 export class MathRenderer extends NodeRenderer {
     render(node: Node): Node | void {
@@ -22,7 +23,7 @@ export class MathRenderer extends NodeRenderer {
                 return htmlLike({
                     tag: 'div',
                     attributes: {
-                        class: 'equation', // TODO: Find suitable class names and style this.
+                        class: classes.displayEquation,
                     },
                     content: {
                         type: 'string',
@@ -37,7 +38,7 @@ export class MathRenderer extends NodeRenderer {
             return htmlLike({
                 tag: 'div',
                 attributes: {
-                    class: 'equation', // TODO: Find suitable class names and style this.
+                    class: classes.displayEquation,
                 },
                 content: {
                     type: 'string',

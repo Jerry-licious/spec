@@ -35,7 +35,7 @@ More text.
 \\begin{theorem}
 Second theorem.
 
-second paragraph
+second paragraph $\\math$
 \\end{theorem}
 \\end{document}`;
 

@@ -7,10 +7,10 @@ import {getContext} from "../util";
 
 
 
-export abstract class DocumentReplacer extends AbstractProcessor<Node, void, ParsingMessage> {
+export abstract class NodeRenderer extends AbstractProcessor<Node, void, ParsingMessage> {
     private currentContext?: NodeContext;
 
-    abstract replace(node: Node): Node | void;
+    abstract render(node: Node): Node | void;
 
     addError(err: ParsingMessage | string) {
         if (typeof err === "string") {
@@ -58,7 +58,7 @@ export abstract class DocumentReplacer extends AbstractProcessor<Node, void, Par
 
             this.currentContext = getContext(node);
 
-            return this.replace(node);
+            return this.render(node);
         });
     }
 

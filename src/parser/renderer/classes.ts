@@ -3,4 +3,7 @@ export const classes = {
     displayEquation: '',
     blockEnvironment: '',
     blockTitle: '',
+    proof: '',
+    proofIntro: '',
+    qed: '',
 } as const;

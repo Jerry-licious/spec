@@ -21,7 +21,7 @@ export abstract class IRNode {
     readonly label?: string;
 
     // Custom title for the node.
-    readonly title?: string;
+    readonly title: Node[];
 
     readonly mainContent: Node[];
 
@@ -32,7 +32,7 @@ export abstract class IRNode {
         sourceNodeName: string;
         name: string;
         label?: string;
-        title?: string;
+        title?: Node[];
         tag: number;
         numbering?: number[];
     }) {
@@ -45,7 +45,7 @@ export abstract class IRNode {
         this.name = name;
         this.label = label;
 
-        this.title = title;
+        this.title = title ?? [];
 
         this.tag = tag;
         this.numbering = numbering ?? [];
@@ -61,7 +61,7 @@ export abstract class IRNode {
             numbering: this.numbering.join('.'),
             sourceNodeType: this.sourceNodeType,
             sourceNodeName: this.sourceNodeName,
-            title: this.title ?? '',
+            title: this.title ? this.title.map((n) => printRaw(n)).join('') : '',
             content: this.mainContent.map((n) => printRaw(n)).join('\n'),
         }
     }

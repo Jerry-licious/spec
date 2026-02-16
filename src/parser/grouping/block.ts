@@ -10,7 +10,7 @@ export class BlockEnv extends IRNode {
         mainContent: Node[];
         sourceNodeName: string;
         name: string;
-        title?: string;
+        title?: Node[];
         label?: string;
         tag: number;
         numbering: number[];

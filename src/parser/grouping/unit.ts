@@ -56,9 +56,17 @@ export abstract class IRUnit {
         return createHash('sha256').update(JSON.stringify(this.hashData())).digest('hex');
     }
 
+    parentTagChain(): number[] {
+        if (this.parent) {
+            return [...this.parent.parentTagChain(), this.parent.tag];
+        }
+        return [];
+    }
+
     // Data used to compute a hash of the unit.
     hashData(): Record<string, string> {
         return {
+            parent: this.parentTagChain().join(','),
             numbering: this.numbering.join('.'),
             sourceNodeType: this.sourceNodeType,
             sourceNodeName: this.sourceNodeName,

@@ -16,7 +16,7 @@ import {Node} from "@unified-latex/unified-latex-types";
 // In addition, divisions will include children: parts will keep a list of its chapters and chapters will keep a list of
 // its sections.
 export class Division extends IRUnit {
-    children: IRUnit[];
+    children: Division[];
 
     constructor(args: {
         parent?: IRUnit;
@@ -27,7 +27,7 @@ export class Division extends IRUnit {
         label?: string;
         tag: number;
         numbering: number[];
-        children?: IRUnit[];
+        children?: Division[];
     }) {
         super({
             ...args,
@@ -37,7 +37,7 @@ export class Division extends IRUnit {
         this.children = args.children ?? [];
     }
 
-    addChild(child: IRUnit) {
+    addChild(child: Division) {
         this.children.push(child);
         child.parent = this;
     }

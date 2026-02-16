@@ -2,7 +2,7 @@ import {IRNode} from "./node";
 import {Node} from "@unified-latex/unified-latex-types";
 
 
-export class TheoremEnv extends IRNode {
+export class BlockEnv extends IRNode {
     proofs: Node[];
 
     constructor(args: {
@@ -10,7 +10,8 @@ export class TheoremEnv extends IRNode {
         mainContent: Node[];
         sourceNodeName: string;
         name: string;
-        title: string;
+        title?: string;
+        label?: string;
         tag: number;
         numbering: number[];
         proofs: Node[];

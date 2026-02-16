@@ -22,6 +22,7 @@ export class Division extends IRNode {
         parent?: IRNode;
         mainContent: Node[];
         sourceNodeName: string;
+        name: string;
         title: string;
         tag: number;
         numbering: number[];

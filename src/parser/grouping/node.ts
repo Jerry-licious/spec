@@ -16,16 +16,20 @@ export abstract class IRNode {
     readonly sourceNodeType: 'environment' | 'macro';
     readonly sourceNodeName: string;
 
+    // Chapter/Section/Part/Theorem/etc
+    readonly name: string;
+
     // Custom title for the node.
     readonly title?: string;
 
     readonly mainContent: Node[];
 
-    constructor({parent, mainContent, sourceNodeType, sourceNodeName, title, tag, numbering}: {
+    constructor({parent, mainContent, sourceNodeType, sourceNodeName, name, title, tag, numbering}: {
         parent?: IRNode;
         mainContent?: Node[];
         sourceNodeType: 'environment' | 'macro';
         sourceNodeName: string;
+        name: string;
         title?: string;
         tag: number;
         numbering?: number[];
@@ -35,6 +39,8 @@ export abstract class IRNode {
 
         this.sourceNodeType = sourceNodeType;
         this.sourceNodeName = sourceNodeName;
+
+        this.name = name;
 
         this.title = title;
 

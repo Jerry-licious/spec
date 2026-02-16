@@ -41,10 +41,11 @@ export class BlockRenderer extends NodeRenderer {
                             `${blockName} ${node.meta.numbering.join('.')}` : blockName),
                         // If there is a block title, render it.
                         ...blockTitle.length ? [
-                            s('('),
+                            s(' ('),
                             ...blockTitle,
                             s(')')
-                        ] : []
+                        ] : [],
+                        s('. ')
                     ]
                 }),
                 ...node.content

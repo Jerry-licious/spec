@@ -21,7 +21,7 @@ export class ProofRenderer extends NodeRenderer {
                     attributes: {
                         class: classes.proofIntro,
                     },
-                    content: s('Proof.')
+                    content: s('Proof. ')
                 }),
                 ...node.content,
                 htmlLike({

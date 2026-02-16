@@ -116,7 +116,7 @@ async function main() {
     console.log(util.inspect(existingDivisions, { depth: 4 }));
 
 
-    const blockCollector = new BlockCollector({ blockNames });
+    const blockCollector = new BlockCollector({ blockNames, divisionMarkers, existingDivisions });
     blockCollector.process(root);
     console.log(blockCollector.blocks);
 

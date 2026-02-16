@@ -4,6 +4,7 @@ import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {IRUnit} from "./unit";
 import {match} from "@unified-latex/unified-latex-util-match";
 import {BlockEnv} from "./block";
+import {Division} from "./division";
 
 
 export class BlockCollector extends DocumentVisitor {
@@ -11,19 +12,51 @@ export class BlockCollector extends DocumentVisitor {
     blockNames: Map<string, string>;
     blocks: Map<number, IRUnit>; // Map from tags to the created IR nodes.
 
-    constructor({ blockNames }: { blockNames: Map<string, string> }) {
+    // Macros that mark the beginning of particular divisions.
+    // Used to assign parents to blocks.
+    divisionMarkers: Set<string>;
+    existingDivisions: Map<number, Division>;
+
+    currentDivision?: Division;
+
+    constructor({ blockNames, divisionMarkers, existingDivisions }: {
+        blockNames: Map<string, string>;
+        divisionMarkers: Set<string>;
+        existingDivisions: Map<number, Division>;
+    }) {
         super();
 
         this.blockNames = blockNames;
         this.blocks = new Map<number, IRUnit>();
+
+        this.divisionMarkers = divisionMarkers;
+        this.existingDivisions = existingDivisions;
     }
 
     visit(node: Node, visitInfo: VisitInfo): void {
+        // When encountering a division marker, set the current division to the division that it represents.
+        if (match.anyMacro(node) && this.divisionMarkers.has(node.content)) {
+            if (!node.meta || !node.meta.tag) {
+                this.addWarning('Missing metadata for division.');
+                return;
+            }
+            if (!this.existingDivisions.has(node.meta.tag)) {
+                this.addWarning('Division is not yet collected.');
+                return;
+            }
+            this.currentDivision = this.existingDivisions.get(node.meta.tag)!!;
+            return;
+        }
+
         if (!(match.anyEnvironment(node) && this.blockNames.has(node.env))) return;
 
         if (!node.meta || !node.meta.tag) {
             this.addError('Missing metadata for block.');
             return;
+        }
+
+        if (!this.currentDivision) {
+            this.addWarning('No parent division is found for this block.');
         }
 
         const blockName = this.blockNames.get(node.env)!!;
@@ -36,6 +69,7 @@ export class BlockCollector extends DocumentVisitor {
             tag: node.meta.tag,
             numbering: node.meta.numbering ?? [],
             proofs: node.meta.proofs ?? [],
+            parent: this.currentDivision
         }));
     }
 }

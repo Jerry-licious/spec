@@ -16,6 +16,14 @@ import {RefAssigner} from "./parser/metadata/ref-assigner";
 import {BlockCollector} from "./parser/grouping/block-collector";
 import {DivisionCollector} from "./parser/grouping/division-collector";
 import {Division} from "./parser/grouping/division";
+import {unified} from "unified";
+import {RefRenderer} from "./parser/renderer/ref-renderer";
+import {MathRenderer} from "./parser/renderer/math-renderer";
+import {NodeRenderer} from "./parser/renderer/renderer";
+import {BlockRenderer} from "./parser/renderer/block-renderer";
+import {ProofRenderer} from "./parser/renderer/proof-renderer";
+import {unifiedLatexToHast} from "@unified-latex/unified-latex-to-hast";
+import rehypeStringify from "rehype-stringify";
 
 
 console.log('Happy developing ✨')
@@ -113,11 +121,23 @@ async function main() {
     });
     partCollector.process(root);
 
-    console.log(util.inspect(existingDivisions, { depth: 4 }));
-
 
     const blockCollector = new BlockCollector({ blockNames, divisionMarkers, existingDivisions });
     blockCollector.process(root);
+
+
+    const renderer = unified()
+        .use(new RefRenderer().asPlugin())
+        .use(new MathRenderer().asPlugin())
+        .use(new BlockRenderer({ blockNames }).asPlugin())
+        .use(new ProofRenderer().asPlugin())
+        .use(unifiedLatexToHast as any)
+        .use(rehypeStringify);
+
+    const node = renderer.runSync(root);
+    console.log(renderer.stringify(node as any));
+
+    console.log(util.inspect(existingDivisions, { depth: 4 }));
     console.log(blockCollector.blocks);
 
     console.log(util.inspect(root, { depth: 4 }));

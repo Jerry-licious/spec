@@ -62,7 +62,7 @@ export abstract class NodeRenderer extends AbstractProcessor<Node, void, Parsing
         });
     }
 
-    asPlugin(): (root: Node) => void {
-        return (root: Node) => this.process(root);
+    asPlugin(): () => (root: Node) => void {
+        return () => ((root: Node) => this.process(root));
     }
 }

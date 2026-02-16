@@ -16,6 +16,7 @@ export class DivisionCollector extends DocumentVisitor {
     divisionName: string;
     childDivisions: Set<string>;
 
+    // All child divisions are assumed to be already collected in this map.
     existingDivisions: Map<number, Division>;
     collectedDivisions: Map<number, Division>;
 

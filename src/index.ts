@@ -13,6 +13,9 @@ import * as util from "node:util";
 import {TheoremTitleAssigner} from "./parser/metadata/theorem-title-assigner";
 import {TheoremProofAssigner} from "./parser/metadata/theorem-proof-assigner";
 import {RefAssigner} from "./parser/metadata/ref-assigner";
+import {BlockCollector} from "./parser/grouping/block-collector";
+import {DivisionCollector} from "./parser/grouping/division-collector";
+import {Division} from "./parser/grouping/division";
 
 
 console.log('Happy developing ✨')
@@ -56,11 +59,12 @@ async function main() {
     });
     numberer.process(root);
 
+    const blockNames = new Map<string, string>([...envCollector.blockTypes.entries()].map(([k, v]) => [k, v.name]));
     const refAssigner = new RefAssigner({
         tagNodeMap: tagAssigner.tagNodeMap,
         labelTagMap: tagAssigner.labelTagMap,
         macroNames: new Map<string, string>([...documentDividers].map((d) => [d, capitaliseFirstLetter(d)])),
-        environmentNames: new Map<string, string>([...envCollector.blockTypes.entries()].map(([k, v]) => [k, v.name]))
+        environmentNames: blockNames
     });
     refAssigner.process(root);
 
@@ -74,14 +78,48 @@ async function main() {
     });
     proofAssigner.process(root);
 
-    console.log(loader.errors)
-    console.log(envCollector.errors)
-    console.log(macroLabelCollector.warnings)
-    console.log(macroLabelCollector.witnessedLabels)
-    console.log(environmentLabelAssigner.warnings)
-    console.log(environmentLabelAssigner.witnessedLabels)
-    console.log(tagAssigner.tagNodeMap)
-    console.log(tagAssigner.labelTagMap)
+    // Metadata collection is over. Time to collect the pages.
+
+    const divisionMarkers = new Set<string>(documentDividers);
+    const existingDivisions = new Map<number, Division>();
+
+    const subsubsectionCollector = new DivisionCollector({
+        divisionMarkers, targetDivisionMarker: 'subsubsection', divisionName: 'Subsubsection',
+        childDivisions: new Set<string>(), existingDivisions
+    });
+    subsubsectionCollector.process(root);
+
+    const subsectionCollector = new DivisionCollector({
+        divisionMarkers, targetDivisionMarker: 'subsection', divisionName: 'Subsection',
+        childDivisions: new Set<string>(['subsubsection']), existingDivisions
+    });
+    subsectionCollector.process(root);
+
+    const sectionCollector = new DivisionCollector({
+        divisionMarkers, targetDivisionMarker: 'section', divisionName: 'Section',
+        childDivisions: new Set<string>(['subsection']), existingDivisions
+    });
+    sectionCollector.process(root);
+
+    const chapterCollector = new DivisionCollector({
+        divisionMarkers, targetDivisionMarker: 'chapter', divisionName: 'Chapter',
+        childDivisions: new Set<string>(['section']), existingDivisions
+    });
+    chapterCollector.process(root);
+
+    const partCollector = new DivisionCollector({
+        divisionMarkers, targetDivisionMarker: 'part', divisionName: 'Part',
+        childDivisions: new Set<string>(['chapter']), existingDivisions
+    });
+    partCollector.process(root);
+
+    console.log(util.inspect(existingDivisions, { depth: 4 }));
+
+
+    const blockCollector = new BlockCollector({ blockNames });
+    blockCollector.process(root);
+    console.log(blockCollector.blocks);
+
     console.log(util.inspect(root, { depth: 4 }));
 }
 

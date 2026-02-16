@@ -17,8 +17,8 @@ export class DivisionCollector extends DocumentVisitor {
     childDivisions: Set<string>;
 
     // All child divisions are assumed to be already collected in this map.
+    // Children divisions will be collected into this.
     existingDivisions: Map<number, Division>;
-    collectedDivisions: Map<number, Division>;
 
     constructor({divisionMarkers, targetDivisionMarker, divisionName, childDivisions, existingDivisions}: {
         divisionMarkers: Set<string>;
@@ -36,8 +36,6 @@ export class DivisionCollector extends DocumentVisitor {
         this.childDivisions = childDivisions;
         this.existingDivisions = existingDivisions ?? new Map<number, Division>();
         this.childDivisions = childDivisions;
-
-        this.collectedDivisions = new Map<number, Division>();
     }
 
     visit(node: Node, visitInfo: VisitInfo): void {
@@ -47,9 +45,9 @@ export class DivisionCollector extends DocumentVisitor {
             return;
         }
 
-        // I will assume that the title shows up in position 0 for now.
+        // I will simply concatenate all the arguments to obtain the title.
         const title = node.args ? (
-            node.args[0] ? node.args[0].content : []
+            node.args.flatMap((a) => a.content)
         ) : [];
 
         const divisionArgs = {
@@ -63,7 +61,7 @@ export class DivisionCollector extends DocumentVisitor {
 
         if (typeof visitInfo.index !== 'number' || !visitInfo.containingArray) {
             this.addWarning('Element has no siblings, and cannot receive content or children');
-            this.collectedDivisions.set(node.meta.tag, new Division({
+            this.existingDivisions.set(node.meta.tag, new Division({
                 ...divisionArgs,
                 mainContent: [],
                 children: []
@@ -106,6 +104,6 @@ export class DivisionCollector extends DocumentVisitor {
             division.addChild(child);
         }
 
-        this.collectedDivisions.set(node.meta.tag, division);
+        this.existingDivisions.set(node.meta.tag, division);
     }
 }

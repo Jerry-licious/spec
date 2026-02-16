@@ -5,6 +5,8 @@ import {match} from "@unified-latex/unified-latex-util-match";
 import { replaceNode } from '@unified-latex/unified-latex-util-replace';
 import {getContext} from "../util";
 
+
+
 export abstract class DocumentReplacer extends AbstractProcessor<Node, void, ParsingMessage> {
     private currentContext?: NodeContext;
 
@@ -58,5 +60,9 @@ export abstract class DocumentReplacer extends AbstractProcessor<Node, void, Par
 
             return this.replace(node);
         });
+    }
+
+    asPlugin(): (root: Node) => void {
+        return (root: Node) => this.process(root);
     }
 }

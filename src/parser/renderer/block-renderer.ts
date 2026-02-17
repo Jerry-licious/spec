@@ -5,12 +5,13 @@ import {htmlLike} from "@unified-latex/unified-latex-util-html-like";
 import {classes} from "./classes";
 import { s } from '@unified-latex/unified-latex-builder';
 import {wrapPars} from "@unified-latex/unified-latex-to-hast";
+import {ParserLogger} from "../logging-base";
 
 export class BlockRenderer extends NodeRenderer {
     blockNames: Map<string, string>;
 
-    constructor({blockNames}: {blockNames: Map<string, string>}) {
-        super();
+    constructor({blockNames, logger}: {blockNames: Map<string, string>, logger?: ParserLogger}) {
+        super({ logger });
 
         this.blockNames = blockNames;
     }

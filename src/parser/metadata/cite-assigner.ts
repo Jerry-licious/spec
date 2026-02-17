@@ -4,14 +4,16 @@ import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {BibtexEntry} from "@orcid/bibtex-parse-js";
 import {match} from "@unified-latex/unified-latex-util-match";
 import {getArgumentText} from "../util";
+import {ParserLogger} from "../logging-base";
 
 export class CiteAssigner extends DocumentVisitor {
     bibliographyEntries: Map<string, BibtexEntry>;
 
-    constructor({bibliographyEntries}: {
+    constructor({bibliographyEntries, logger}: {
         bibliographyEntries: Map<string, BibtexEntry>;
+        logger?: ParserLogger;
     }) {
-        super();
+        super({ logger });
 
         this.bibliographyEntries = bibliographyEntries;
     }

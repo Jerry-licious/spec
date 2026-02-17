@@ -7,6 +7,7 @@ import {Node} from "@unified-latex/unified-latex-types";
 import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {match} from "@unified-latex/unified-latex-util-match";
 import {documentDividers} from "../util";
+import {ParserLogger} from "../logging-base";
 
 export class Numberer extends DocumentVisitor {
     // Association between commands and their corresponding counters.
@@ -14,12 +15,13 @@ export class Numberer extends DocumentVisitor {
     environmentCounters: Map<string, string>;
     countManager: CountManager;
 
-    constructor({ macroCounters, environmentCounters, countManager }: {
+    constructor({ macroCounters, environmentCounters, countManager, logger }: {
         macroCounters?: Map<string, string>;
         environmentCounters?: Map<string, string>;
         countManager: CountManager;
+        logger?: ParserLogger
     }) {
-        super();
+        super({ logger });
 
         this.countManager = countManager;
 

@@ -1,11 +1,12 @@
 import {DocumentVisitor} from "../visitor";
 import {Node, Macro} from "@unified-latex/unified-latex-types";
 import {getArgumentText, getContext} from "../util";
+import {ParserLogger} from "../logging-base";
 
 export abstract class LabelAssigner extends DocumentVisitor {
     witnessedLabels: Set<string>;
-    constructor({witnessedLabels}: { witnessedLabels?: Set<string> }) {
-        super();
+    constructor({witnessedLabels, logger}: { witnessedLabels?: Set<string>, logger?: ParserLogger }) {
+        super({ logger });
 
         this.witnessedLabels = witnessedLabels ?? new Set<string>();
     }

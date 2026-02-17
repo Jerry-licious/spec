@@ -4,13 +4,14 @@ import {CountManager} from "../counter";
 import {match} from "@unified-latex/unified-latex-util-match";
 import {getArgumentTexts} from "../util";
 import {BlockType} from "./block-type";
+import {ParserLogger} from "../logging-base";
 
 export class BlockTypeCollector extends DocumentVisitor {
     readonly countManager: CountManager;
     readonly blockTypes: Map<string, BlockType>
 
-    constructor({ countManager }: { countManager?: CountManager }) {
-        super();
+    constructor({ countManager, logger }: { countManager?: CountManager, logger?: ParserLogger }) {
+        super({ logger });
 
         this.countManager = countManager ?? new CountManager();
 

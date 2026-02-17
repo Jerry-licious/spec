@@ -4,6 +4,7 @@ import {Node} from "@unified-latex/unified-latex-types";
 import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {match} from "@unified-latex/unified-latex-util-match";
 import {s} from "@unified-latex/unified-latex-builder";
+import {ParserLogger} from "../logging-base";
 
 
 
@@ -13,11 +14,12 @@ export class MainCollector extends DocumentVisitor {
     // All child divisions are assumed to be already collected in this map.
     // Children divisions will be collected into this.
     existingDivisions: Map<number, Division>;
-    constructor({title, existingDivisions}: {
+    constructor({title, existingDivisions, logger}: {
         title: string;
         existingDivisions?: Map<number, Division>;
+        logger?: ParserLogger;
     }) {
-        super();
+        super({ logger });
 
         this.title = title;
         this.existingDivisions = existingDivisions ?? new Map<number, Division>();

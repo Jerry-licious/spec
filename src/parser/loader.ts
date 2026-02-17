@@ -1,4 +1,4 @@
-import {AbstractProcessor} from "./processor";
+import {ParserLogger} from "./logging-base";
 import {Macro, Node, Root} from "@unified-latex/unified-latex-types";
 import {match} from "@unified-latex/unified-latex-util-match";
 import path, {join} from "node:path";
@@ -11,8 +11,15 @@ import { printRaw } from "@unified-latex/unified-latex-util-print-raw";
 const packageCommands = ['usepackage', 'RequirePackage']
 const inputCommands = ['input', 'include'];
 
-export class Loader extends AbstractProcessor<string, Promise<Root>, ParsingMessage> {
+export class Loader {
     readonly visitedFiles: Set<string> = new Set();
+    logger: ParserLogger;
+    
+    constructor({ logger }: {
+        logger?: ParserLogger;
+    }) {
+        this.logger = logger ?? new ParserLogger({});
+    }
 
     async processContent(content: string, currentFile: string): Promise<Root> {
         const root = parse(content);
@@ -49,7 +56,7 @@ export class Loader extends AbstractProcessor<string, Promise<Root>, ParsingMess
                 // Input commands have their argument in position 0.
                 if (isContentLoad) {
                     if (!inputCommand.args || !inputCommand.args[0]) {
-                        this.addError({
+                        this.logger.addError({
                             message: 'No arguments given to the input command.',
                             context: nodeLocation
                         });
@@ -58,7 +65,7 @@ export class Loader extends AbstractProcessor<string, Promise<Root>, ParsingMess
                 } else {
                     // Use package commands have extra options, so the argument is actually in position 1.
                     if (!inputCommand.args || !inputCommand.args[1]) {
-                        this.addError({
+                        this.logger.addError({
                             message: 'No arguments given to the import command.',
                             context: nodeLocation
                         });
@@ -68,7 +75,7 @@ export class Loader extends AbstractProcessor<string, Promise<Root>, ParsingMess
 
                 const fileNameArgument = inputCommand.args!![isContentLoad ? 0 : 1].content;
                 if (!fileNameArgument) {
-                    this.addError({
+                    this.logger.addError({
                         message: 'No arguments given to the input command.',
                         context: nodeLocation
                     });
@@ -96,13 +103,13 @@ export class Loader extends AbstractProcessor<string, Promise<Root>, ParsingMess
                 if (this.visitedFiles.has(path.normalize(targetFile))) {
                     if (isContentLoad) {
                         // Repeated content loads is a problem, so it gets an error.
-                        this.addError({
+                        this.logger.addError({
                             message: `File ${targetFile} has already been visited once.`,
                             context: nodeLocation
                         });
                     } else {
                         // But repeated package loads can just be skipped.
-                        this.addWarning({
+                        this.logger.addWarning({
                             message: `Package ${targetFile} has already been loaded.`,
                             context: nodeLocation
                         })
@@ -115,20 +122,20 @@ export class Loader extends AbstractProcessor<string, Promise<Root>, ParsingMess
                 let fileContent = ""
                 try {
                     fileContent = await readFile(targetFile, { encoding: 'utf8' });
-                    this.addInfo({
+                    this.logger.addInfo({
                         message: `Loaded ${targetFile}.`,
                         context: nodeLocation
                     });
                 } catch (e) {
                     if (isContentLoad) {
                         // Failing a content load is a problem.
-                        this.addError({
+                        this.logger.addError({
                             message: `Failed to read file ${targetFile}.`,
                             context: nodeLocation
                         });
                     } else {
                         // But failing package loads is expected.
-                        this.addWarning({
+                        this.logger.addWarning({
                             message: `Failed to load package ${targetFile}. This compiler supports exactly zero TeX packages.`,
                             context: nodeLocation
                         });
@@ -145,7 +152,7 @@ export class Loader extends AbstractProcessor<string, Promise<Root>, ParsingMess
         try {
             fileContent = await readFile(file, { encoding: 'utf8' });
         } catch (e) {
-            this.addError({
+            this.logger.addError({
                 message: `Failed to read file ${file}.`,
             });
         }

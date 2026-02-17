@@ -2,6 +2,7 @@ import {DocumentVisitor} from "../visitor";
 import {Environment, Node} from "@unified-latex/unified-latex-types";
 import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {match} from "@unified-latex/unified-latex-util-match";
+import {ParserLogger} from "../logging-base";
 
 
 // Assigns proofs to theorems.
@@ -10,8 +11,8 @@ import {match} from "@unified-latex/unified-latex-util-match";
 export class TheoremProofAssigner extends DocumentVisitor {
     theorems: Set<string>;
 
-    constructor({theorems}: {theorems?: Set<string>}) {
-        super();
+    constructor({theorems, logger}: {theorems?: Set<string>, logger?: ParserLogger}) {
+        super({ logger });
 
         this.theorems = theorems ?? new Set<string>();
     }

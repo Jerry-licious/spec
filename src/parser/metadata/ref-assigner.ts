@@ -3,6 +3,7 @@ import {Environment, Macro, Node} from "@unified-latex/unified-latex-types";
 import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {match} from "@unified-latex/unified-latex-util-match";
 import {capitaliseFirstLetter, getArgumentText} from "../util";
+import {ParserLogger} from "../logging-base";
 
 
 // Injects necessary metadata for ref, autoref, and hyperref.
@@ -15,13 +16,14 @@ export class RefAssigner extends DocumentVisitor {
     macroNames: Map<string, string>;
     environmentNames: Map<string, string>;
 
-    constructor({ tagNodeMap, labelTagMap, macroNames, environmentNames }: {
+    constructor({ tagNodeMap, labelTagMap, macroNames, environmentNames, logger }: {
         tagNodeMap?: Map<number, Macro | Environment>;
         labelTagMap?: Map<string, number>;
         macroNames?: Map<string, string>;
         environmentNames?: Map<string, string>;
+        logger?: ParserLogger
     }) {
-        super();
+        super({ logger });
 
         this.tagNodeMap = tagNodeMap ?? new Map<number, Macro | Environment>();
         this.labelTagMap = labelTagMap ?? new Map<string, number>();

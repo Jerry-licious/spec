@@ -7,6 +7,7 @@ import {getArgumentText} from "./util";
 import path, {join} from "node:path";
 import {readFileSync} from "node:fs";
 import {nextSafeTag} from "../tag";
+import {ParserLogger} from "./logging-base";
 
 
 const supportedBibliographyStyles = new Set<string>(['plain', 'alpha', 'raw']);
@@ -20,11 +21,12 @@ export class BibliographyLoader extends DocumentVisitor {
     keyTagMap: Map<string, number>;
     nextAvailableTag: number;
 
-    constructor({ labelTagMap, nextAvailableTag }: {
+    constructor({ labelTagMap, nextAvailableTag, logger }: {
         labelTagMap: Map<string, number>;
         nextAvailableTag: number;
+        logger?: ParserLogger;
     }) {
-        super();
+        super({ logger });
 
         this.bibliographyEntries = new Map<string, BibtexEntry>();
         this.keyTagMap = labelTagMap;

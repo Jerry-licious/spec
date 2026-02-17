@@ -2,6 +2,7 @@ import {Node} from "@unified-latex/unified-latex-types";
 import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {match} from "@unified-latex/unified-latex-util-match";
 import {LabelAssigner} from "./label-assigner";
+import {ParserLogger} from "../logging-base";
 
 
 
@@ -15,11 +16,12 @@ import {LabelAssigner} from "./label-assigner";
 export class MacroLabelAssigner extends LabelAssigner {
     readonly labelRecipients: Set<string>;
 
-    constructor({labelRecipients, witnessedLabels}: {
+    constructor({labelRecipients, witnessedLabels, logger}: {
         labelRecipients?: Set<string>;
         witnessedLabels?: Set<string>;
+        logger?: ParserLogger
     }) {
-        super({witnessedLabels});
+        super({witnessedLabels, logger});
 
         this.labelRecipients = labelRecipients ?? new Set<string>();
     }

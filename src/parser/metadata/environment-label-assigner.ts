@@ -2,6 +2,7 @@ import {Node} from "@unified-latex/unified-latex-types";
 import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {match} from "@unified-latex/unified-latex-util-match";
 import {LabelAssigner} from "./label-assigner";
+import {ParserLogger} from "../logging-base";
 
 
 // Assigns labels to environments. Will go through the environment's direct children to seek for any labels.
@@ -12,13 +13,14 @@ export class EnvironmentLabelAssigner extends LabelAssigner {
     readonly whiteList: Set<string>;
     readonly macroLabelRecipients: Set<string>;
 
-    constructor({witnessedLabels, blackList, whiteList, macroLabelRecipients}: {
+    constructor({witnessedLabels, blackList, whiteList, macroLabelRecipients, logger}: {
         witnessedLabels?: Set<string>;
         blackList?: Set<string>;
         whiteList?: Set<string>;
         macroLabelRecipients?: Set<string>;
+        logger?: ParserLogger;
     }) {
-        super({witnessedLabels});
+        super({witnessedLabels, logger});
 
         this.blackList = blackList ?? new Set<string>();
         this.whiteList = whiteList ?? new Set<string>();

@@ -5,6 +5,7 @@ import {IRUnit} from "./unit";
 import {match} from "@unified-latex/unified-latex-util-match";
 import {BlockEnv} from "./block";
 import {Division} from "./division";
+import {ParserLogger} from "../logging-base";
 
 
 export class BlockCollector extends DocumentVisitor {
@@ -19,12 +20,13 @@ export class BlockCollector extends DocumentVisitor {
 
     currentDivision?: Division;
 
-    constructor({ blockNames, divisionMarkers, existingDivisions }: {
+    constructor({ blockNames, divisionMarkers, existingDivisions, logger }: {
         blockNames: Map<string, string>;
         divisionMarkers: Set<string>;
         existingDivisions: Map<number, Division>;
+        logger?: ParserLogger;
     }) {
-        super();
+        super({ logger });
 
         this.blockNames = blockNames;
         this.blocks = new Map<number, IRUnit>();

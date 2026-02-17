@@ -1,6 +1,6 @@
 import {Argument, Node} from "@unified-latex/unified-latex-types";
 import {NodeContext, ParsingMessage} from "./error";
-import {AbstractProcessor} from "./processor";
+import {ParserLogger} from "./logging-base";
 import {visit, VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {getContext} from "./util";
 import {match} from "@unified-latex/unified-latex-util-match";
@@ -10,19 +10,24 @@ import {match} from "@unified-latex/unified-latex-util-match";
 // To simplify error messaging, I will have the visitor store the current location. This means that concurrent things
 // should never be done through this type of visitors.
 // Which aligns with my plan that these document visitors are "linear", and require the context of the whole document.
-export abstract class DocumentVisitor extends AbstractProcessor<Node, void, ParsingMessage> {
+export abstract class DocumentVisitor {
     private currentContext?: NodeContext;
+    logger: ParserLogger;
+    
+    constructor({logger}: {logger?: ParserLogger}) {
+        this.logger = logger ?? new ParserLogger({});
+    }
 
     abstract visit(node: Node, visitInfo: VisitInfo): void;
 
     addError(err: ParsingMessage | string) {
         if (typeof err === "string") {
-            super.addError({
+            this.logger.addError({
                 context: this.currentContext,
                 message: err
             });
         } else {
-            super.addError({
+            this.logger.addError({
                 context: this.currentContext,
                 ...err
             });
@@ -30,12 +35,12 @@ export abstract class DocumentVisitor extends AbstractProcessor<Node, void, Pars
     }
     addInfo(info: ParsingMessage | string) {
         if (typeof info === "string") {
-            super.addInfo({
+            this.logger.addInfo({
                 context: this.currentContext,
                 message: info
             });
         } else {
-            super.addInfo({
+            this.logger.addInfo({
                 context: this.currentContext,
                 ...info
             });
@@ -43,12 +48,12 @@ export abstract class DocumentVisitor extends AbstractProcessor<Node, void, Pars
     }
     addWarning(warning: ParsingMessage | string) {
         if (typeof warning === "string") {
-            super.addWarning({
+            this.logger.addWarning({
                 context: this.currentContext,
                 message: warning
             });
         } else {
-            super.addWarning({
+            this.logger.addWarning({
                 context: this.currentContext,
                 ...warning
             });

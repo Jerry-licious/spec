@@ -3,6 +3,7 @@ import {Environment, Macro, Node} from "@unified-latex/unified-latex-types";
 import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {match} from "@unified-latex/unified-latex-util-match";
 import {nextSafeTag} from "../../tag";
+import {ParserLogger} from "../logging-base";
 
 
 
@@ -17,13 +18,14 @@ export class TagAssigner extends DocumentVisitor {
     taggableMacros: Set<string>;
     taggableEnvironments: Set<string>;
 
-    constructor({ labelTagMap, nextAvailableTag, taggableMacros, taggableEnvironments }: {
+    constructor({ labelTagMap, nextAvailableTag, taggableMacros, taggableEnvironments, logger }: {
         labelTagMap?: Map<string, number>;
         nextAvailableTag?: number;
         taggableMacros?: Set<string>;
         taggableEnvironments?: Set<string>;
+        logger?: ParserLogger
     }) {
-        super();
+        super({ logger });
 
         this.labelTagMap = labelTagMap ?? new Map();
         this.tagNodeMap = new Map<number, Macro | Environment>();

@@ -44,8 +44,6 @@ export class CiteRenderer extends NodeRenderer {
                 }),
                 s(']')
             ]
-        })
-
-        return undefined;
+        });
     }
 }

@@ -3,6 +3,7 @@ import {DocumentVisitor} from "../visitor";
 import {Node} from "@unified-latex/unified-latex-types";
 import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {match} from "@unified-latex/unified-latex-util-match";
+import {ParserLogger} from "../logging-base";
 
 
 
@@ -23,15 +24,17 @@ export class DivisionCollector extends DocumentVisitor {
     // Children divisions will be collected into this.
     existingDivisions: Map<number, Division>;
 
-    constructor({divisionMarkers, targetDivisionMarker, divisionName, childDivisions, descendantDivisions, existingDivisions}: {
+    constructor({divisionMarkers, targetDivisionMarker, divisionName, childDivisions, descendantDivisions,
+                    existingDivisions, logger}: {
         divisionMarkers: Set<string>;
         targetDivisionMarker: string;
         divisionName: string;
         childDivisions: Set<string>;
         descendantDivisions: Set<string>;
         existingDivisions?: Map<number, Division>;
+        logger?: ParserLogger;
     }) {
-        super();
+        super({ logger });
 
         this.divisionMarkers = divisionMarkers;
 

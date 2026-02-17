@@ -11,7 +11,7 @@ import {ParserLogger} from "../logging-base";
 export class BlockCollector extends DocumentVisitor {
     // Both works as a set that contains all the theorem types to keep track of, and a
     blockNames: Map<string, string>;
-    blocks: Map<number, IRUnit>; // Map from tags to the created IR nodes.
+    blocks: Map<number, BlockEnv>; // Map from tags to the created IR nodes.
 
     // Macros that mark the beginning of particular divisions.
     // Used to assign parents to blocks.
@@ -29,7 +29,7 @@ export class BlockCollector extends DocumentVisitor {
         super({ logger });
 
         this.blockNames = blockNames;
-        this.blocks = new Map<number, IRUnit>();
+        this.blocks = new Map<number, BlockEnv>();
 
         this.divisionMarkers = divisionMarkers;
         this.existingDivisions = existingDivisions;

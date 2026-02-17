@@ -29,135 +29,35 @@ import {BibliographyLoader} from "./parser/bib-loader";
 import {CiteAssigner} from "./parser/metadata/cite-assigner";
 import {CiteRenderer} from "./parser/renderer/cite-renderer";
 import {MainCollector} from "./parser/grouping/main-collector";
+import {MainParser} from "./parser/main-parser";
 
 
 console.log('Happy developing ✨')
 
 
 async function main() {
-    const loader = new Loader();
+    const parser = new MainParser({
+        config: {
+            // Path to the SQLite file.
+            sqlite: '',
+            // The main document file.
+            entry: './text.tex',
+            // Whether to compile every unit without checking for hash/changes.
+            compileAll: true,
+            // Whether to ERASE THE EXISTING DATABASE and compute tags from scratch.
+            redoTags: true,
+            // Title of the main page and the website.
+            siteTitle: 'Math notes'
+        },
 
-    const root = await loader.process('./text.tex');
-
-    const bibliographyLoader = new BibliographyLoader({
-        // TODO: Supply existing bibliography tags here.
+        unitLabelTags: new Map<string, number>(),
+        bibliographyLabelTags: new Map<string, number>(),
         nextAvailableTag: 1,
-        labelTagMap: new Map(),
     });
-    bibliographyLoader.process(root);
 
-    console.log(bibliographyLoader.bibliographyEntries);
+    await parser.parseFile('./text.tex')
 
-    const countManager = new CountManager();
-
-    const envCollector = new BlockTypeCollector({countManager});
-    envCollector.process(root);
-
-    const macroLabelCollector = new MacroLabelAssigner({
-        labelRecipients: new Set<string>(documentDividers),
-    });
-    macroLabelCollector.process(root);
-
-    const environmentLabelAssigner = new EnvironmentLabelAssigner({
-        macroLabelRecipients: macroLabelCollector.labelRecipients,
-        witnessedLabels: macroLabelCollector.witnessedLabels,
-    });
-    environmentLabelAssigner.process(root)
-
-    const equationLabelAssigner = new EquationLabelAssigner({
-        witnessedLabels: environmentLabelAssigner.witnessedLabels
-    });
-    equationLabelAssigner.process(root);
-
-    const tagAssigner = new TagAssigner({
-        taggableEnvironments: new Set<string>(envCollector.blockTypes.keys()),
-        taggableMacros: new Set<string>(documentDividers)
-        // TODO: Supply existing unit tags and counter start here.
-        // REMEMBER TO GET NEXT AVAILABLE TAG FROM THE BIBLIOGRAPHY LOADER.
-    });
-    tagAssigner.process(root);
-
-    const numberer = new Numberer({
-        countManager,
-        environmentCounters: new Map<string, string>([...envCollector.blockTypes.entries()].map(([k, v]) => [k, v.associatedCounter]))
-    });
-    numberer.process(root);
-
-    const blockNames = new Map<string, string>([...envCollector.blockTypes.entries()].map(([k, v]) => [k, v.name]));
-    const refAssigner = new RefAssigner({
-        tagNodeMap: tagAssigner.tagNodeMap,
-        labelTagMap: tagAssigner.labelTagMap,
-        macroNames: new Map<string, string>([...documentDividers].map((d) => [d, capitaliseFirstLetter(d)])),
-        environmentNames: blockNames
-    });
-    refAssigner.process(root);
-
-    const citeAssigner = new CiteAssigner({
-        bibliographyEntries: bibliographyLoader.bibliographyEntries
-    });
-    citeAssigner.process(root);
-
-    const titleAssigner = new TheoremTitleAssigner({
-        theorems: new Set<string>(envCollector.blockTypes.keys()),
-    });
-    titleAssigner.process(root);
-
-    const proofAssigner = new TheoremProofAssigner({
-        theorems: new Set<string>(envCollector.blockTypes.keys()),
-    });
-    proofAssigner.process(root);
-
-    // Metadata collection is over. Time to collect the pages.
-
-    const divisionMarkers = new Set<string>(documentDividers);
-    const existingDivisions = new Map<number, Division>();
-
-    const subsubsectionCollector = new DivisionCollector({
-        divisionMarkers, targetDivisionMarker: 'subsubsection', divisionName: 'Subsubsection',
-        childDivisions: new Set<string>(), descendantDivisions: new Set<string>(), existingDivisions
-    });
-    subsubsectionCollector.process(root);
-
-    const subsectionCollector = new DivisionCollector({
-        divisionMarkers, targetDivisionMarker: 'subsection', divisionName: 'Subsection',
-        childDivisions: new Set<string>(['subsubsection']),
-        descendantDivisions: new Set<string>(['subsubsection']), existingDivisions
-    });
-    subsectionCollector.process(root);
-
-    const sectionCollector = new DivisionCollector({
-        divisionMarkers, targetDivisionMarker: 'section', divisionName: 'Section',
-        childDivisions: new Set<string>(['subsection']),
-        descendantDivisions: new Set<string>(['subsection', 'subsubsection']), existingDivisions
-    });
-    sectionCollector.process(root);
-
-    const chapterCollector = new DivisionCollector({
-        divisionMarkers, targetDivisionMarker: 'chapter', divisionName: 'Chapter',
-        childDivisions: new Set<string>(['section']),
-        descendantDivisions: new Set<string>(['section', 'subsection', 'subsubsection']), existingDivisions
-    });
-    chapterCollector.process(root);
-
-    const partCollector = new DivisionCollector({
-        divisionMarkers, targetDivisionMarker: 'part', divisionName: 'Part',
-        childDivisions: new Set<string>(['chapter']),
-        descendantDivisions: new Set<string>(['chapter', 'section', 'subsection', 'subsubsection']), existingDivisions
-    });
-    partCollector.process(root);
-
-    const mainCollector = new MainCollector({
-        existingDivisions, title: 'TODO READ FROM CONFIG'
-    });
-    mainCollector.process(root);
-
-
-    const blockCollector = new BlockCollector({ blockNames, divisionMarkers, existingDivisions });
-    blockCollector.process(root);
-
-    console.log(existingDivisions);
-    //console.log(root);
-
+    /*
     const renderer = unified()
         .use(new OmitMacro({
             toOmit: new Set([
@@ -174,7 +74,7 @@ async function main() {
 
     const node = renderer.runSync(root);
     console.log(renderer.stringify(node as any));
-
+    */
 }
 
 main().catch(console.error);

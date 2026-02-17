@@ -8,4 +8,7 @@ export interface Configs {
     compileAll: boolean;
     // Whether to ERASE THE EXISTING DATABASE and compute tags from scratch.
     redoTags: boolean;
+
+    // Title of the main page and the website.
+    siteTitle: string;
 }

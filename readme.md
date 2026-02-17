@@ -5,3 +5,4 @@
 - Citations
 - Custom proof texts 
 - Custom QED
+- External links with \hyperref.

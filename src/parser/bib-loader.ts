@@ -209,7 +209,10 @@ export class BibliographyLoader extends DocumentVisitor {
         // Use this system to find and manage duplicates.
         const labelMap = new Map<string, BibtexEntry[]>();
 
-        for (const entry of this.bibliographyEntries.values()) {
+        const alphabeticalOrder = [...this.bibliographyEntries.values()]
+            .sort((a, b) => this.compareBibliographyEntries(a, b));
+
+        for (const entry of alphabeticalOrder) {
             const label = this.getAlphaLabel(entry);
             console.log('label', label);
             if (labelMap.has(label)) {

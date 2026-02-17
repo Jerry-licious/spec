@@ -28,6 +28,7 @@ import {OmitMacro} from "./parser/renderer/omit";
 import {BibliographyLoader} from "./parser/bib-loader";
 import {CiteAssigner} from "./parser/metadata/cite-assigner";
 import {CiteRenderer} from "./parser/renderer/cite-renderer";
+import {MainCollector} from "./parser/grouping/main-collector";
 
 
 console.log('Happy developing ✨')
@@ -145,11 +146,16 @@ async function main() {
     });
     partCollector.process(root);
 
+    const mainCollector = new MainCollector({
+        existingDivisions, title: 'TODO READ FROM CONFIG'
+    });
+    mainCollector.process(root);
+
 
     const blockCollector = new BlockCollector({ blockNames, divisionMarkers, existingDivisions });
     blockCollector.process(root);
 
-    console.log(util.inspect(root, { depth: 6 }));
+    console.log(existingDivisions);
     //console.log(root);
 
     const renderer = unified()

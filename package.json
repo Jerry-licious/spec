@@ -24,6 +24,7 @@
     "@unified-latex/unified-latex-to-hast": "^1.8.3",
     "@unified-latex/unified-latex-util-parse": "^1.8.3",
     "bad-words": "^4.0.0",
+    "consola": "^3.4.2",
     "rehype-stringify": "^10.0.1",
     "unified": "^11.0.5"
   }

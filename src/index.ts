@@ -26,6 +26,7 @@ import {unifiedLatexToHast} from "@unified-latex/unified-latex-to-hast";
 import rehypeStringify from "rehype-stringify";
 import {OmitMacro} from "./parser/renderer/omit";
 import {BibliographyLoader} from "./parser/bib-loader";
+import {CiteAssigner} from "./parser/metadata/cite-assigner";
 
 
 console.log('Happy developing ✨')
@@ -89,6 +90,11 @@ async function main() {
     });
     refAssigner.process(root);
 
+    const citeAssigner = new CiteAssigner({
+        bibliographyEntries: bibliographyLoader.bibliographyEntries
+    });
+    citeAssigner.process(root);
+
     const titleAssigner = new TheoremTitleAssigner({
         theorems: new Set<string>(envCollector.blockTypes.keys()),
     });
@@ -138,13 +144,13 @@ async function main() {
     const blockCollector = new BlockCollector({ blockNames, divisionMarkers, existingDivisions });
     blockCollector.process(root);
 
-    console.log(util.inspect(root, { depth: 2 }));
+    console.log(util.inspect(root, { depth: 3 }));
     //console.log(root);
 
     const renderer = unified()
         .use(new OmitMacro({
             toOmit: new Set([
-                'label', 'newcommand', 'renewcommand', 'newtheorem'
+                'label', 'newcommand', 'renewcommand', 'newtheorem', 'bibliographystyle', 'bibliography'
             ])
         }).asPlugin())
         .use(new RefRenderer().asPlugin())

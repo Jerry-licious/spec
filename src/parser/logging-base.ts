@@ -35,45 +35,45 @@ export class ParserLogger {
         this.onSuccess = onSuccess;
     }
 
-    addError(msg: ParsingMessage | string) {
+    error(msg: ParsingMessage | string) {
         const error = typeof msg === 'string' ? {message: msg } : msg;
 
         this.errors.push(error);
         if (this.parent) {
-            this.parent.addError(error);
+            this.parent.error(error);
         }
         if (this.onError) {
             this.onError(error);
         }
     }
-    addWarning(msg: ParsingMessage | string) {
+    warn(msg: ParsingMessage | string) {
         const warning = typeof msg === 'string' ? {message: msg } : msg;
 
         this.warnings.push(warning);
         if (this.parent) {
-            this.parent.addWarning(warning);
+            this.parent.warn(warning);
         }
         if (this.onWarning) {
             this.onWarning(warning);
         }
     }
-    addInfo(msg: ParsingMessage | string) {
+    info(msg: ParsingMessage | string) {
         const info = typeof msg === 'string' ? {message: msg } : msg;
 
         this.infos.push(info);
         if (this.parent) {
-            this.parent.addInfo(info);
+            this.parent.info(info);
         }
         if (this.onInfo) {
             this.onInfo(info);
         }
     }
-    addSuccess(msg: ParsingMessage | string) {
+    success(msg: ParsingMessage | string) {
         const success = typeof msg === 'string' ? {message: msg } : msg;
 
         this.successes.push(success);
         if (this.parent) {
-            this.parent.addSuccess(success);
+            this.parent.success(success);
         }
         if (this.onSuccess) {
             this.onSuccess(success);

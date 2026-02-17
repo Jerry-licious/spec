@@ -22,12 +22,12 @@ export abstract class DocumentVisitor {
 
     addError(err: ParsingMessage | string) {
         if (typeof err === "string") {
-            this.logger.addError({
+            this.logger.error({
                 context: this.currentContext,
                 message: err
             });
         } else {
-            this.logger.addError({
+            this.logger.error({
                 context: this.currentContext,
                 ...err
             });
@@ -35,12 +35,12 @@ export abstract class DocumentVisitor {
     }
     addInfo(info: ParsingMessage | string) {
         if (typeof info === "string") {
-            this.logger.addInfo({
+            this.logger.info({
                 context: this.currentContext,
                 message: info
             });
         } else {
-            this.logger.addInfo({
+            this.logger.info({
                 context: this.currentContext,
                 ...info
             });
@@ -48,12 +48,12 @@ export abstract class DocumentVisitor {
     }
     addWarning(warning: ParsingMessage | string) {
         if (typeof warning === "string") {
-            this.logger.addWarning({
+            this.logger.warn({
                 context: this.currentContext,
                 message: warning
             });
         } else {
-            this.logger.addWarning({
+            this.logger.warn({
                 context: this.currentContext,
                 ...warning
             });

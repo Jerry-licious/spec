@@ -56,7 +56,7 @@ export class Loader {
                 // Input commands have their argument in position 0.
                 if (isContentLoad) {
                     if (!inputCommand.args || !inputCommand.args[0]) {
-                        this.logger.addError({
+                        this.logger.error({
                             message: 'No arguments given to the input command.',
                             context: nodeLocation
                         });
@@ -65,7 +65,7 @@ export class Loader {
                 } else {
                     // Use package commands have extra options, so the argument is actually in position 1.
                     if (!inputCommand.args || !inputCommand.args[1]) {
-                        this.logger.addError({
+                        this.logger.error({
                             message: 'No arguments given to the import command.',
                             context: nodeLocation
                         });
@@ -75,7 +75,7 @@ export class Loader {
 
                 const fileNameArgument = inputCommand.args!![isContentLoad ? 0 : 1].content;
                 if (!fileNameArgument) {
-                    this.logger.addError({
+                    this.logger.error({
                         message: 'No arguments given to the input command.',
                         context: nodeLocation
                     });
@@ -103,13 +103,13 @@ export class Loader {
                 if (this.visitedFiles.has(path.normalize(targetFile))) {
                     if (isContentLoad) {
                         // Repeated content loads is a problem, so it gets an error.
-                        this.logger.addError({
+                        this.logger.error({
                             message: `File ${targetFile} has already been visited once.`,
                             context: nodeLocation
                         });
                     } else {
                         // But repeated package loads can just be skipped.
-                        this.logger.addWarning({
+                        this.logger.warn({
                             message: `Package ${targetFile} has already been loaded.`,
                             context: nodeLocation
                         })
@@ -122,20 +122,20 @@ export class Loader {
                 let fileContent = ""
                 try {
                     fileContent = await readFile(targetFile, { encoding: 'utf8' });
-                    this.logger.addInfo({
+                    this.logger.info({
                         message: `Loaded ${targetFile}.`,
                         context: nodeLocation
                     });
                 } catch (e) {
                     if (isContentLoad) {
                         // Failing a content load is a problem.
-                        this.logger.addError({
+                        this.logger.error({
                             message: `Failed to read file ${targetFile}.`,
                             context: nodeLocation
                         });
                     } else {
                         // But failing package loads is expected.
-                        this.logger.addWarning({
+                        this.logger.warn({
                             message: `Failed to load package ${targetFile}. This compiler supports exactly zero TeX packages.`,
                             context: nodeLocation
                         });
@@ -152,7 +152,7 @@ export class Loader {
         try {
             fileContent = await readFile(file, { encoding: 'utf8' });
         } catch (e) {
-            this.logger.addError({
+            this.logger.error({
                 message: `Failed to read file ${file}.`,
             });
         }

@@ -24,6 +24,7 @@ import {BlockRenderer} from "./parser/renderer/block-renderer";
 import {ProofRenderer} from "./parser/renderer/proof-renderer";
 import {unifiedLatexToHast} from "@unified-latex/unified-latex-to-hast";
 import rehypeStringify from "rehype-stringify";
+import {OmitMacro} from "./parser/renderer/omit";
 
 
 console.log('Happy developing ✨')
@@ -127,6 +128,11 @@ async function main() {
 
 
     const renderer = unified()
+        .use(new OmitMacro({
+            toOmit: new Set([
+                'label', 'newcommand', 'renewcommand', 'newtheorem'
+            ])
+        }).asPlugin())
         .use(new RefRenderer().asPlugin())
         .use(new MathRenderer().asPlugin())
         .use(new BlockRenderer({ blockNames }).asPlugin())

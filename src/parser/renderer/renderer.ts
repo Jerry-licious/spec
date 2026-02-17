@@ -10,7 +10,7 @@ import {getContext} from "../util";
 export abstract class NodeRenderer extends AbstractProcessor<Node, void, ParsingMessage> {
     private currentContext?: NodeContext;
 
-    abstract render(node: Node): Node | void;
+    abstract render(node: Node): Node | null | void;
 
     addError(err: ParsingMessage | string) {
         if (typeof err === "string") {

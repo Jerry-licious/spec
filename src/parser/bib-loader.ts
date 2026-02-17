@@ -21,15 +21,15 @@ export class BibliographyLoader extends DocumentVisitor {
     keyTagMap: Map<string, number>;
     nextAvailableTag: number;
 
-    constructor({ labelTagMap, nextAvailableTag, logger }: {
-        labelTagMap: Map<string, number>;
+    constructor({ keyTagMap, nextAvailableTag, logger }: {
+        keyTagMap: Map<string, number>;
         nextAvailableTag: number;
         logger?: ParserLogger;
     }) {
         super({ logger });
 
         this.bibliographyEntries = new Map<string, BibtexEntry>();
-        this.keyTagMap = labelTagMap;
+        this.keyTagMap = keyTagMap;
         this.nextAvailableTag = nextAvailableTag;
     }
 

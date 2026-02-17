@@ -6,6 +6,7 @@ import {match} from "@unified-latex/unified-latex-util-match";
 import {getArgumentText} from "./util";
 import path, {join} from "node:path";
 import {readFileSync} from "node:fs";
+import {nextSafeTag} from "../tag";
 
 
 const supportedBibliographyStyles = new Set<string>(['plain', 'alpha', 'raw']);
@@ -214,7 +215,6 @@ export class BibliographyLoader extends DocumentVisitor {
 
         for (const entry of alphabeticalOrder) {
             const label = this.getAlphaLabel(entry);
-            console.log('label', label);
             if (labelMap.has(label)) {
                 labelMap.get(label)?.push(entry);
             } else {
@@ -245,7 +245,8 @@ export class BibliographyLoader extends DocumentVisitor {
             } else {
                 entry.tag = this.nextAvailableTag;
                 this.keyTagMap.set(entry.citationKey, entry.tag);
-                this.nextAvailableTag++;
+
+                this.nextAvailableTag = nextSafeTag(this.nextAvailableTag + 1);
             }
         }
 

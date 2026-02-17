@@ -6,18 +6,19 @@
       "name": "stack",
       "dependencies": {
         "@orcid/bibtex-parse-js": "^0.0.25",
-        "@types/sql.js": "^1.4.9",
+        "@unified-latex/unified-latex-to-hast": "^1.8.3",
+        "@unified-latex/unified-latex-util-parse": "^1.8.3",
+        "bad-words": "^4.0.0",
+        "rehype-stringify": "^10.0.1",
+        "unified": "^11.0.5",
       },
       "devDependencies": {
         "@types/better-sqlite3": "^7.6.13",
         "@types/node": "^25.2.0",
-        "@unified-latex/unified-latex-to-hast": "^1.8.3",
-        "@unified-latex/unified-latex-util-parse": "^1.8.3",
-        "rehype-stringify": "^10.0.1",
+        "@types/sql.js": "^1.4.9",
         "sql.js": "^1.13.0",
         "tsx": "^4.21.0",
         "typescript": "^5.9.3",
-        "unified": "^11.0.5",
       },
     },
   },
@@ -151,6 +152,10 @@
     "@unified-latex/unified-latex-util-trim": ["@unified-latex/unified-latex-util-trim@1.8.3", "", { "dependencies": { "@unified-latex/unified-latex-types": "^1.8.0", "@unified-latex/unified-latex-util-match": "^1.8.0", "@unified-latex/unified-latex-util-visit": "^1.8.3", "unified": "^10.1.2" } }, "sha512-Vb5YcVyebWuwU0koBTsVOvxKFWKfqP1T7nJdpzT+IUrfX7zcMiA4HlGdL/3imbEfuLBTHJb3IoLsymU0XfWCZg=="],
 
     "@unified-latex/unified-latex-util-visit": ["@unified-latex/unified-latex-util-visit@1.8.3", "", { "dependencies": { "@unified-latex/unified-latex-types": "^1.8.0", "@unified-latex/unified-latex-util-match": "^1.8.0" } }, "sha512-y1uxwXLbzXliAhTrxaDx4+LgIWaeNWMgS7q4DC/i/5RXXRQOImdCqQsTWwvQk2x5/8zQ3eweiTsd3q1gbBCqAA=="],
+
+    "bad-words": ["bad-words@4.0.0", "", { "dependencies": { "badwords-list": "^2.0.1-4" } }, "sha512-fLjG/I0N3I7xhurqGnGitSRD10UeEE63a7hyXtutQDpxo4+Eal+i7veWeZxZJPNtsl6X1mUIoWPwt8gQ7NMQUw=="],
+
+    "badwords-list": ["badwords-list@2.0.1-4", "", {}, "sha512-FxfZUp7B9yCnesNtFQS9v6PvZdxTYa14Q60JR6vhjdQdWI4naTjJIyx22JzoER8ooeT8SAAKoHLjKfCV7XgYUQ=="],
 
     "bail": ["bail@2.0.2", "", {}, "sha512-0xO6mYd7JB2YesxDKplafRpsiOzPt9V02ddPCLbY1xYGPOX24NTyN50qnUxgCPcSoYMhKpAuBTjQoRZCAkUDRw=="],
 

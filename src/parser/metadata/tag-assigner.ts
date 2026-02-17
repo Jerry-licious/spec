@@ -2,6 +2,7 @@ import {DocumentVisitor} from "../visitor";
 import {Environment, Macro, Node} from "@unified-latex/unified-latex-types";
 import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {match} from "@unified-latex/unified-latex-util-match";
+import {nextSafeTag} from "../../tag";
 
 
 
@@ -48,7 +49,8 @@ export class TagAssigner extends DocumentVisitor {
             } else {
                 node.meta.tag = this.nextAvailableTag;
                 this.labelTagMap.set(node.meta.label, node.meta.tag);
-                this.nextAvailableTag++;
+
+                this.nextAvailableTag = nextSafeTag(this.nextAvailableTag + 1);
             }
         } else {
             this.addWarning('Node does not have a label, and will receive a new tag.')
@@ -58,7 +60,8 @@ export class TagAssigner extends DocumentVisitor {
                 ...node.meta,
                 tag: this.nextAvailableTag
             };
-            this.nextAvailableTag++;
+
+            this.nextAvailableTag = nextSafeTag(this.nextAvailableTag + 1);
         }
 
         // At this point the tag should be assigned already.

@@ -21,9 +21,10 @@
   },
   "dependencies": {
     "@orcid/bibtex-parse-js": "^0.0.25",
-    "unified": "^11.0.5",
     "@unified-latex/unified-latex-to-hast": "^1.8.3",
     "@unified-latex/unified-latex-util-parse": "^1.8.3",
-    "rehype-stringify": "^10.0.1"
+    "bad-words": "^4.0.0",
+    "rehype-stringify": "^10.0.1",
+    "unified": "^11.0.5"
   }
 }

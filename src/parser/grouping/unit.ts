@@ -2,7 +2,6 @@ import {Node} from "@unified-latex/unified-latex-types";
 import {printRaw} from "@unified-latex/unified-latex-util-print-raw";
 import {createHash} from "crypto";
 
-
 // IR units are intermediate representations that come with more structure than merely attaching nodes with metadata.
 // IR units are expected to have tags and numbers.
 // They are "units" because each unit comes with its own tag and page.
@@ -25,6 +24,10 @@ export abstract class IRUnit {
     readonly title: Node[];
 
     readonly mainContent: Node[];
+
+    readonly titleText: string;
+
+    computedHash?: string;
 
     constructor({parent, mainContent, sourceNodeType, sourceNodeName, name, label, title, tag, numbering}: {
         parent?: IRUnit;
@@ -50,10 +53,16 @@ export abstract class IRUnit {
 
         this.tag = tag;
         this.numbering = numbering ?? [];
+
+        this.titleText = this.title.map((n) => printRaw(n)).join('');
     }
 
-    hash(): string {
-        return createHash('sha256').update(JSON.stringify(this.hashData())).digest('hex');
+    hash(refresh: boolean = false): string {
+        if (!this.computedHash || refresh) {
+            this.computedHash = createHash('sha256').update(JSON.stringify(this.hashData())).digest('hex');
+        }
+
+        return this.computedHash;
     }
 
     parentTagChain(): number[] {
@@ -63,10 +72,18 @@ export abstract class IRUnit {
         return [];
     }
 
+    // List of parents and their titles, for hashing purposes.
+    parentTagTitleChain(): string[] {
+        if (this.parent) {
+            return [...this.parent.parentTagTitleChain(), `${this.parent.tag}:${this.parent.name}:${this.parent.titleText}`];
+        }
+        return [];
+    }
+
     // Data used to compute a hash of the unit.
     hashData(): Record<string, string> {
         return {
-            parent: this.parentTagChain().join(','),
+            parent: this.parentTagTitleChain().join(','),
             numbering: this.numbering.join('.'),
             sourceNodeType: this.sourceNodeType,
             sourceNodeName: this.sourceNodeName,

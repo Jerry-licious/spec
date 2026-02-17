@@ -41,4 +41,11 @@ export class Division extends IRUnit {
         this.children.push(child);
         child.parent = this;
     }
+
+    hashData(): Record<string, string> {
+        return {
+            ...super.hashData(),
+            children: this.children.map((c) => `${c.tag}:${c.name}:${c.titleText}`).join('\n')
+        };
+    }
 }

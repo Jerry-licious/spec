@@ -1,5 +1,6 @@
 import {IRUnit} from "./unit";
 import {Node} from "@unified-latex/unified-latex-types";
+import {printRaw} from "@unified-latex/unified-latex-util-print-raw";
 
 // To reuse rendering code, the "mainContent" of a block will not be its content, but will just be the original node itself.
 export class BlockEnv extends IRUnit {
@@ -22,6 +23,13 @@ export class BlockEnv extends IRUnit {
         });
 
         this.proofs = args.proofs;
+    }
+
+    hashData(): Record<string, string> {
+        return {
+            ...super.hashData(),
+            proofs: this.proofs.map((p) => printRaw(p)).join('\n')
+        };
     }
 }
 

@@ -5,13 +5,10 @@
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^25.2.0",
-    "@unified-latex/unified-latex-to-hast": "^1.8.3",
-    "@unified-latex/unified-latex-util-parse": "^1.8.3",
-    "rehype-stringify": "^10.0.1",
     "sql.js": "^1.13.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
-    "unified": "^11.0.5"
+    "@types/sql.js": "^1.4.9"
   },
   "description": "",
   "private": true,
@@ -23,6 +20,10 @@
     "query": "tsx src/query.ts"
   },
   "dependencies": {
-    "@types/sql.js": "^1.4.9"
+    "@orcid/bibtex-parse-js": "^0.0.25",
+    "unified": "^11.0.5",
+    "@unified-latex/unified-latex-to-hast": "^1.8.3",
+    "@unified-latex/unified-latex-util-parse": "^1.8.3",
+    "rehype-stringify": "^10.0.1"
   }
 }

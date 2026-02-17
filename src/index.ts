@@ -25,6 +25,7 @@ import {ProofRenderer} from "./parser/renderer/proof-renderer";
 import {unifiedLatexToHast} from "@unified-latex/unified-latex-to-hast";
 import rehypeStringify from "rehype-stringify";
 import {OmitMacro} from "./parser/renderer/omit";
+import {BibliographyLoader} from "./parser/bib-loader";
 
 
 console.log('Happy developing ✨')
@@ -34,6 +35,15 @@ async function main() {
     const loader = new Loader();
 
     const root = await loader.process('./text.tex');
+
+    const bibliographyLoader = new BibliographyLoader({
+        // TODO: Supply existing bibliography tags here.
+        nextAvailableTag: 1,
+        labelTagMap: new Map(),
+    });
+    bibliographyLoader.process(root);
+
+    console.log(bibliographyLoader.bibliographyEntries);
 
     const countManager = new CountManager();
 
@@ -59,6 +69,8 @@ async function main() {
     const tagAssigner = new TagAssigner({
         taggableEnvironments: new Set<string>(envCollector.blockTypes.keys()),
         taggableMacros: new Set<string>(documentDividers)
+        // TODO: Supply existing unit tags and counter start here.
+        // REMEMBER TO GET NEXT AVAILABLE TAG FROM THE BIBLIOGRAPHY LOADER.
     });
     tagAssigner.process(root);
 
@@ -126,6 +138,8 @@ async function main() {
     const blockCollector = new BlockCollector({ blockNames, divisionMarkers, existingDivisions });
     blockCollector.process(root);
 
+    console.log(util.inspect(root, { depth: 2 }));
+    //console.log(root);
 
     const renderer = unified()
         .use(new OmitMacro({
@@ -143,10 +157,6 @@ async function main() {
     const node = renderer.runSync(root);
     console.log(renderer.stringify(node as any));
 
-    console.log(util.inspect(existingDivisions, { depth: 4 }));
-    console.log(blockCollector.blocks);
-
-    console.log(util.inspect(root, { depth: 4 }));
 }
 
 main().catch(console.error);

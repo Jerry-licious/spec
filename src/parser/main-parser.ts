@@ -6,26 +6,14 @@ import {messageText} from "./error";
 import {BibliographyLoader} from "./bib-loader";
 import {Loader} from "./loader";
 import {Environment, Macro, Root} from "@unified-latex/unified-latex-types";
-import {BlockTypeCollector} from "./metadata/block-type-collector";
 import {CountManager} from "./counter";
-import {CustomMacroCollector} from "./metadata/custom-macro-collector";
-import {BlockType} from "./metadata/block-type";
-import {MacroLabelAssigner} from "./metadata/macro-label-assigner";
 import {capitaliseFirstLetter, documentDividers} from "./util";
-import {EnvironmentLabelAssigner} from "./metadata/environment-label-assigner";
-import {EquationLabelAssigner} from "./metadata/equation-label-assigner";
-import {TagAssigner} from "./metadata/tag-assigner";
-import {Numberer} from "./metadata/numberer";
-import {RefAssigner} from "./metadata/ref-assigner";
-import {CiteAssigner} from "./metadata/cite-assigner";
 import {BibtexEntry} from "@orcid/bibtex-parse-js";
-import {TheoremTitleAssigner} from "./metadata/theorem-title-assigner";
-import {TheoremProofAssigner} from "./metadata/theorem-proof-assigner";
-import {Division} from "./grouping/division";
-import {DivisionCollector} from "./grouping/division-collector";
-import {MainCollector} from "./grouping/main-collector";
-import {BlockEnv} from "./grouping/block";
-import {BlockCollector} from "./grouping/block-collector";
+import {BlockCollector, BlockEnv, Division, DivisionCollector, MainCollector} from "./grouping";
+import {
+    BlockType, BlockTypeCollector, CiteAssigner, CustomMacroCollector, EnvironmentLabelAssigner, EquationLabelAssigner,
+    MacroLabelAssigner, Numberer, RefAssigner, TagAssigner, TheoremProofAssigner, TheoremTitleAssigner
+} from "./metadata";
 
 
 const divisionMarkers = new Set<string>(documentDividers);

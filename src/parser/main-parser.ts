@@ -5,7 +5,7 @@ import consola from "consola";
 import {messageText} from "./error";
 import {BibliographyLoader} from "./bib-loader";
 import {Loader} from "./loader";
-import {Environment, Macro, Node, Root} from "@unified-latex/unified-latex-types";
+import {Environment, Macro, Root} from "@unified-latex/unified-latex-types";
 import {BlockTypeCollector} from "./metadata/block-type-collector";
 import {CountManager} from "./counter";
 import {CustomMacroCollector} from "./metadata/custom-macro-collector";

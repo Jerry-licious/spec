@@ -6,7 +6,6 @@ import {match} from "@unified-latex/unified-latex-util-match";
 import {ParserLogger} from "../logging-base";
 
 
-
 export class DivisionCollector extends DocumentVisitor {
     // Collection of all macros that initialise divisions.
     // It is assumed that the target division marker is an element of the division markers.

@@ -2,9 +2,8 @@ import {ParserLogger} from "../logging-base";
 import {Argument, Node} from "@unified-latex/unified-latex-types";
 import {NodeContext, ParsingMessage} from "../error";
 import {match} from "@unified-latex/unified-latex-util-match";
-import { replaceNode } from '@unified-latex/unified-latex-util-replace';
+import {replaceNode} from '@unified-latex/unified-latex-util-replace';
 import {getContext} from "../util";
-
 
 
 export abstract class NodeRenderer {

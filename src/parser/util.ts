@@ -1,6 +1,6 @@
 import {Argument, Macro, Node} from "@unified-latex/unified-latex-types";
 import {NodeContext} from "./error";
-import { printRaw } from "@unified-latex/unified-latex-util-print-raw";
+import {printRaw} from "@unified-latex/unified-latex-util-print-raw";
 
 
 export const documentDividers = ['part', 'chapter', 'section', 'subsection', 'subsubsection'] as const;

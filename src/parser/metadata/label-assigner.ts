@@ -1,5 +1,5 @@
 import {DocumentVisitor} from "../visitor";
-import {Node, Macro} from "@unified-latex/unified-latex-types";
+import {Macro, Node} from "@unified-latex/unified-latex-types";
 import {getArgumentText, getContext} from "../util";
 import {ParserLogger} from "../logging-base";
 

@@ -6,7 +6,6 @@ import {nextSafeTag} from "../../tag";
 import {ParserLogger} from "../logging-base";
 
 
-
 // In the present system, each unit, such as a chapter, section, or a theorem, will be assigned a unique ID known as a
 // tag.
 // Tags are internally represented as numbers, but externally represented as 36

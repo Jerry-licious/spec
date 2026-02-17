@@ -1,6 +1,5 @@
 // Abstractly processes certain things. While running, collects errors.
 import {ParsingMessage} from "./error";
-import {on} from "node:events";
 
 export class ParserLogger {
     readonly parent?: ParserLogger;

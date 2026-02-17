@@ -1,5 +1,3 @@
-
-
 // For now, I will settle with converting the mathjax environments into barebone text nodes.
 // In the future, mathjax may be rendered entirely online.
 import {NodeRenderer} from "./renderer";

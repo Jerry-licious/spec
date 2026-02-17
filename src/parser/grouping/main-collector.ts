@@ -7,7 +7,6 @@ import {s} from "@unified-latex/unified-latex-builder";
 import {ParserLogger} from "../logging-base";
 
 
-
 export class MainCollector extends DocumentVisitor {
     title: string;
 

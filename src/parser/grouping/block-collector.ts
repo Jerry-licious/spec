@@ -1,7 +1,6 @@
 import {DocumentVisitor} from "../visitor";
 import {Node} from "@unified-latex/unified-latex-types";
 import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
-import {IRUnit} from "./unit";
 import {match} from "@unified-latex/unified-latex-util-match";
 import {BlockEnv} from "./block";
 import {Division} from "./division";

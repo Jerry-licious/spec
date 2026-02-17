@@ -5,7 +5,6 @@ import {LabelAssigner} from "./label-assigner";
 import {ParserLogger} from "../logging-base";
 
 
-
 // Assigns labels to macros. The "label recipients" are macros that can have labels assigned to them.
 // Macros will only collect labels from their siblings, and will stop collecting upon encountering an environment.
 // This behaviour is definitely different compared to actual Tex.

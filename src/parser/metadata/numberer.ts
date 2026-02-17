@@ -1,5 +1,3 @@
-
-
 // Assigns numbers to each numberable node.
 import {CountManager} from "../counter";
 import {DocumentVisitor} from "../visitor";

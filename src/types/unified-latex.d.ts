@@ -1,5 +1,5 @@
 import "@unified-latex/unified-latex-types"
-import {Node, Environment} from "@unified-latex/unified-latex-types"
+import {Environment, Node} from "@unified-latex/unified-latex-types"
 
 
 export interface ElementMetadata {

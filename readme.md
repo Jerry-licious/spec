@@ -2,11 +2,14 @@
 
 - Proper style classes
 - Proper preamble collection
-- Citations
 - Custom proof texts 
 - Custom QED
 - External links with \hyperref.
-- Have a special collector that gets the main page. 
+- Have a special collector that gets the main page.
+- Citations
+  - ~~Partial BibTeX support~~
+  - ~~Cite commands~~
+  - Citation Pages
 
 
 # Bibliography

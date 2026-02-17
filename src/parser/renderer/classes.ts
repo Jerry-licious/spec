@@ -6,4 +6,7 @@ export const classes = {
     proof: '',
     proofIntro: '',
     qed: '',
+    cite: '',
+    citeNote: '',
+    citeRef: ''
 } as const;

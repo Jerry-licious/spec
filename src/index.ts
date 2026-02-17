@@ -27,6 +27,7 @@ import rehypeStringify from "rehype-stringify";
 import {OmitMacro} from "./parser/renderer/omit";
 import {BibliographyLoader} from "./parser/bib-loader";
 import {CiteAssigner} from "./parser/metadata/cite-assigner";
+import {CiteRenderer} from "./parser/renderer/cite-renderer";
 
 
 console.log('Happy developing ✨')
@@ -144,7 +145,7 @@ async function main() {
     const blockCollector = new BlockCollector({ blockNames, divisionMarkers, existingDivisions });
     blockCollector.process(root);
 
-    console.log(util.inspect(root, { depth: 3 }));
+    console.log(util.inspect(root, { depth: 6 }));
     //console.log(root);
 
     const renderer = unified()
@@ -153,8 +154,9 @@ async function main() {
                 'label', 'newcommand', 'renewcommand', 'newtheorem', 'bibliographystyle', 'bibliography'
             ])
         }).asPlugin())
-        .use(new RefRenderer().asPlugin())
         .use(new MathRenderer().asPlugin())
+        .use(new RefRenderer().asPlugin())
+        .use(new CiteRenderer().asPlugin())
         .use(new BlockRenderer({ blockNames }).asPlugin())
         .use(new ProofRenderer().asPlugin())
         .use(unifiedLatexToHast as any)

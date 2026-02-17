@@ -15,16 +15,20 @@ export class DivisionCollector extends DocumentVisitor {
     // Cosmetic name for the target division type.
     divisionName: string;
     childDivisions: Set<string>;
+    // Descendants correspond to children of children.
+    // Seeing these will not interrupt the collection process.
+    descendantDivisions: Set<string>;
 
     // All child divisions are assumed to be already collected in this map.
     // Children divisions will be collected into this.
     existingDivisions: Map<number, Division>;
 
-    constructor({divisionMarkers, targetDivisionMarker, divisionName, childDivisions, existingDivisions}: {
+    constructor({divisionMarkers, targetDivisionMarker, divisionName, childDivisions, descendantDivisions, existingDivisions}: {
         divisionMarkers: Set<string>;
         targetDivisionMarker: string;
         divisionName: string;
         childDivisions: Set<string>;
+        descendantDivisions: Set<string>;
         existingDivisions?: Map<number, Division>;
     }) {
         super();
@@ -36,6 +40,7 @@ export class DivisionCollector extends DocumentVisitor {
         this.childDivisions = childDivisions;
         this.existingDivisions = existingDivisions ?? new Map<number, Division>();
         this.childDivisions = childDivisions;
+        this.descendantDivisions = descendantDivisions;
     }
 
     visit(node: Node, visitInfo: VisitInfo): void {
@@ -87,8 +92,8 @@ export class DivisionCollector extends DocumentVisitor {
                         continue;
                     }
                     children.push(this.existingDivisions.get(sibling.meta.tag)!!);
-                } else {
-                    // Otherwise, terminate collecting.
+                } else if (!this.descendantDivisions.has(sibling.content)) {
+                    // Terminate the collecting if a non-descendant is seen.
                     break;
                 }
             } else if (collectContent && !match.argument(sibling)) {

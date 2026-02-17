@@ -113,31 +113,35 @@ async function main() {
 
     const subsubsectionCollector = new DivisionCollector({
         divisionMarkers, targetDivisionMarker: 'subsubsection', divisionName: 'Subsubsection',
-        childDivisions: new Set<string>(), existingDivisions
+        childDivisions: new Set<string>(), descendantDivisions: new Set<string>(), existingDivisions
     });
     subsubsectionCollector.process(root);
 
     const subsectionCollector = new DivisionCollector({
         divisionMarkers, targetDivisionMarker: 'subsection', divisionName: 'Subsection',
-        childDivisions: new Set<string>(['subsubsection']), existingDivisions
+        childDivisions: new Set<string>(['subsubsection']),
+        descendantDivisions: new Set<string>(['subsubsection']), existingDivisions
     });
     subsectionCollector.process(root);
 
     const sectionCollector = new DivisionCollector({
         divisionMarkers, targetDivisionMarker: 'section', divisionName: 'Section',
-        childDivisions: new Set<string>(['subsection']), existingDivisions
+        childDivisions: new Set<string>(['subsection']),
+        descendantDivisions: new Set<string>(['subsection', 'subsubsection']), existingDivisions
     });
     sectionCollector.process(root);
 
     const chapterCollector = new DivisionCollector({
         divisionMarkers, targetDivisionMarker: 'chapter', divisionName: 'Chapter',
-        childDivisions: new Set<string>(['section']), existingDivisions
+        childDivisions: new Set<string>(['section']),
+        descendantDivisions: new Set<string>(['section', 'subsection', 'subsubsection']), existingDivisions
     });
     chapterCollector.process(root);
 
     const partCollector = new DivisionCollector({
         divisionMarkers, targetDivisionMarker: 'part', divisionName: 'Part',
-        childDivisions: new Set<string>(['chapter']), existingDivisions
+        childDivisions: new Set<string>(['chapter']),
+        descendantDivisions: new Set<string>(['chapter', 'section', 'subsection', 'subsubsection']), existingDivisions
     });
     partCollector.process(root);
 

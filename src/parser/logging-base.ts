@@ -35,16 +35,20 @@ export class ParserLogger {
         this.onSuccess = onSuccess;
     }
 
-    addError(err: ParsingMessage) {
-        this.errors.push(err);
+    addError(msg: ParsingMessage | string) {
+        const error = typeof msg === 'string' ? {message: msg } : msg;
+
+        this.errors.push(error);
         if (this.parent) {
-            this.parent.addError(err);
+            this.parent.addError(error);
         }
         if (this.onError) {
-            this.onError(err);
+            this.onError(error);
         }
     }
-    addWarning(warning: ParsingMessage) {
+    addWarning(msg: ParsingMessage | string) {
+        const warning = typeof msg === 'string' ? {message: msg } : msg;
+
         this.warnings.push(warning);
         if (this.parent) {
             this.parent.addWarning(warning);
@@ -53,7 +57,9 @@ export class ParserLogger {
             this.onWarning(warning);
         }
     }
-    addInfo(info: ParsingMessage) {
+    addInfo(msg: ParsingMessage | string) {
+        const info = typeof msg === 'string' ? {message: msg } : msg;
+
         this.infos.push(info);
         if (this.parent) {
             this.parent.addInfo(info);
@@ -62,7 +68,9 @@ export class ParserLogger {
             this.onInfo(info);
         }
     }
-    addSuccess(success: ParsingMessage) {
+    addSuccess(msg: ParsingMessage | string) {
+        const success = typeof msg === 'string' ? {message: msg } : msg;
+
         this.successes.push(success);
         if (this.parent) {
             this.parent.addSuccess(success);
@@ -70,6 +78,13 @@ export class ParserLogger {
         if (this.onSuccess) {
             this.onSuccess(success);
         }
+    }
+
+    get numWarnings() {
+        return this.warnings.length;
+    }
+    get numErrors() {
+        return this.errors.length;
     }
 }
 

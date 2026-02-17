@@ -160,7 +160,7 @@ export class MainParser {
         macroCollector.process(this.documentRoot!);
         this.rawMacros = macroCollector.rawMacros;
 
-        const messageContent = `Collected ${this.blockTypes.size} custom environment types and ${macroCollector.rawMacros} custom macros with ${definitionLogger.numErrors} errors and ${definitionLogger.numWarnings} warnings.`;
+        const messageContent = `Collected ${this.blockTypes.size} custom environment types and ${macroCollector.rawMacros.size} custom macros with ${definitionLogger.numErrors} errors and ${definitionLogger.numWarnings} warnings.`;
         if (definitionLogger.numErrors > 0) {
             this.logger.error(messageContent);
         } else {

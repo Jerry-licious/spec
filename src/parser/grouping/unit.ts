@@ -1,6 +1,7 @@
 import {Node} from "@unified-latex/unified-latex-types";
 import {printRaw} from "@unified-latex/unified-latex-util-print-raw";
 import {createHash} from "crypto";
+import {ReferenceCollector} from "../metadata";
 
 // IR units are intermediate representations that come with more structure than merely attaching nodes with metadata.
 // IR units are expected to have tags and numbers.
@@ -26,6 +27,9 @@ export abstract class IRUnit {
     readonly mainContent: Node[];
 
     readonly titleText: string;
+
+    // Tags directly referenced by this unit.
+    directReferences: Set<number>;
 
     computedHash?: string;
 
@@ -55,6 +59,16 @@ export abstract class IRUnit {
         this.numbering = numbering ?? [];
 
         this.titleText = this.title.map((n) => printRaw(n)).join('');
+
+        // Initialise the list of direct references here.
+        const referenceCollector = new ReferenceCollector();
+        this.collectDirectReferences(referenceCollector);
+        this.directReferences = referenceCollector.referencedTags;
+    }
+
+    collectDirectReferences(collector: ReferenceCollector) {
+        this.title.forEach(collector.process);
+        this.mainContent.forEach(collector.process);
     }
 
     hash(refresh: boolean = false): string {

@@ -18,9 +18,18 @@ import {unified} from "unified";
 import {BlockRenderer, CiteRenderer, MathRenderer, OmitMacro, ProofRenderer, RefRenderer} from "./renderer";
 import {unifiedLatexToHast} from "@unified-latex/unified-latex-to-hast";
 import rehypeStringify from "rehype-stringify";
+import {UnitData} from "../db";
 
 
 const divisionMarkers = new Set<string>(documentDividers);
+
+
+interface CompileResult {
+    // A list of new or updated unit data.
+    toUpdate: UnitData[];
+    // Tags to be deleted.
+    toDelete: number[];
+}
 
 
 export class Compiler {
@@ -31,6 +40,8 @@ export class Compiler {
 
     // Mapping from unit labels to their tags.
     unitLabelTags: Map<string, number>;
+    // Hash of the existing units.
+    unitTagHash: Map<number, string>;
     // Mapping from unit tags to their nodes.
     unitTagNode: Map<number, Macro | Environment>;
 
@@ -54,11 +65,12 @@ export class Compiler {
 
     renderToHTML: (node: Node) => string;
     
-    constructor({config, unitLabelTags, bibliographyLabelTags, nextAvailableTag}: {
+    constructor({config, unitLabelTags, bibliographyLabelTags, nextAvailableTag, unitTagHash}: {
         config: Configs;
         unitLabelTags: Map<string, number>;
         bibliographyLabelTags: Map<string, number>;
         nextAvailableTag: number;
+        unitTagHash: Map<number, string>;
     }) {
         this.entry = config.entry;
         this.redoTags = config.redoTags;
@@ -66,6 +78,7 @@ export class Compiler {
         this.indirectReferences = config.indirectReferences;
 
         this.unitLabelTags = unitLabelTags;
+        this.unitTagHash = unitTagHash;
         this.unitTagNode = new Map<number, Macro | Environment>();
         
         this.bibliographyKeyTags = bibliographyLabelTags;
@@ -99,7 +112,7 @@ export class Compiler {
         });
     }
 
-    async parseFile(file: string) {
+    async parseFile(file: string): Promise<CompileResult> {
         consola.start(`Starting the compiler on ${file}.`);
 
         await this.collectContent(file);
@@ -116,11 +129,11 @@ export class Compiler {
         this.collectUnits();
         this.computeUnitReferences();
 
-        this.renderUnits();
+        return this.renderUnits();
     }
 
 
-    renderUnits() {
+    renderUnits(): CompileResult {
         const renderingLogger = new ParserLogger({ parent: this.logger });
         renderingLogger.info('Creating HTML renderer. ');
 
@@ -148,14 +161,33 @@ export class Compiler {
 
         renderingLogger.success('Renderer has been created.');
 
-        renderingLogger.info('Rendering link target information for all units.');
+        renderingLogger.info('Rendering units.');
+
         this.renderUnitLinkTargets();
-        const messageContent = `Rendered link target information for all units with ${renderingLogger.numErrors} errors and ${renderingLogger.numWarnings} warnings.`;
+
+        const toUpdate = this.renderUnitData();
+        const toDelete = [...this.unitTagHash.keys()].filter((t) => !this.units.has(t));
+
+        const messageContent = `Rendered ${toUpdate.length} units (skipped ${this.units.size - toUpdate.length}) with ${renderingLogger.numErrors} errors and ${renderingLogger.numWarnings} warnings.`
         if (renderingLogger.numErrors > 0) {
             this.logger.error(messageContent);
         } else {
             this.logger.success(messageContent);
         }
+
+        return { toUpdate, toDelete };
+    }
+
+    renderUnitData() {
+        const toUpdate: UnitData[] = [];
+        for (const unit of this.units.values()) {
+            // Skip any node with the same hash as the stored.
+            if (this.unitTagHash.has(unit.tag) && unit.hash() === this.unitTagHash.get(unit.tag)) continue;
+
+            toUpdate.push(unit.renderToUnitData(this.units, this.renderToHTML));
+        }
+
+        return toUpdate;
     }
 
     renderUnitLinkTargets() {

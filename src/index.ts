@@ -1,6 +1,6 @@
 import "./compiler/loader"
 import {Compiler} from "./compiler/compiler";
-import {initialiseDatabase} from "./db/db";
+import {initialiseDatabase} from "./db";
 
 
 console.log('Happy developing ✨')
@@ -28,9 +28,11 @@ async function main() {
         unitLabelTags: new Map<string, number>(),
         bibliographyLabelTags: new Map<string, number>(),
         nextAvailableTag: 1,
+        unitTagHash: new Map<number, string>()
     });
 
-    await parser.parseFile('./text.tex')
+    const result = await parser.parseFile('./text.tex');
+    console.log(result.toUpdate);
 
     /*
     const renderer = unified()

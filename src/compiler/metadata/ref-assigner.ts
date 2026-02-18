@@ -7,7 +7,7 @@ import {ParserLogger} from "../logging-base";
 
 
 // Injects necessary metadata for ref, autoref, and hyperref.
-const refCommands = new Set<string>(['ref', 'autoref', 'hyperref']);
+export const refCommands = new Set<string>(['ref', 'autoref', 'hyperref']);
 
 
 export class RefAssigner extends DocumentVisitor {

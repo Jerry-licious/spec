@@ -36,5 +36,15 @@ export class BlockEnv extends IRUnit {
             proofs: this.proofs.map((p) => printRaw(p)).join('\n')
         };
     }
+
+    renderBody(renderer: (node: Node) => string): string {
+        return renderer({
+            type: 'root',
+            content: [
+                ...this.mainContent,
+                ...this.proofs
+            ],
+        })
+    }
 }
 

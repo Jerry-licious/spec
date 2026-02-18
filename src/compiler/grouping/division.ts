@@ -1,5 +1,6 @@
 import {IRUnit} from "./unit";
 import {Node} from "@unified-latex/unified-latex-types";
+import {UnitData} from "../../db";
 
 
 // Divisions include parts chapters, sections, subsections.
@@ -47,5 +48,13 @@ export class Division extends IRUnit {
             ...super.hashData(),
             children: this.children.map((c) => `${c.tag}:${c.name}:${c.titleText}`).join('\n')
         };
+    }
+
+    renderToUnitData(allUnits: Map<number, IRUnit>, renderer: (node: Node) => string): UnitData {
+        const data = super.renderToUnitData(allUnits, renderer);
+
+        data.children = this.children.map((c) => c.linkTarget!);
+
+        return data;
     }
 }

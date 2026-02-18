@@ -2,7 +2,8 @@ import {Node} from "@unified-latex/unified-latex-types";
 import {printRaw} from "@unified-latex/unified-latex-util-print-raw";
 import {createHash} from "crypto";
 import {ReferenceCollector} from "../metadata";
-import {LinkTarget} from "../../db/link-target";
+import {AppDataSource, LinkTarget, UnitData} from "../../db";
+import {wrapPars} from "@unified-latex/unified-latex-to-hast";
 
 // IR units are intermediate representations that come with more structure than merely attaching nodes with metadata.
 // IR units are expected to have tags and numbers.
@@ -126,6 +127,37 @@ export abstract class IRUnit {
                 content: this.title
             }) : undefined
         };
+    }
+
+    renderBody(renderer: (node: Node) => string) {
+        return renderer({
+            type: 'root',
+            content: wrapPars(this.mainContent),
+        })
+    }
+
+    // Renders the IR unit as a unit data instance.
+    renderToUnitData(allUnits: Map<number, IRUnit>, renderer: (node: Node) => string): UnitData {
+        return AppDataSource.manager.create(UnitData, {
+            tag: this.tag,
+            hash: this.hash(),
+
+            numberingText: this.numbering.join('.'),
+
+            unitType: this.sourceNodeType,
+            unitName: this.name,
+
+            titleText: this.titleText,
+            titleHTML: this.linkTarget?.titleHtml,
+            contentHTML: this.renderBody(renderer),
+
+            lastRendered: new Date(),
+
+            directlyReferences: [...this.directReferences].map((r) => allUnits.get(r)!.linkTarget!),
+            indirectlyReferences: this.indirectReferences ? [...this.indirectReferences].map((r) => allUnits.get(r)!.linkTarget!) : [],
+            directlyReferencedBy: [...this.directlyReferencedBy].map((r) => allUnits.get(r)!.linkTarget!),
+            indirectlyReferencedBy: [...this.indirectlyReferencedBy].map((r) => allUnits.get(r)!.linkTarget!),
+        });
     }
 }
 

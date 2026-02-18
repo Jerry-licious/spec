@@ -60,8 +60,11 @@ export class MainCollector extends DocumentVisitor {
             numbering: [],
             mainContent
         });
+
+        // Every unit eventually comes back to the main document, so there is no need to assign the main document as a
+        // parent.
         for (const child of children) {
-            division.addChild(child);
+            division.addChild(child, /* setParent: */ false);
         }
 
         // The 0 tag is reserved for the index page.

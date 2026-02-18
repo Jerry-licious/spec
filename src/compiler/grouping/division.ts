@@ -38,9 +38,10 @@ export class Division extends IRUnit {
         this.children = args.children ?? [];
     }
 
-    addChild(child: Division) {
+    addChild(child: Division, setParent: boolean = true) {
         this.children.push(child);
-        child.parent = this;
+
+        if (setParent) child.parent = this;
     }
 
     hashData(): Record<string, string> {

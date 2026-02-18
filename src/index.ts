@@ -1,5 +1,5 @@
-import "./parser/loader"
-import {MainParser} from "./parser/main-parser";
+import "./compiler/loader"
+import {MainParser} from "./compiler/main-parser";
 
 
 console.log('Happy developing ✨')

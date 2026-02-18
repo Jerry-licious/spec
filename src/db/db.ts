@@ -1,7 +1,7 @@
 import {DataSource} from "typeorm";
 import {UnitData} from "./schema";
 
-let AppDataSource: DataSource;
+export let AppDataSource: DataSource;
 
 export async function initialiseDatabase(dbPath: string) {
     AppDataSource = new DataSource({

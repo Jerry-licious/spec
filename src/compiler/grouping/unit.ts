@@ -153,6 +153,8 @@ export abstract class IRUnit {
 
             lastRendered: new Date(),
 
+            parentChain: [...this.parentTagChain()].map((r) => allUnits.get(r)!.linkTarget!),
+
             directlyReferences: [...this.directReferences].map((r) => allUnits.get(r)!.linkTarget!),
             indirectlyReferences: this.indirectReferences ? [...this.indirectReferences].map((r) => allUnits.get(r)!.linkTarget!) : [],
             directlyReferencedBy: [...this.directlyReferencedBy].map((r) => allUnits.get(r)!.linkTarget!),

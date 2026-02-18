@@ -1,16 +1,17 @@
-// TODO: Rename this class after this project gets a real name.
-export interface Configs {
-    // Path to the SQLite file.
-    sqlite: string;
-    // The main document file.
-    entry: string;
-    // Whether to compile every unit without checking for hash/changes.
-    compileAll: boolean;
-    // Whether to ERASE THE EXISTING DATABASE and compute tags from scratch.
-    redoTags: boolean;
+import { z } from "zod";
 
-    // Title of the main page and the website.
-    siteTitle: string;
 
-    indirectReferences: boolean;
-}
+export const ConfigSchema = z.object({
+    database: z.string().default('stack.db'), // TODO: Rename after coming up with a name for the project.
+    document: z.string().default('document.tex'),
+
+    compileAll: z.boolean().default(false),
+    redoTags: z.boolean().default(false),
+
+    siteTitle: z.string().default('Unnamed Website'),
+
+    indirectReferences: z.boolean().default(true),
+});
+
+// TODO: Rename config class after finding a name for the project.
+export type Config = z.infer<typeof ConfigSchema>

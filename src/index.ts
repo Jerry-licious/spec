@@ -13,9 +13,9 @@ async function main() {
     const parser = new Compiler({
         config: {
             // Path to the SQLite file.
-            sqlite: '',
+            database: '',
             // The main document file.
-            entry: './text.tex',
+            document: './text.tex',
             // Whether to compile every unit without checking for hash/changes.
             compileAll: true,
             // Whether to ERASE THE EXISTING DATABASE and compute tags from scratch.

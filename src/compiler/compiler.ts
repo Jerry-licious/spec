@@ -1,5 +1,5 @@
 // Orchestrates the full parsing process.
-import {Configs} from "../configs";
+import {Config} from "../configs";
 import {ParserLogger} from "./logging-base";
 import consola from "consola";
 import {messageText} from "./error";
@@ -66,13 +66,13 @@ export class Compiler {
     renderToHTML: (node: Node) => string;
     
     constructor({config, unitLabelTags, bibliographyLabelTags, nextAvailableTag, unitTagHash}: {
-        config: Configs;
+        config: Config;
         unitLabelTags: Map<string, number>;
         bibliographyLabelTags: Map<string, number>;
         nextAvailableTag: number;
         unitTagHash: Map<number, string>;
     }) {
-        this.entry = config.entry;
+        this.entry = config.document;
         this.redoTags = config.redoTags;
         this.title = config.siteTitle;
         this.indirectReferences = config.indirectReferences;

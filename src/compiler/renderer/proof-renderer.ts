@@ -4,6 +4,7 @@ import {match} from "@unified-latex/unified-latex-util-match";
 import {htmlLike} from "@unified-latex/unified-latex-util-html-like";
 import {classes} from "./classes";
 import {s} from "@unified-latex/unified-latex-builder";
+import {wrapPars} from "@unified-latex/unified-latex-to-hast";
 
 
 export class ProofRenderer extends NodeRenderer {
@@ -15,7 +16,7 @@ export class ProofRenderer extends NodeRenderer {
             attributes: {
                 class: classes.proof,
             },
-            content: [
+            content: wrapPars([
                 htmlLike({
                     tag: 'i',
                     attributes: {
@@ -31,7 +32,7 @@ export class ProofRenderer extends NodeRenderer {
                     },
                     content: s('$\\box$') // TODO: This might not be the correct QED command, we'll see.
                 })
-            ]
+            ])
         });
     }
 }

@@ -1,7 +1,7 @@
 # TODO
 
 - Proper style classes
-- Proper preamble collection
+- ~~Proper preamble collection~~
 - Custom proof texts 
 - Custom QED
 - External links with \hyperref.
@@ -10,6 +10,7 @@
   - ~~Partial BibTeX support~~
   - ~~Cite commands~~
   - Citation Pages
+- Remove useless dependencies.
 
 
 # Bibliography

@@ -19,7 +19,7 @@ import {
 const divisionMarkers = new Set<string>(documentDividers);
 
 
-export class MainParser {
+export class Compiler {
     entry: string;
     title: string;
     redoTags: boolean;

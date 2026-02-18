@@ -1,12 +1,16 @@
 import "./compiler/loader"
-import {MainParser} from "./compiler/main-parser";
+import {Compiler} from "./compiler/compiler";
+import {initialiseDatabase} from "./db/db";
 
 
 console.log('Happy developing ✨')
 
 
 async function main() {
-    const parser = new MainParser({
+    await initialiseDatabase('./test.db')
+
+
+    const parser = new Compiler({
         config: {
             // Path to the SQLite file.
             sqlite: '',

@@ -2,6 +2,7 @@ import {Node} from "@unified-latex/unified-latex-types";
 import {printRaw} from "@unified-latex/unified-latex-util-print-raw";
 import {createHash} from "crypto";
 import {ReferenceCollector} from "../metadata";
+import {LinkTarget} from "../../db/link-target";
 
 // IR units are intermediate representations that come with more structure than merely attaching nodes with metadata.
 // IR units are expected to have tags and numbers.
@@ -18,7 +19,7 @@ export abstract class IRUnit {
     readonly sourceNodeName: string;
 
     // Chapter/Section/Part/Theorem/etc
-    readonly name?: string;
+    readonly name: string;
     readonly label?: string;
 
     // Custom title for the node.
@@ -37,6 +38,9 @@ export abstract class IRUnit {
     indirectlyReferencedBy: Set<number>;
 
     computedHash?: string;
+
+    // All the information needed to represent a link to this unit.
+    linkTarget?: LinkTarget;
 
     constructor({parent, mainContent, sourceNodeType, sourceNodeName, name, label, title, tag, numbering}: {
         parent?: IRUnit;
@@ -108,6 +112,20 @@ export abstract class IRUnit {
             title: this.title ? this.title.map((n) => printRaw(n)).join('') : '',
             content: this.mainContent.map((n) => printRaw(n)).join('\n'),
         }
+    }
+
+    renderLinkTarget(renderer: (node: Node) => string) {
+        this.linkTarget = {
+            tag: this.tag,
+            numberingText: this.numbering.join('.'),
+            unitType: this.sourceNodeName,
+            unitName: this.name,
+            // HTML title, if it exists.
+            titleHtml: this.title.length ? renderer({
+                type: 'root',
+                content: this.title
+            }) : undefined
+        };
     }
 }
 

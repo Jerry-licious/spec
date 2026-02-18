@@ -5,7 +5,7 @@ import consola from "consola";
 import {messageText} from "./error";
 import {BibliographyLoader} from "./bib-loader";
 import {Loader} from "./loader";
-import {Environment, Macro, Root} from "@unified-latex/unified-latex-types";
+import {Environment, Macro, Node, Root} from "@unified-latex/unified-latex-types";
 import {CountManager} from "./counter";
 import {capitaliseFirstLetter, documentDividers} from "./util";
 import {BibtexEntry} from "@orcid/bibtex-parse-js";
@@ -14,6 +14,10 @@ import {
     BlockType, BlockTypeCollector, CiteAssigner, CustomMacroCollector, EnvironmentLabelAssigner, EquationLabelAssigner,
     MacroLabelAssigner, Numberer, RefAssigner, TagAssigner, TheoremProofAssigner, TheoremTitleAssigner
 } from "./metadata";
+import {unified} from "unified";
+import {BlockRenderer, CiteRenderer, MathRenderer, OmitMacro, ProofRenderer, RefRenderer} from "./renderer";
+import {unifiedLatexToHast} from "@unified-latex/unified-latex-to-hast";
+import rehypeStringify from "rehype-stringify";
 
 
 const divisionMarkers = new Set<string>(documentDividers);
@@ -47,6 +51,8 @@ export class Compiler {
     units: Map<number, IRUnit>;
     divisions: Map<number, Division>;
     blocks: Map<number, BlockEnv>;
+
+    renderToHTML: (node: Node) => string;
     
     constructor({config, unitLabelTags, bibliographyLabelTags, nextAvailableTag}: {
         config: Configs;
@@ -75,6 +81,8 @@ export class Compiler {
         this.divisions = new Map<number, Division>();
         this.blocks = new Map<number, BlockEnv>();
 
+        this.renderToHTML = (node: Node) => { throw new Error('The renderer is not yet created.') };
+
         this.logger = new ParserLogger({
             onError: message => {
                 consola.info(messageText(message));
@@ -92,7 +100,7 @@ export class Compiler {
     }
 
     async parseFile(file: string) {
-        consola.start('Starting the parser.');
+        consola.start(`Starting the compiler on ${file}.`);
 
         await this.collectContent(file);
         
@@ -107,6 +115,53 @@ export class Compiler {
 
         this.collectUnits();
         this.computeUnitReferences();
+
+        this.renderUnits();
+    }
+
+
+    renderUnits() {
+        const renderingLogger = new ParserLogger({ parent: this.logger });
+        renderingLogger.info('Creating HTML renderer. ');
+
+        const renderer = unified()
+            .use(new OmitMacro({
+                toOmit: new Set([
+                    'label', 'newcommand', 'renewcommand', 'newtheorem', 'bibliographystyle', 'bibliography'
+                ]),
+                logger: renderingLogger
+            }).asPlugin())
+            .use(new MathRenderer({ logger: renderingLogger }).asPlugin())
+            .use(new RefRenderer({ logger: renderingLogger }).asPlugin())
+            .use(new CiteRenderer({ logger: renderingLogger }).asPlugin())
+            .use(new BlockRenderer({
+                blockNames: new Map<string, string>([...this.blockTypes.entries()].map(([k, v]) => [k, v.name])),
+                logger: renderingLogger
+            }).asPlugin())
+            .use(new ProofRenderer({ logger: renderingLogger }).asPlugin())
+            .use(unifiedLatexToHast as any)
+            .use(rehypeStringify);
+
+        this.renderToHTML = (node: Node) => {
+            return renderer.stringify(renderer.runSync(node) as any);
+        }
+
+        renderingLogger.success('Renderer has been created.');
+
+        renderingLogger.info('Rendering link target information for all units.');
+        this.renderUnitLinkTargets();
+        const messageContent = `Rendered link target information for all units with ${renderingLogger.numErrors} errors and ${renderingLogger.numWarnings} warnings.`;
+        if (renderingLogger.numErrors > 0) {
+            this.logger.error(messageContent);
+        } else {
+            this.logger.success(messageContent);
+        }
+    }
+
+    renderUnitLinkTargets() {
+        for (const unit of this.units.values()) {
+            unit.renderLinkTarget(this.renderToHTML);
+        }
     }
 
     collectUnits() {
@@ -307,13 +362,12 @@ export class Compiler {
     assignLinks() {
         const linkLogger = new ParserLogger({ parent: this.logger });
         linkLogger.info('Assigning link metadata to \\ref and \\cite commands.');
-        
-        const blockNames = new Map<string, string>([...this.blockTypes.entries()].map(([k, v]) => [k, v.name]));
+
         const refAssigner = new RefAssigner({
             tagNodeMap: this.unitTagNode,
             labelTagMap: this.unitLabelTags,
             macroNames: new Map<string, string>([...documentDividers].map((d) => [d, capitaliseFirstLetter(d)])),
-            environmentNames: blockNames,
+            environmentNames: new Map<string, string>([...this.blockTypes.entries()].map(([k, v]) => [k, v.name])),
             logger: linkLogger
         });
         refAssigner.process(this.documentRoot!);

@@ -8,6 +8,8 @@ export class UnitData {
     tag!: number;
     @Column('text')
     hash!: string;
+    @Column('text', { nullable: true })
+    label!: string | null;
 
     @Column('text')
     numberingText!: string;

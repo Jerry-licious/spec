@@ -141,6 +141,7 @@ export abstract class IRUnit {
         return AppDataSource.manager.create(UnitData, {
             tag: this.tag,
             hash: this.hash(),
+            label: this.label ?? null,
 
             numberingText: this.numbering.join('.'),
 

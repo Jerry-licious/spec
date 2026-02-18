@@ -1,10 +1,11 @@
 # TODO
 
 - Proper style classes
-- ~~Proper preamble collection~~
 - Custom proof texts 
 - Custom QED
 - External links with \hyperref.
+- Omit empty paragraphs from render. 
+- ~~Proper preamble collection~~
 - ~~Have a special collector that gets the main page.~~
 - Citations
   - ~~Partial BibTeX support~~

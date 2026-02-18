@@ -11,4 +11,6 @@ export interface Configs {
 
     // Title of the main page and the website.
     siteTitle: string;
+
+    indirectReferences: boolean;
 }

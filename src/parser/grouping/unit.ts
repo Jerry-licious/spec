@@ -30,6 +30,11 @@ export abstract class IRUnit {
 
     // Tags directly referenced by this unit.
     directReferences: Set<number>;
+    // Tags that directly reference this unit.
+    directlyReferencedBy: Set<number>;
+
+    indirectReferences?: Set<number>;
+    indirectlyReferencedBy: Set<number>;
 
     computedHash?: string;
 
@@ -62,13 +67,12 @@ export abstract class IRUnit {
 
         // Initialise the list of direct references here.
         const referenceCollector = new ReferenceCollector();
-        this.collectDirectReferences(referenceCollector);
+        this.title.forEach((n) => referenceCollector.process(n));
+        this.mainContent.forEach((n) => referenceCollector.process(n));
         this.directReferences = referenceCollector.referencedTags;
-    }
 
-    collectDirectReferences(collector: ReferenceCollector) {
-        this.title.forEach(collector.process);
-        this.mainContent.forEach(collector.process);
+        this.directlyReferencedBy = new Set<number>();
+        this.indirectlyReferencedBy = new Set<number>();
     }
 
     hash(refresh: boolean = false): string {

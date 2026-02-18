@@ -9,7 +9,7 @@ import {Environment, Macro, Root} from "@unified-latex/unified-latex-types";
 import {CountManager} from "./counter";
 import {capitaliseFirstLetter, documentDividers} from "./util";
 import {BibtexEntry} from "@orcid/bibtex-parse-js";
-import {BlockCollector, BlockEnv, Division, DivisionCollector, MainCollector} from "./grouping";
+import {BlockCollector, BlockEnv, Division, DivisionCollector, IRUnit, MainCollector} from "./grouping";
 import {
     BlockType, BlockTypeCollector, CiteAssigner, CustomMacroCollector, EnvironmentLabelAssigner, EquationLabelAssigner,
     MacroLabelAssigner, Numberer, RefAssigner, TagAssigner, TheoremProofAssigner, TheoremTitleAssigner
@@ -23,7 +23,7 @@ export class MainParser {
     entry: string;
     title: string;
     redoTags: boolean;
-    compileAll: boolean;
+    indirectReferences: boolean;
 
     // Mapping from unit labels to their tags.
     unitLabelTags: Map<string, number>;
@@ -43,7 +43,8 @@ export class MainParser {
     countManager: CountManager;
     blockTypes: Map<string, BlockType>;
     rawMacros: Map<string, string>;
-    
+
+    units: Map<number, IRUnit>;
     divisions: Map<number, Division>;
     blocks: Map<number, BlockEnv>;
     
@@ -56,9 +57,7 @@ export class MainParser {
         this.entry = config.entry;
         this.redoTags = config.redoTags;
         this.title = config.siteTitle;
-
-        // If tags are getting recomputed, then everything needs to be recompiled anyway.
-        this.compileAll = config.compileAll || config.redoTags;
+        this.indirectReferences = config.indirectReferences;
 
         this.unitLabelTags = unitLabelTags;
         this.unitTagNode = new Map<number, Macro | Environment>();
@@ -71,7 +70,8 @@ export class MainParser {
         this.countManager = new CountManager();
         this.blockTypes = new Map<string, BlockType>();
         this.rawMacros = new Map<string, string>();
-        
+
+        this.units = new Map<number, IRUnit>();
         this.divisions = new Map<number, Division>();
         this.blocks = new Map<number, BlockEnv>();
 
@@ -105,8 +105,83 @@ export class MainParser {
         this.assignLinks();
         this.assignBlockMetadata();
 
+        this.collectUnits();
+        this.computeUnitReferences();
+    }
+
+    collectUnits() {
         this.collectDivisions();
         this.collectBlocks();
+
+        this.units = new Map<number, IRUnit>([
+            ...Array.from(this.divisions.entries()),
+            ...Array.from(this.blocks.entries()),
+        ]);
+    }
+
+    computeUnitReferences() {
+        this.logger.info('Computing unit references.');
+
+        this.computeReverseDirectReferences();
+
+        if (this.indirectReferences) {
+            this.computeIndirectReferences();
+            this.computeReverseIndirectReferences();
+        }
+
+        this.logger.success('Computed all unit references.');
+    }
+
+    computeReverseDirectReferences() {
+        for (const unit of this.units.values()) {
+            for (const ref of unit.directReferences) {
+                if (this.units.has(ref)) {
+                    this.units.get(ref)!.directlyReferencedBy.add(unit.tag);
+                }
+            }
+        }
+    }
+
+    computeIndirectReferences() {
+        // This will be done using a basic graph traversal, because I haven't found a more efficient way yet.
+        // However, the fact that the blocks are obtained in sequential order means that the blocks should be
+        // """almost in topological order""". So in practice, this shouldn't be O(|V|^2).
+
+        for (const unit of this.units.values()) {
+            const visited = new Set<number>([unit.tag]);
+            const queue: IRUnit[] = [unit];
+
+            while (queue.length > 0) {
+                const current = queue.shift()!;
+                for (const ref of current.directReferences) {
+                    if (visited.has(ref) || !this.units.has(ref)) continue;
+
+                    visited.add(ref);
+
+                    const refUnit = this.units.get(ref)!;
+                    // If the references have already been figured out, then there is no need to visit it again.
+                    if (refUnit.indirectReferences) {
+                        refUnit.indirectReferences.forEach((r) => visited.add(r));
+                    } else {
+                        queue.push(this.units.get(ref)!);
+                    }
+                }
+            }
+
+            // Remove itself from the list if present.
+            visited.delete(unit.tag);
+            unit.indirectReferences = visited;
+        }
+    }
+
+    computeReverseIndirectReferences() {
+        for (const unit of this.units.values()) {
+            for (const ref of unit.indirectReferences!) {
+                if (this.units.has(ref)) {
+                    this.units.get(ref)!.indirectlyReferencedBy.add(unit.tag);
+                }
+            }
+        }
     }
 
     async collectContent(file: string) {

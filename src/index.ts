@@ -17,7 +17,8 @@ async function main() {
             // Whether to ERASE THE EXISTING DATABASE and compute tags from scratch.
             redoTags: true,
             // Title of the main page and the website.
-            siteTitle: 'Math notes'
+            siteTitle: 'Math notes',
+            indirectReferences: true,
         },
 
         unitLabelTags: new Map<string, number>(),

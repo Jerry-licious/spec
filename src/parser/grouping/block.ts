@@ -24,11 +24,10 @@ export class BlockEnv extends IRUnit {
         });
 
         this.proofs = args.proofs;
-    }
 
-    collectDirectReferences(collector: ReferenceCollector) {
-        super.collectDirectReferences(collector);
-        this.proofs.forEach(collector.process);
+        const referenceCollector = new ReferenceCollector();
+        this.proofs.forEach((n) => referenceCollector.process(n));
+        referenceCollector.referencedTags.forEach((t) => this.directReferences.add(t));
     }
 
     hashData(): Record<string, string> {

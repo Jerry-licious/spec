@@ -7,6 +7,9 @@ export class BibliographyData {
     @Column('text')
     key!: string;
 
+    @Column('text')
+    type!: string;
+
     // "Primary" data that I care enough to name.
     @Column('text')
     author!: string;
@@ -20,4 +23,7 @@ export class BibliographyData {
     @Column('simple-json')
     // Auxiliary data that I don't care enough to name.
     aux!: Record<string, string>
+
+    @Column('text')
+    bibtex!: string;
 }

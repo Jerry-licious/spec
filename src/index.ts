@@ -1,6 +1,6 @@
 import "./compiler/loader"
 import {Compiler} from "./compiler/compiler";
-import {AppDataSource, initialiseDatabase, UnitData} from "./db";
+import {AppDataSource, BibliographyData, initialiseDatabase, UnitData} from "./db";
 import {loadConfig} from "./configs";
 import consola from "consola";
 import {In} from "typeorm";
@@ -27,12 +27,15 @@ async function main() {
     }
 
     const unitRepository = AppDataSource.getRepository(UnitData);
+    const bibliographyRepository = AppDataSource.getRepository(BibliographyData);
 
     let existingUnits: UnitData[] = [];
+    let existingBibliography: BibliographyData[] = [];
     if (config.redoTags) {
         consola.info('Deleting all existing units from the database.');
         try {
             await unitRepository.deleteAll();
+            await bibliographyRepository.deleteAll();
         } catch (e) {
             consola.error('Failed to delete units from the database.');
             console.error(e);
@@ -45,6 +48,9 @@ async function main() {
             existingUnits = await unitRepository.find({
                 select: { tag: true, label: true, hash: true },
             });
+            existingBibliography = await bibliographyRepository.find({
+                select: { tag: true, key: true },
+            });
         } catch (e) {
             consola.error('Failed to load existing units from the database.');
             console.error(e);
@@ -56,14 +62,17 @@ async function main() {
     const unitLabelTags = new Map<string, number>(existingUnits.filter((u) => u.label)
         .map((u) => [u.label!, u.tag]));
     const unitTagHash = new Map<number, string>(existingUnits.map((u) => [u.tag, u.hash]));
+    const bibliographyLabelTags = new Map<string, number>(existingBibliography.map((u) => [u.key, u.tag]));
 
-    // TODO: Bibliography situation
-    const nextAvailableTag = Math.max(0, ...existingUnits.map((u) => u.tag)) + 1;
+    const nextAvailableTag = 1 + Math.max(0,
+        ...existingUnits.map((u) => u.tag),
+        ...existingBibliography.map((u) => u.tag)
+    );
 
     const parser = new Compiler({
         config,
         unitLabelTags,
-        bibliographyLabelTags: new Map<string, number>(),
+        bibliographyLabelTags,
         nextAvailableTag,
         unitTagHash
     });
@@ -71,18 +80,24 @@ async function main() {
     const result = await parser.parseFile(config.document);
 
     try {
-        consola.info(`Inserting/updating ${result.unitsToUpdate.length} entries into the database.`);
+        consola.info(`Inserting/updating ${result.unitsToUpdate.length} units into the database.`);
         // On conflict, update all non-primary columns.
         const primaryColumns = unitRepository.metadata.columns
             .filter((c) => c.isPrimary).map((c) => c.databaseName);
 
         await unitRepository.upsert(result.unitsToUpdate, primaryColumns);
 
-        consola.info(`Deleting ${result.unitsToDelete.length} entries from the database.`);
+        consola.info(`Deleting ${result.unitsToDelete.length} units from the database.`);
 
         await unitRepository.delete({
             tag: In(result.unitsToDelete)
         });
+
+        consola.info(`Inserting ${result.bibliography.length} bibliography entries.`)
+
+        // Units should just be refreshed every time.
+        await bibliographyRepository.deleteAll();
+        await bibliographyRepository.insert(result.bibliography);
 
         consola.success(`Successfully updated the database.`);
     } catch (error) {

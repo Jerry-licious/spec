@@ -8,10 +8,12 @@ import path, {join} from "node:path";
 import {readFileSync} from "node:fs";
 import {nextSafeTag} from "../tag";
 import {ParserLogger} from "./logging-base";
+import {AppDataSource, BibliographyData} from "../db";
 
 
 const supportedBibliographyStyles = new Set<string>(['plain', 'alpha', 'raw']);
 
+const essentialEntryTags = new Set<string>(['title', 'booktitle', 'author', 'year', 'publisher']);
 
 export class BibliographyLoader extends DocumentVisitor {
     bibliographyEntries: Map<string, BibtexEntry>;
@@ -260,5 +262,40 @@ export class BibliographyLoader extends DocumentVisitor {
                 this.assignRawLabels();
                 break;
         }
+    }
+
+    toBibliographyData(entry: BibtexEntry): BibliographyData {
+        let title = 'Unknown';
+        if ('title' in entry.entryTags) {
+            title = entry.entryTags.title;
+        }
+        if ('booktitle' in entry.entryTags) {
+            title = entry.entryTags.booktitle;
+        }
+
+        const fieldsCode = Object.entries(entry.entryTags)
+            .map(([k, v]) => `    ${k}={${v}}`)
+            .join('\n')
+
+        return AppDataSource.manager.create(BibliographyData, {
+            tag: entry.tag,
+            key: entry.citationKey,
+            type: entry.entryType,
+
+            author: 'author' in entry.entryTags ? entry.entryTags.author : 'Unknown',
+            title,
+            year: 'year' in entry.entryTags ? entry.entryTags.year : 'Unknown',
+            publisher: 'publisher' in entry.entryTags ? entry.entryTags.publisher : 'Unknown',
+
+            // Remove the entries used above.
+            aux: Object.fromEntries(Object.entries(entry.entryTags)
+                .filter(([k, v]) => !essentialEntryTags.has(k))),
+
+            bibtex: `@${entry.entryType}{${entry.citationKey},\n${fieldsCode}\n}`
+        })
+    }
+
+    getBibliographyData() {
+        return [...this.bibliographyEntries.values()].map((e) => this.toBibliographyData(e))
     }
 }

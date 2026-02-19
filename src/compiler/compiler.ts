@@ -18,7 +18,7 @@ import {unified} from "unified";
 import {BlockRenderer, CiteRenderer, MathRenderer, OmitMacro, ProofRenderer, RefRenderer} from "./renderer";
 import {unifiedLatexToHast} from "@unified-latex/unified-latex-to-hast";
 import rehypeStringify from "rehype-stringify";
-import {UnitData} from "../db";
+import {BibliographyData, UnitData} from "../db";
 
 
 const divisionMarkers = new Set<string>(documentDividers);
@@ -31,7 +31,7 @@ interface CompileResult {
     unitsToDelete: number[];
 
     // Bibliography seems so minuscule, so surely I do not need to avoid the writes.
-    bibliography: BibtexEntry[];
+    bibliography: BibliographyData[];
 }
 
 
@@ -51,6 +51,7 @@ export class Compiler {
     // Mapping from bibliography keys to tags.
     bibliographyKeyTags: Map<string, number>;
     bibliographyEntries: Map<string, BibtexEntry>;
+    bibliographyData: BibliographyData[];
 
     nextAvailableTag: number;
 
@@ -86,6 +87,7 @@ export class Compiler {
 
         this.bibliographyKeyTags = bibliographyLabelTags;
         this.bibliographyEntries = new Map<string, BibtexEntry>();
+        this.bibliographyData = [];
 
         this.nextAvailableTag = nextAvailableTag;
 
@@ -134,7 +136,7 @@ export class Compiler {
 
         const result = {
             ...this.renderUnits(),
-            bibliography: [...this.bibliographyEntries.values()]
+            bibliography: this.bibliographyData
         };
 
         const messageContent = `Finished compiling with ${this.logger.numErrors} errors and ${this.logger.numWarnings} warnings.`
@@ -303,6 +305,7 @@ export class Compiler {
         });
         bibliographyLoader.process(this.documentRoot);
         this.bibliographyEntries = bibliographyLoader.bibliographyEntries;
+        this.bibliographyData = bibliographyLoader.getBibliographyData();
 
         this.nextAvailableTag = bibliographyLoader.nextAvailableTag;
 

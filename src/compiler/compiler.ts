@@ -26,9 +26,12 @@ const divisionMarkers = new Set<string>(documentDividers);
 
 interface CompileResult {
     // A list of new or updated unit data.
-    toUpdate: UnitData[];
+    unitsToUpdate: UnitData[];
     // Tags to be deleted.
-    toDelete: number[];
+    unitsToDelete: number[];
+
+    // Bibliography seems so minuscule, so surely I do not need to avoid the writes.
+    bibliography: BibtexEntry[];
 }
 
 
@@ -129,11 +132,15 @@ export class Compiler {
         this.collectUnits();
         this.computeUnitReferences();
 
-        return this.renderUnits();
+
+        return {
+            ...this.renderUnits(),
+            bibliography: [...this.bibliographyEntries.values()]
+        };
     }
 
 
-    renderUnits(): CompileResult {
+    renderUnits() {
         const renderingLogger = new ParserLogger({ parent: this.logger });
         renderingLogger.info('Creating HTML renderer. ');
 
@@ -175,7 +182,7 @@ export class Compiler {
             this.logger.success(messageContent);
         }
 
-        return { toUpdate, toDelete };
+        return { unitsToUpdate: toUpdate, unitsToDelete: toDelete };
     }
 
     renderUnitData() {

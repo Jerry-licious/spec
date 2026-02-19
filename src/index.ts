@@ -1,30 +1,34 @@
 import "./compiler/loader"
 import {Compiler} from "./compiler/compiler";
 import {initialiseDatabase} from "./db";
+import {loadConfig} from "./configs";
+import consola from "consola";
 
 
 console.log('Happy developing ✨')
 
 
 async function main() {
-    await initialiseDatabase('./test.db')
+    const config = await loadConfig();
+    if (!config) {
+        process.exit(0);
+    }
 
+    try {
+        consola.start(`Initialising database from ${config.database}.`)
+        await initialiseDatabase(config.database);
+        consola.success(`Successfully initialised database.`);
+    } catch (error) {
+        consola.error('Failed to initialize database.');
+        console.error(error);
+
+        process.exit(1);
+    }
+
+    consola.start('Loading existing units from database.');
 
     const parser = new Compiler({
-        config: {
-            // Path to the SQLite file.
-            database: '',
-            // The main document file.
-            document: './text.tex',
-            // Whether to compile every unit without checking for hash/changes.
-            compileAll: true,
-            // Whether to ERASE THE EXISTING DATABASE and compute tags from scratch.
-            redoTags: true,
-            // Title of the main page and the website.
-            siteTitle: 'Math notes',
-            indirectReferences: true,
-        },
-
+        config,
         unitLabelTags: new Map<string, number>(),
         bibliographyLabelTags: new Map<string, number>(),
         nextAvailableTag: 1,
@@ -32,7 +36,7 @@ async function main() {
     });
 
     const result = await parser.parseFile('./text.tex');
-    console.log(result.toUpdate);
+    console.log(result.unitsToUpdate);
 
     /*
     const renderer = unified()

@@ -1,5 +1,5 @@
 import {DataSource} from "typeorm";
-import {UnitData} from "./schema";
+import {UnitData} from "./unit-data";
 
 export let AppDataSource: DataSource;
 

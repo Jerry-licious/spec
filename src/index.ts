@@ -29,7 +29,7 @@ async function main() {
     const unitRepository = AppDataSource.getRepository(UnitData);
 
     let existingUnits: UnitData[] = [];
-    if (config.redoTags || config.compileAll) {
+    if (config.redoTags) {
         consola.info('Deleting all existing units from the database.');
         try {
             await unitRepository.deleteAll();

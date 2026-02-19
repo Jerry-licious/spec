@@ -38,7 +38,7 @@ interface CompileResult {
 export class Compiler {
     entry: string;
     title: string;
-    redoTags: boolean;
+    compileAll: boolean;
     indirectReferences: boolean;
 
     // Mapping from unit labels to their tags.
@@ -51,7 +51,7 @@ export class Compiler {
     // Mapping from bibliography keys to tags.
     bibliographyKeyTags: Map<string, number>;
     bibliographyEntries: Map<string, BibtexEntry>;
-    
+
     nextAvailableTag: number;
 
     logger: ParserLogger;
@@ -67,7 +67,7 @@ export class Compiler {
     blocks: Map<number, BlockEnv>;
 
     renderToHTML: (node: Node) => string;
-    
+
     constructor({config, unitLabelTags, bibliographyLabelTags, nextAvailableTag, unitTagHash}: {
         config: Config;
         unitLabelTags: Map<string, number>;
@@ -76,17 +76,17 @@ export class Compiler {
         unitTagHash: Map<number, string>;
     }) {
         this.entry = config.document;
-        this.redoTags = config.redoTags;
+        this.compileAll = config.compileAll;
         this.title = config.siteTitle;
         this.indirectReferences = config.indirectReferences;
 
         this.unitLabelTags = unitLabelTags;
         this.unitTagHash = unitTagHash;
         this.unitTagNode = new Map<number, Macro | Environment>();
-        
+
         this.bibliographyKeyTags = bibliographyLabelTags;
         this.bibliographyEntries = new Map<string, BibtexEntry>();
-        
+
         this.nextAvailableTag = nextAvailableTag;
 
         this.countManager = new CountManager();
@@ -119,13 +119,13 @@ export class Compiler {
         consola.start(`Starting the compiler on ${file}.`);
 
         await this.collectContent(file);
-        
+
         this.collectDefinitions();
-        
+
         this.assignLabels();
         this.assignTags();
         this.numberUnits();
-        
+
         this.assignLinks();
         this.assignBlockMetadata();
 
@@ -197,7 +197,7 @@ export class Compiler {
         const toUpdate: UnitData[] = [];
         for (const unit of this.units.values()) {
             // Skip any node with the same hash as the stored.
-            if (this.unitTagHash.has(unit.tag) && unit.hash() === this.unitTagHash.get(unit.tag)) continue;
+            if (!this.compileAll && this.unitTagHash.has(unit.tag) && unit.hash() === this.unitTagHash.get(unit.tag)) continue;
 
             toUpdate.push(unit.renderToUnitData(this.units, this.renderToHTML));
         }
@@ -272,6 +272,9 @@ export class Compiler {
 
             // Remove itself from the list if present.
             visited.delete(unit.tag);
+            // Indirect references are "strict". Direct references are not to be included.
+            unit.directReferences.forEach((ref) => visited.delete(ref));
+
             unit.indirectReferences = visited;
         }
     }
@@ -424,7 +427,7 @@ export class Compiler {
             logger: this.logger
         });
         citeAssigner.process(this.documentRoot!);
-        
+
         const messageContent = `Finished assigning link metadata to \\ref and \\cite commands with ${linkLogger.numErrors} errors and ${linkLogger.numWarnings} warnings.`;
         if (linkLogger.numErrors > 0) {
             this.logger.error(messageContent);
@@ -432,11 +435,11 @@ export class Compiler {
             this.logger.success(messageContent);
         }
     }
-    
+
     assignBlockMetadata() {
         const blockLogger = new ParserLogger({ parent: this.logger });
         blockLogger.info('Assigning metadata to block environments.');
-        
+
         const titleAssigner = new TheoremTitleAssigner({
             theorems: new Set<string>(this.blockTypes.keys()),
             logger: blockLogger
@@ -448,7 +451,7 @@ export class Compiler {
             logger: blockLogger
         });
         proofAssigner.process(this.documentRoot!);
-        
+
         const messageContent = `Finished assigning metadata to block environments with ${blockLogger.numErrors} errors and ${blockLogger.numWarnings} warnings.`;
         if (blockLogger.numErrors > 0) {
             this.logger.error(messageContent);
@@ -456,7 +459,7 @@ export class Compiler {
             this.logger.success(messageContent);
         }
     }
-    
+
     collectDivisions() {
         const divisionLogger = new ParserLogger({ parent: this.logger });
         divisionLogger.info('Collecting divisions.');
@@ -505,7 +508,7 @@ export class Compiler {
             logger: divisionLogger
         });
         mainCollector.process(this.documentRoot!);
-        
+
         const messageContent = `Collected ${this.divisions.size} divisions with ${divisionLogger.numErrors} errors and ${divisionLogger.numWarnings} warnings.`;
         if (divisionLogger.numErrors > 0) {
             this.logger.error(messageContent);

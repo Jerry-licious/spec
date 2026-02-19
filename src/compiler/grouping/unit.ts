@@ -35,7 +35,7 @@ export abstract class IRUnit {
     // Tags that directly reference this unit.
     directlyReferencedBy: Set<number>;
 
-    indirectReferences?: Set<number>;
+    indirectReferences: Set<number>;
     indirectlyReferencedBy: Set<number>;
 
     computedHash?: string;
@@ -77,6 +77,7 @@ export abstract class IRUnit {
         this.directReferences = referenceCollector.referencedTags;
 
         this.directlyReferencedBy = new Set<number>();
+        this.indirectReferences = new Set<number>();
         this.indirectlyReferencedBy = new Set<number>();
     }
 

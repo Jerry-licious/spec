@@ -121,10 +121,6 @@ export class Loader {
                 let fileContent = ""
                 try {
                     fileContent = await readFile(targetFile, { encoding: 'utf8' });
-                    this.logger.info({
-                        message: `Loaded ${targetFile}.`,
-                        context: nodeLocation
-                    });
                 } catch (e) {
                     if (isContentLoad) {
                         // Failing a content load is a problem.

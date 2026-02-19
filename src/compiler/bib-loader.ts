@@ -74,7 +74,6 @@ export class BibliographyLoader extends DocumentVisitor {
             // duplicates, rather than from before.
             // In addition, it's unlikely for a document to have more than one bibliography file anyways.
             fileContent = readFileSync(targetFile, { encoding: 'utf8' });
-            this.addInfo(`Successfully loaded ${targetFile}.`);
         } catch (e) {
             this.addError(`Failed to read file ${targetFile}.`);
             return;
@@ -92,8 +91,6 @@ export class BibliographyLoader extends DocumentVisitor {
                 this.bibliographyEntries.set(entry.citationKey, entry);
                 acceptedEntries++;
             }
-
-            this.addInfo(`Successfully loaded ${acceptedEntries} bibliography entries from ${targetFile}.`)
         } catch (e) {
             this.addError(`Failed to parse bibtex: ${e}.`);
         }

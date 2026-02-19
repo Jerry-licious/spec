@@ -1,3 +1,6 @@
+# Spec
+
+
 # TODO
 
 - Proper style classes
@@ -10,6 +13,7 @@
 - Citations
   - ~~Partial BibTeX support~~
   - ~~Cite commands~~
+  - Custom bibliography reference text. 
   - Citation Pages
 - Remove useless dependencies.
 

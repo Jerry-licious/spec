@@ -4,8 +4,8 @@ import {readFile, writeFile, access} from "node:fs/promises";
 import {parse, stringify, TomlTable} from "smol-toml";
 
 
-export const ConfigSchema = z.object({
-    database: z.string().default('stack.db'), // TODO: Rename after coming up with a name for the project.
+export const SpecConfigSchema = z.object({
+    database: z.string().default('spec.db'), // TODO: Rename after coming up with a name for the project.
     document: z.string().default('document.tex'),
 
     compileAll: z.boolean().default(false),
@@ -16,14 +16,11 @@ export const ConfigSchema = z.object({
     indirectReferences: z.boolean().default(true),
 });
 
-// TODO: Rename config class after finding a name for the project.
-export type Config = z.infer<typeof ConfigSchema>;
+export type SpecConfig = z.infer<typeof SpecConfigSchema>;
 
-export const defaultConfig: Config = ConfigSchema.parse({});
+export const defaultConfig: SpecConfig = SpecConfigSchema.parse({});
 
-// TODO: YOu know the drill, need a name.
-const defaultConfigPath = './stack.toml'
-
+const defaultConfigPath = './spec.toml'
 
 
 async function writeDefaultConfigs(configPath: string) {
@@ -37,7 +34,7 @@ async function writeDefaultConfigs(configPath: string) {
 }
 
 
-export async function loadConfig(configPath?: string): Promise<Config | void> {
+export async function loadConfig(configPath?: string): Promise<SpecConfig | void> {
     configPath = configPath ?? defaultConfigPath;
 
     consola.start(`Loading configs from ${configPath}.`);
@@ -53,7 +50,7 @@ export async function loadConfig(configPath?: string): Promise<Config | void> {
     let rawConfig: TomlTable;
     try {
         rawConfig = parse(await readFile(configPath, { encoding: 'utf-8' }));
-        return ConfigSchema.parse(rawConfig);
+        return SpecConfigSchema.parse(rawConfig);
     } catch (error) {
         consola.error(`Failed to parse config.`);
         consola.error(error);

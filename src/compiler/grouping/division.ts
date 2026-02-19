@@ -54,7 +54,7 @@ export class Division extends IRUnit {
     renderToUnitData(allUnits: Map<number, IRUnit>, renderer: (node: Node) => string): UnitData {
         const data = super.renderToUnitData(allUnits, renderer);
 
-        data.children = this.children.map((c) => c.linkTarget!);
+        data.children = this.children.length ? this.children.map((c) => c.linkTarget!) : null;
 
         return data;
     }

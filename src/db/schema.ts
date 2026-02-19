@@ -41,7 +41,7 @@ export class UnitData {
     @Column('simple-json')
     indirectlyReferencedBy!: LinkTarget[];
 
-    @Column('simple-json')
-    children!: LinkTarget[];
+    @Column('simple-json', { nullable: true })
+    children!: LinkTarget[] | null;
 }
 

@@ -14,6 +14,13 @@
 - Remove useless dependencies.
 
 
+# Exit Code
+
+- 41: Failed to access database.
+- 42: Failed to write to database.
+- 43: Failed to read from database. 
+
+
 # Bibliography
 
 Bibliography entries should be given in BibTeX, which must be placed in their dedicated `.bib` files, and then imported

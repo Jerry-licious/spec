@@ -132,11 +132,19 @@ export class Compiler {
         this.collectUnits();
         this.computeUnitReferences();
 
-
-        return {
+        const result = {
             ...this.renderUnits(),
             bibliography: [...this.bibliographyEntries.values()]
         };
+
+        const messageContent = `Finished compiling with ${this.logger.numErrors} errors and ${this.logger.numWarnings} warnings.`
+        if (this.logger.numErrors > 0) {
+            this.logger.error(messageContent);
+        } else {
+            this.logger.success(messageContent);
+        }
+
+        return result;
     }
 
 

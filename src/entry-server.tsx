@@ -1,6 +1,12 @@
 // @refresh reload
 import { createHandler, StartServer } from "@solidjs/start/server";
-import App from "./app";
+import {config, loadConfig} from "./configs";
+import {initialiseDatabase} from "./db";
+
+
+// Initialise the config and the database.
+await loadConfig();
+await initialiseDatabase(config.database);
 
 export default createHandler(() => (
   <StartServer

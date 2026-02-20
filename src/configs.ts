@@ -34,6 +34,8 @@ async function writeDefaultConfigs(configPath: string) {
 }
 
 
+export let config: SpecConfig = defaultConfig;
+
 export async function loadConfig(configPath?: string): Promise<SpecConfig | void> {
     configPath = configPath ?? defaultConfigPath;
 
@@ -50,7 +52,8 @@ export async function loadConfig(configPath?: string): Promise<SpecConfig | void
     let rawConfig: TomlTable;
     try {
         rawConfig = parse(await readFile(configPath, { encoding: 'utf-8' }));
-        return SpecConfigSchema.parse(rawConfig);
+        config = SpecConfigSchema.parse(rawConfig);
+        return config;
     } catch (error) {
         consola.error(`Failed to parse config.`);
         consola.error(error);

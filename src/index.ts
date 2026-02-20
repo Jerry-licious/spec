@@ -14,17 +14,8 @@ async function main() {
     if (!config) {
         process.exit(0);
     }
-
-    try {
-        consola.start(`Initialising database from ${config.database}.`)
-        await initialiseDatabase(config.database);
-        consola.success(`Successfully initialised database.`);
-    } catch (error) {
-        consola.error('Failed to initialize database.');
-        console.error(error);
-
-        process.exit(41);
-    }
+    
+    await initialiseDatabase(config.database);
 
     const unitRepository = AppDataSource.getRepository(UnitData);
     const bibliographyRepository = AppDataSource.getRepository(BibliographyData);

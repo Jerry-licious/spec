@@ -1,11 +1,11 @@
 {
-  "name": "stack",
+  "type": "module",
+  "name": "spec",
   "version": "1.0.0",
   "main": "dist/index.js",
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^25.2.0",
-    "@types/sql.js": "^1.4.9",
     "sql.js": "^1.13.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
@@ -13,14 +13,13 @@
   "description": "",
   "private": true,
   "scripts": {
-    "build": "tsc",
-    "parse": "tsx src/parse.ts",
     "index": "tsx src/index.ts",
-    "store": "tsx src/store.ts",
-    "query": "tsx src/query.ts"
+    "dev": "vinxi dev",
+    "build": "vinxi build",
+    "start": "vinxi start",
+    "version": "vinxi version"
   },
   "dependencies": {
-    "@libsql/client": "^0.17.0",
     "@orcid/bibtex-parse-js": "^0.0.25",
     "@unified-latex/unified-latex-to-hast": "^1.8.3",
     "@unified-latex/unified-latex-util-parse": "^1.8.3",
@@ -31,6 +30,11 @@
     "smol-toml": "^1.6.0",
     "typeorm": "^0.3.28",
     "unified": "^11.0.5",
-    "zod": "^4.3.6"
+    "zod": "^4.3.6",
+    "@solidjs/meta": "^0.29.4",
+    "@solidjs/router": "^0.15.0",
+    "@solidjs/start": "^1.1.0",
+    "solid-js": "^1.9.5",
+    "vinxi": "^0.5.7"
   }
 }

@@ -77,9 +77,9 @@ export class Compiler {
         unitTagHash: Map<number, string>;
     }) {
         this.entry = config.document;
-        this.compileAll = config.compileAll;
+        this.compileAll = config.compiler.compileAll;
         this.title = config.siteTitle;
-        this.indirectReferences = config.indirectReferences;
+        this.indirectReferences = config.compiler.indirectReferences;
 
         this.unitLabelTags = unitLabelTags;
         this.unitTagHash = unitTagHash;

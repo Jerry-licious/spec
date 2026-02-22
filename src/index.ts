@@ -22,7 +22,7 @@ async function main() {
 
     let existingUnits: UnitData[] = [];
     let existingBibliography: BibliographyData[] = [];
-    if (config.redoTags) {
+    if (config.compiler.redoTags) {
         consola.info('Deleting all existing units from the database.');
         try {
             await unitRepository.deleteAll();

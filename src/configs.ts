@@ -5,15 +5,16 @@ import {parse, stringify, TomlTable} from "smol-toml";
 
 
 export const SpecConfigSchema = z.object({
-    database: z.string().default('spec.db'), // TODO: Rename after coming up with a name for the project.
+    database: z.string().default('spec.db'),
     document: z.string().default('document.tex'),
-
-    compileAll: z.boolean().default(false),
-    redoTags: z.boolean().default(false),
-
     siteTitle: z.string().default('Unnamed Website'),
 
-    indirectReferences: z.boolean().default(true),
+    compiler: z.object({
+        compileAll: z.boolean().default(false),
+        redoTags: z.boolean().default(false),
+
+        indirectReferences: z.boolean().default(true),
+    }).prefault({})
 });
 
 export type SpecConfig = z.infer<typeof SpecConfigSchema>;

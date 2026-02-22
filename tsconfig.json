@@ -10,11 +10,10 @@
     "outDir": "dist",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "types": ["vinxi/types/client"],
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
     "paths": {
-      "~/*": ["./app/*"]
+      "~/*": ["./src/*"]
     }
   },
   "include": ["src"]

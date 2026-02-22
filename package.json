@@ -26,6 +26,7 @@
     "@solidjs/router": "^0.15.0",
     "@solidjs/start": "^1.1.0",
     "@unified-latex/unified-latex-to-hast": "^1.8.3",
+    "@unified-latex/unified-latex-types": "^1.8.0",
     "@unified-latex/unified-latex-util-parse": "^1.8.3",
     "babel-preset-solid": "^1.9.10",
     "bad-words": "^4.0.0",

@@ -22,7 +22,7 @@ export interface RefMetadata {
 
 
 // I'm not sure why they don't export the base node type, but this will have to do for now.
-declare module '@unified-latex/unified-latex-types/libs/ast-types' {
+declare module '@unified-latex/unified-latex-types/' {
     interface ContentNode {
         meta?: ElementMetadata;
     }

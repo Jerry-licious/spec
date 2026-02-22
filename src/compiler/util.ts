@@ -3,9 +3,6 @@ import {NodeContext} from "./error";
 import {printRaw} from "@unified-latex/unified-latex-util-print-raw";
 
 
-export const documentDividers = ['part', 'chapter', 'section', 'subsection', 'subsubsection'] as const;
-
-
 export function getContext(node: Node): NodeContext | undefined {
     if (node.meta && node.meta.sourceFile && node.position) {
         return {

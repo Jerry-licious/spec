@@ -7,7 +7,7 @@ import {BibliographyLoader} from "./bib-loader";
 import {Loader} from "./loader";
 import {Environment, Macro, Node, Root} from "@unified-latex/unified-latex-types";
 import {CountManager} from "./counter";
-import {capitaliseFirstLetter, documentDividers} from "./util";
+import {capitaliseFirstLetter} from "./util";
 import {BibtexEntry} from "@orcid/bibtex-parse-js";
 import {BlockCollector, BlockEnv, Division, DivisionCollector, IRUnit, MainCollector} from "./grouping";
 import {
@@ -19,6 +19,7 @@ import {BlockRenderer, CiteRenderer, MathRenderer, OmitMacro, ProofRenderer, Ref
 import {unifiedLatexToHast} from "@unified-latex/unified-latex-to-hast";
 import rehypeStringify from "rehype-stringify";
 import {BibliographyData, UnitData} from "../db";
+import {documentDividers} from "~/unit-types";
 
 
 const divisionMarkers = new Set<string>(documentDividers);

@@ -4,8 +4,8 @@ import {DocumentVisitor} from "../visitor";
 import {Node} from "@unified-latex/unified-latex-types";
 import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {match} from "@unified-latex/unified-latex-util-match";
-import {documentDividers} from "../util";
 import {ParserLogger} from "../logging-base";
+import {documentDividers} from "~/unit-types";
 
 export class Numberer extends DocumentVisitor {
     // Association between commands and their corresponding counters.

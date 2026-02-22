@@ -5,6 +5,7 @@ import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {match} from "@unified-latex/unified-latex-util-match";
 import {s} from "@unified-latex/unified-latex-builder";
 import {ParserLogger} from "../logging-base";
+import {mainPageTag, mainPageType} from "~/unit-types";
 
 
 export class MainCollector extends DocumentVisitor {
@@ -52,11 +53,11 @@ export class MainCollector extends DocumentVisitor {
         }
 
         const division = new Division({
-            sourceNodeName: 'document',
-            name: 'document',
+            sourceNodeName: mainPageType,
+            name: mainPageType,
             title: [s(this.title)],
             label: '',
-            tag: 0,
+            tag: mainPageTag,
             numbering: [],
             mainContent
         });

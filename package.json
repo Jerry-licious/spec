@@ -33,6 +33,7 @@
     "consola": "^3.4.2",
     "rehype-stringify": "^10.0.1",
     "smol-toml": "^1.6.0",
+    "solid-cached-resource": "^0.7.0",
     "solid-js": "^1.9.5",
     "typeorm": "^0.3.28",
     "unified": "^11.0.5",

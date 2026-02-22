@@ -20,6 +20,7 @@
         "consola": "^3.4.2",
         "rehype-stringify": "^10.0.1",
         "smol-toml": "^1.6.0",
+        "solid-cached-resource": "^0.7.0",
         "solid-js": "^1.9.5",
         "typeorm": "^0.3.28",
         "unified": "^11.0.5",
@@ -1160,6 +1161,8 @@
     "smob": ["smob@1.6.1", "", {}, "sha512-KAkBqZl3c2GvNgNhcoyJae1aKldDW0LO279wF9bk1PnluRTETKBq0WyzRXxEhoQLk56yHaOY4JCBEKDuJIET5g=="],
 
     "smol-toml": ["smol-toml@1.6.0", "", {}, "sha512-4zemZi0HvTnYwLfrpk/CF9LOd9Lt87kAt50GnqhMpyF9U3poDAP2+iukq2bZsO/ufegbYehBkqINbsWxj4l4cw=="],
+
+    "solid-cached-resource": ["solid-cached-resource@0.7.0", "", {}, "sha512-ySDl0rMvmZclGapXWIhN07TkEVPY5SSC0mrkLpKiqc/41NneU60jrBrEhyc+UuZupSmCuGyaUHUrzqd6xui9/Q=="],
 
     "solid-js": ["solid-js@1.9.11", "", { "dependencies": { "csstype": "^3.1.0", "seroval": "~1.5.0", "seroval-plugins": "~1.5.0" } }, "sha512-WEJtcc5mkh/BnHA6Yrg4whlF8g6QwpmXXRg4P2ztPmcKeHHlH4+djYecBLhSpecZY2RRECXYUwIc/C2r3yzQ4Q=="],
 

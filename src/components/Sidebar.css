@@ -1,0 +1,26 @@
+.page-sidebar {
+    flex-grow: 0;
+    flex-shrink: 0;
+
+    padding: 5px;
+
+    width: calc(30 * 0.5rem);
+
+    border-left: black solid 1px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+/*
+* The minimum length of each line should be approximately 80 characters. As such, the sidebar will have to go when there
+* is insufficient room.
+* Thus the side bar will go away if it the screen is at most 110 characters wide.
+* It does not seem possible to use calc in the media query, so the rem must be pre-calculated.
+*/
+@media (width <= 65rem) {
+    .page-sidebar {
+        display: none;
+    }
+}

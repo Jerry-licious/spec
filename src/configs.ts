@@ -14,6 +14,10 @@ export const SpecConfigSchema = z.object({
         redoTags: z.boolean().default(false),
 
         indirectReferences: z.boolean().default(true),
+    }).prefault({}),
+
+    website: z.object({
+        font: z.enum(['roboto', 'open-sans', 'cmu-serif', 'cmu-sans-serif']).default('cmu-serif')
     }).prefault({})
 });
 

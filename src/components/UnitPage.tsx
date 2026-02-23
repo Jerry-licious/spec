@@ -3,12 +3,8 @@ import {createAsync} from "@solidjs/router";
 import {getConfig} from "~/app-data";
 import {mainPageType, shouldDisplayTitle} from "~/unit-types";
 import './UnitPage.css'
-import {LinkList} from "~/components/LinkList";
-import {toTagString} from "~/tag";
 import {UnitLinkList} from "~/components/UnitLinkList";
-import {createEffect, createMemo, createSignal, onMount, Suspense} from "solid-js";
-import {clientOnly} from "@solidjs/start";
-import Counter from "~/components/Counter";
+import {createMemo, onMount} from "solid-js";
 import {UnitData} from "~/db/unit-data";
 import {cacheRelatedUnits} from "~/app-data-cache";
 

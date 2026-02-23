@@ -3,14 +3,10 @@
 // App related database functions. Stored separately from the other database functions to avoid accidentally importing
 // server-related elements when compiling.
 
-import {AppDataSource, BibliographyData} from "./db";
-import {fromTagString, toTagString} from "./tag";
-import {createCachedResource, mutateCachedValue} from "solid-cached-resource";
-import {Accessor, InitializedResourceReturn} from "solid-js";
-import {query, redirect} from "@solidjs/router";
+import {fromTagString} from "./tag";
+import {query} from "@solidjs/router";
 import {config} from "./configs";
 import {In} from "typeorm";
-import consola from "consola";
 import {UnitData} from "~/db/unit-data";
 import {getDataSource} from "~/db/db";
 import {loadConfig} from "~/load-configs";

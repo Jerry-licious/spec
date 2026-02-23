@@ -11,8 +11,18 @@ import {capitaliseFirstLetter} from "./util";
 import {BibtexEntry} from "@orcid/bibtex-parse-js";
 import {BlockCollector, BlockEnv, Division, DivisionCollector, IRUnit, MainCollector} from "./grouping";
 import {
-    BlockType, BlockTypeCollector, CiteAssigner, CustomMacroCollector, EnvironmentLabelAssigner, EquationLabelAssigner,
-    MacroLabelAssigner, Numberer, RefAssigner, TagAssigner, TheoremProofAssigner, TheoremTitleAssigner
+    BlockType,
+    BlockTypeCollector,
+    CiteAssigner,
+    CustomMacroCollector,
+    EnvironmentLabelAssigner,
+    EquationLabelAssigner,
+    MacroLabelAssigner,
+    Numberer,
+    RefAssigner,
+    TagAssigner,
+    TheoremProofAssigner,
+    TheoremTitleAssigner
 } from "./metadata";
 import {unified} from "unified";
 import {BlockRenderer, CiteRenderer, MathRenderer, OmitMacro, ProofRenderer, RefRenderer} from "./renderer";

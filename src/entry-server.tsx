@@ -1,8 +1,5 @@
 // @refresh reload
-import { createHandler, StartServer } from "@solidjs/start/server";
-import {config} from "./configs";
-import {initialiseDatabase} from "./db";
-import {loadConfig} from "~/load-configs";
+import {createHandler, StartServer} from "@solidjs/start/server";
 
 
 export default createHandler(() => (

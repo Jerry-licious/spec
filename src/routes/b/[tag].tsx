@@ -1,9 +1,8 @@
-import {createAsync, redirect, useNavigate, useParams} from "@solidjs/router";
-import {getConfig, getUnits} from "~/app-data";
-import {createEffect, ErrorBoundary, onMount, Show} from "solid-js";
-import {createGetUnit, getBibliography} from "~/app-data-cache";
+import {createAsync, useParams} from "@solidjs/router";
+import {getConfig} from "~/app-data";
+import {ErrorBoundary, Show} from "solid-js";
+import {getBibliography} from "~/app-data-cache";
 import {BibliographyPage} from "~/components/BibliographyPage";
-
 
 
 export const route = {

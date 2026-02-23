@@ -1,4 +1,4 @@
-import {LinkList, LinkListItem} from "~/components/LinkList";
+import {LinkList} from "~/components/LinkList";
 import {linkHTML, LinkTarget} from "~/db/link-target";
 import {toTagString} from "~/tag";
 

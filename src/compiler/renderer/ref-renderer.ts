@@ -3,6 +3,7 @@ import {Node} from "@unified-latex/unified-latex-types";
 import {match} from "@unified-latex/unified-latex-util-match";
 import {htmlLike} from '@unified-latex/unified-latex-util-html-like';
 import {classes} from "./classes";
+import {toTagString} from "~/tag";
 
 
 const refCommands = new Set<string>(['ref', 'autoref', 'hyperref']);
@@ -19,7 +20,7 @@ export class RefRenderer extends NodeRenderer {
         return htmlLike({
             tag: 'a',
             attributes: {
-                href: `/${node.refMeta.targetTag}`, // TODO: How to encode tags?
+                href: `/t/${toTagString(node.refMeta.targetTag)}`,
                 class: classes.ref
             },
             content: {

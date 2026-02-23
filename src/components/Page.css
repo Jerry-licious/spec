@@ -65,3 +65,16 @@
 .cmu-sans-serif {
     font-family: "CMU Sans Serif", sans-serif;
 }
+
+
+.link-primary {
+    /* TODO */
+}
+
+.link-foreground {
+    text-decoration: none;
+    color: inherit;
+}
+.link-foreground:hover {
+    text-decoration: underline;
+}

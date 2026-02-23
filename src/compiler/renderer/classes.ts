@@ -1,12 +1,12 @@
 export const classes = {
-    ref: '',
+    ref: 'link-primary',
     displayEquation: '',
     blockEnvironment: '',
-    blockTitle: '',
+    blockTitle: 'link-foreground',
     proof: '',
     proofIntro: '',
     qed: '',
     cite: '',
     citeNote: '',
-    citeRef: ''
+    citeRef: 'link-primary'
 } as const;

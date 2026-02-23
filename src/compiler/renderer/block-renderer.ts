@@ -6,6 +6,7 @@ import {classes} from "./classes";
 import {s} from '@unified-latex/unified-latex-builder';
 import {wrapPars} from "@unified-latex/unified-latex-to-hast";
 import {ParserLogger} from "../logging-base";
+import {toTagString} from "~/tag";
 
 export class BlockRenderer extends NodeRenderer {
     blockNames: Map<string, string>;
@@ -33,21 +34,25 @@ export class BlockRenderer extends NodeRenderer {
             },
             content: wrapPars([
                 htmlLike({
-                    tag: 'strong', // TODO: Maybe a better tag can be used for this.
+                    tag: 'a',
                     attributes: {
                         class: classes.blockTitle,
+                        href: node.meta.tag ? `/t/${toTagString(node.meta.tag)}` : '',
                     },
-                    content: [
-                        s(node.meta.numbering && node.meta.numbering.length ?
-                            `${blockName} ${node.meta.numbering.join('.')}` : blockName),
-                        // If there is a block title, render it.
-                        ...blockTitle.length ? [
-                            s(' ('),
-                            ...blockTitle,
-                            s(')')
-                        ] : [],
-                        s('. ')
-                    ]
+                    content: htmlLike({
+                        tag: 'strong',
+                        content: [
+                            s(node.meta.numbering && node.meta.numbering.length ?
+                                `${blockName} ${node.meta.numbering.join('.')}` : blockName),
+                            // If there is a block title, render it.
+                            ...blockTitle.length ? [
+                                s(' ('),
+                                ...blockTitle,
+                                s(')')
+                            ] : [],
+                            s('. ')
+                        ]
+                    })
                 }),
                 ...node.content
             ])

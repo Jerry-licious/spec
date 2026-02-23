@@ -5,6 +5,9 @@ export const documentDividers = ['part', 'chapter', 'section', 'subsection', 'su
 const documentDividersSet = new Set<string>(documentDividers);
 
 export function shouldDisplayTitle(unitType: string) {
+    console.log(unitType);
+    console.log(documentDividersSet.has(unitType) || unitType === mainPageType);
+
     return documentDividersSet.has(unitType) || unitType === mainPageType;
 }
 

@@ -1,0 +1,10 @@
+.unit-content-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.unit-sidebar {
+    display: flex;
+    flex-direction: column;
+}

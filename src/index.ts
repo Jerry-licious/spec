@@ -1,9 +1,10 @@
 import "./compiler/loader"
 import {Compiler} from "./compiler/compiler";
-import {AppDataSource, BibliographyData, initialiseDatabase, UnitData} from "./db";
-import {loadConfig} from "./configs";
+import {AppDataSource, BibliographyData, initialiseDatabase} from "./db";
 import consola from "consola";
 import {In} from "typeorm";
+import {loadConfig} from "~/load-configs";
+import {UnitData} from "~/db/unit-data";
 
 
 console.log('Happy developing ✨')

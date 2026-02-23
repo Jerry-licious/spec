@@ -2,8 +2,10 @@ import {Node} from "@unified-latex/unified-latex-types";
 import {printRaw} from "@unified-latex/unified-latex-util-print-raw";
 import {createHash} from "crypto";
 import {ReferenceCollector} from "../metadata";
-import {AppDataSource, LinkTarget, UnitData} from "../../db";
+import {AppDataSource} from "~/db";
 import {wrapPars} from "@unified-latex/unified-latex-to-hast";
+import {UnitData} from "~/db/unit-data";
+import {LinkTarget} from "~/db/link-target";
 
 // IR units are intermediate representations that come with more structure than merely attaching nodes with metadata.
 // IR units are expected to have tags and numbers.
@@ -146,7 +148,7 @@ export abstract class IRUnit {
 
             numberingText: this.numbering.join('.'),
 
-            unitType: this.sourceNodeType,
+            unitType: this.sourceNodeName,
             unitName: this.name,
 
             titleText: this.titleText,

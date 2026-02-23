@@ -18,8 +18,9 @@ import {unified} from "unified";
 import {BlockRenderer, CiteRenderer, MathRenderer, OmitMacro, ProofRenderer, RefRenderer} from "./renderer";
 import {unifiedLatexToHast} from "@unified-latex/unified-latex-to-hast";
 import rehypeStringify from "rehype-stringify";
-import {BibliographyData, UnitData} from "../db";
+import {BibliographyData} from "../db";
 import {documentDividers} from "~/unit-types";
+import {UnitData} from "~/db/unit-data";
 
 
 const divisionMarkers = new Set<string>(documentDividers);

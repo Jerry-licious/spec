@@ -58,8 +58,8 @@ export class DivisionCollector extends DocumentVisitor {
         ) : [];
 
         const divisionArgs = {
-            sourceNodeName: this.divisionName,
-            name: this.targetDivisionMarker,
+            sourceNodeName: this.targetDivisionMarker,
+            name: this.divisionName,
             title: title,
             label: node.meta.label,
             tag: node.meta.tag,

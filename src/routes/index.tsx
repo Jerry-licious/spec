@@ -1,6 +1,10 @@
 import {Title} from "@solidjs/meta";
-import {createGetUnit, getConfig} from "../app-data";
+import {getConfig} from "../app-data";
 import {createAsync} from "@solidjs/router";
+import {Page} from "../components/Page";
+import {UnitPage} from "~/components/UnitPage";
+import {createEffect, createRenderEffect, ErrorBoundary, onMount, Show} from "solid-js";
+import {createGetUnit} from "~/app-data-cache";
 
 
 
@@ -12,15 +16,14 @@ export const route = {
 };
 
 export default function Home() {
-    const [mainPageResource] = createGetUnit(() => 0);
+    const [mainPageAccessor] = createGetUnit(() => 0);
     const config = createAsync(() => getConfig());
 
-    const mainPage = mainPageResource();
-
     return (
-        <main>
-            <Title>{config()?.siteTitle}</Title>
-            <div innerHTML={mainPage?.contentHTML}/>
-        </main>
+        <ErrorBoundary fallback={<><div>Tag not found</div></>}>
+            <Show when={mainPageAccessor()}>
+                <UnitPage unit={mainPageAccessor()!} />
+            </Show>
+        </ErrorBoundary>
     );
 }

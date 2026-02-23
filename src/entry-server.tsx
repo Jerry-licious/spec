@@ -1,7 +1,8 @@
 // @refresh reload
 import { createHandler, StartServer } from "@solidjs/start/server";
-import {config, loadConfig} from "./configs";
+import {config} from "./configs";
 import {initialiseDatabase} from "./db";
+import {loadConfig} from "~/load-configs";
 
 
 // Initialise the config and the database.
@@ -16,6 +17,22 @@ export default createHandler(() => (
           <meta charset="utf-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <link rel="icon" href="/favicon.ico" />
+            <script innerHTML={`
+            window.MathJax = {
+              loader: {
+                load: ['[custom]/xypic.js'],
+                paths: { custom: 'https://cdn.jsdelivr.net/gh/sonoisa/XyJax-v3@3.0.1/build/' }
+              },
+              tex: {
+                packages: { '[+]': ['xypic'] },
+                inlineMath: [['$', '$']]
+              }
+            };
+          `} />
+            <script
+                id="MathJax-script" async
+                src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js"
+            />
           {assets}
         </head>
         <body>

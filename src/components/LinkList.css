@@ -1,0 +1,13 @@
+.link-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.link-list {
+    padding-left: 1rem;
+    margin: 0;
+}
+
+.link-list-item {
+}

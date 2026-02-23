@@ -4,6 +4,9 @@
 # TODO
 
 - Proper style classes
+- Blocks/chapters/sections should link to themselves when rendered. 
+- Thin scrollbars. 
+- Better 404 pages. 
 - Custom proof texts 
 - Custom QED
 - External links with \hyperref.
@@ -15,7 +18,6 @@
   - ~~Cite commands~~
   - Custom bibliography reference text. 
   - Citation Pages
-- Remove useless dependencies.
 
 
 # Exit Code

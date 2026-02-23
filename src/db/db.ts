@@ -2,8 +2,21 @@ import {DataSource} from "typeorm";
 import {UnitData} from "./unit-data";
 import {BibliographyData} from "./bib-data";
 import consola from "consola";
+import {loadConfig} from "~/load-configs";
+import {config} from "~/configs";
 
 export let AppDataSource: DataSource;
+
+
+export async function getDataSource(): Promise<DataSource> {
+    if (AppDataSource && AppDataSource.isInitialized) return AppDataSource;
+
+    await loadConfig();
+    await initialiseDatabase(config.database);
+
+    return AppDataSource;
+}
+
 
 export async function initialiseDatabase(dbPath: string) {
     try {

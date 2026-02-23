@@ -24,7 +24,7 @@ export const defaultConfig: SpecConfig = SpecConfigSchema.parse({});
 
 export const defaultConfigPath = './spec.toml'
 
-export let config: SpecConfig = defaultConfig;
+export let config: SpecConfig;
 
 export function setConfig(newConfig: SpecConfig) {
     config = newConfig;

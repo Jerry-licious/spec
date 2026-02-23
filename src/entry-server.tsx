@@ -5,10 +5,6 @@ import {initialiseDatabase} from "./db";
 import {loadConfig} from "~/load-configs";
 
 
-// Initialise the config and the database.
-await loadConfig();
-await initialiseDatabase(config.database);
-
 export default createHandler(() => (
   <StartServer
     document={({ assets, children, scripts }) => (

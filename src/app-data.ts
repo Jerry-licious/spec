@@ -3,7 +3,7 @@
 // App related database functions. Stored separately from the other database functions to avoid accidentally importing
 // server-related elements when compiling.
 
-import {AppDataSource} from "./db";
+import {AppDataSource, BibliographyData} from "./db";
 import {fromTagString, toTagString} from "./tag";
 import {createCachedResource, mutateCachedValue} from "solid-cached-resource";
 import {Accessor, InitializedResourceReturn} from "solid-js";
@@ -13,12 +13,18 @@ import {In} from "typeorm";
 import consola from "consola";
 import {UnitData} from "~/db/unit-data";
 import {getDataSource} from "~/db/db";
+import {loadConfig} from "~/load-configs";
 
 
 export const getConfig = query(async () => {
-    return config;
-}, 'config');
+    'use server';
 
+    if (!config) {
+        await loadConfig();
+    }
+
+    return {...config};
+}, 'config');
 
 export async function getUnit(tag: string | number): Promise<UnitData | null> {
     'use server';
@@ -40,26 +46,11 @@ export async function getUnit(tag: string | number): Promise<UnitData | null> {
 
 
 export async function getUnits(tags: number[]): Promise<UnitData[]> {
+    'use server';
+
     const dataSource = await getDataSource();
-    return await dataSource.getRepository(UnitData).findBy({
+    return (await dataSource.getRepository(UnitData).findBy({
         tag: In(tags)
-    });
+    })).map((u) => ({...u}));
 }
 
-export async function cacheRelatedUnits(unit: UnitData) {
-    const relatedUnits = await getUnits([
-        ...(unit.children ?? []),
-        ...unit.directlyReferences,
-        ...unit.directlyReferencedBy,
-        ...unit.indirectlyReferences,
-        ...unit.indirectlyReferencedBy
-    ].map((t) => t.tag));
-
-    consola.log('Cache related units related to the server. ');
-
-    for (const related of relatedUnits) {
-        // 1. Tags are queried by their strings, so the conversion is useful here.
-        // 2. Restructure the item to avoid hydration problems.
-        mutateCachedValue(() => ['unit', toTagString(related.tag)], {...related});
-    }
-}

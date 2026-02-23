@@ -1,14 +1,59 @@
 import {UnitData} from "~/db/unit-data";
 import {getUnit, getUnits} from "~/app-data";
-import {createCachedResource} from "solid-cached-resource";
+import {createCachedResource, mutateCachedValue} from "solid-cached-resource";
 import {Accessor, InitializedResourceReturn} from "solid-js";
+import {fromTagString, toTagString} from "~/tag";
+import {getDataSource} from "~/db/db";
+import {query} from "@solidjs/router";
+import {BibliographyData} from "~/db/bib-data";
+
+
+// I doubt someone will be browsing back and forth between bibliography entries, so a query should be sufficient.
+export const getBibliography = query(async (tag: string | number) => {
+    'use server';
+
+    if (typeof tag === 'string') {
+        try {
+            tag = fromTagString(tag);
+        } catch (e) {
+            return null;
+        }
+    }
+
+    const dataSource = await getDataSource();
+    const entry = await dataSource.getRepository(BibliographyData).findOneBy({ tag: tag });
+
+    // Strip the unit of all non-serialisable data.
+    return entry ? {...entry} : null;
+}, 'bibliography');
 
 export function createGetUnit(tag: Accessor<string | number>): InitializedResourceReturn<UnitData> {
     return createCachedResource(() => ['unit', tag()], async ([, tag]) => {
         const unit = await getUnit(tag);
 
+        console.log('cache miss!')
+
         if (!unit) throw new Error('Unit not found.');
 
         return unit;
-    })
+    }, { refetchOnMount: false });
+}
+
+
+export async function cacheRelatedUnits(unit: UnitData) {
+    const relatedUnits = await getUnits([
+        ...(unit.children ?? []),
+        ...unit.directlyReferences,
+        ...unit.directlyReferencedBy,
+        ...unit.indirectlyReferences,
+        ...unit.indirectlyReferencedBy
+    ].map((t) => t.tag));
+
+    console.log('Caching related units!')
+
+    for (const related of relatedUnits) {
+        // 1. Tags are queried by their strings, so the conversion is useful here.
+        // 2. Restructure the item to avoid hydration problems.
+        mutateCachedValue(() => ['unit', toTagString(related.tag)], {...related});
+    }
 }

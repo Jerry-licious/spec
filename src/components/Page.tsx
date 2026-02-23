@@ -1,6 +1,6 @@
 import './Page.css'
 import {ParentChainDisplay} from "./ParentChainDisplay";
-import {JSX} from "solid-js";
+import {JSX, onMount} from "solid-js";
 import {Title} from "@solidjs/meta";
 import {Sidebar} from "~/components/Sidebar";
 import {createAsync} from "@solidjs/router";
@@ -22,6 +22,11 @@ export interface PageProps {
 
 export function Page(props: PageProps) {
     const config = createAsync(() => getConfig());
+
+    // Reload
+    onMount(() => {
+        (window as any).MathJax?.typesetPromise();
+    });
 
     return <div class={`page-container ${config()?.website.font}`}>
         <Title>{props.titleText}</Title>

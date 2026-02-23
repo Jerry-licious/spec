@@ -1,0 +1,9 @@
+.bibliography-table {
+    padding: 5px;
+}
+
+.bibtex-code {
+    padding: 5px;
+
+    white-space: pre;
+}

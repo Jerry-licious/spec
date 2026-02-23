@@ -1,3 +1,5 @@
+'use server';
+
 import consola from "consola";
 import {access, readFile, writeFile} from "node:fs/promises";
 import {config, defaultConfig, defaultConfigPath, setConfig, SpecConfig, SpecConfigSchema} from "~/configs";

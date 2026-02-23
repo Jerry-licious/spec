@@ -39,7 +39,7 @@ export class CiteRenderer extends NodeRenderer {
                     tag: 'a',
                     attributes: {
                         class: classes.citeRef,
-                        href: `b/${toTagString(node.refMeta.targetTag)}`
+                        href: `/b/${toTagString(node.refMeta.targetTag)}`
                     },
                     content: s(node.refMeta.text)
                 }),

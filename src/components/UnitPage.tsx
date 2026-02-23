@@ -10,6 +10,7 @@ import {createEffect, createMemo, createSignal, onMount, Suspense} from "solid-j
 import {clientOnly} from "@solidjs/start";
 import Counter from "~/components/Counter";
 import {UnitData} from "~/db/unit-data";
+import {cacheRelatedUnits} from "~/app-data-cache";
 
 
 export interface UnitPageProps {
@@ -47,6 +48,10 @@ export function UnitPage(props: UnitPageProps) {
         return titleText;
     });
 
+    // Whenever a unit page is loaded, also cache in the adjacent units.
+    onMount(() => {
+        cacheRelatedUnits(props.unit);
+    });
 
     return <Page titleText={titleText()}
                  displayTitle={shouldDisplayTitle(props.unit.unitType)}

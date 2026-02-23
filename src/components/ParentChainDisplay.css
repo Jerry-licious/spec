@@ -1,4 +1,23 @@
 .parent-chain-display-container {
     flex-grow: 0;
     flex-shrink: 0;
+
+    padding: 5px;
+
+    width: 100%;
+
+    align-items: start;
+
+    background: grey;
+}
+
+.parent-display {
+}
+
+.parent-display-slash {
+    margin: 0 5px;
+}
+
+.link-primary {
+
 }

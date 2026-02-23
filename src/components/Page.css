@@ -1,10 +1,26 @@
 @import "computer-modern/cmu-sans-serif.css";
 @import "computer-modern/cmu-serif.css";
 
+.main-container {
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 
 .page-container {
     width: 100%;
     height: 100vh;
+    /* The width here is chosen under the following assumptions:
+     * 1. On an "average" font, an "average" character is a little wider than 0.5 rem.
+     * 2. Each line of text should contain no more than 110 characters.
+     * 3. The "side bar" will occupy 30 characters worth of space if required.
+     * Therefore the page body should have at most a width of 140 characters.
+     */
+    max-width: calc(140 * 0.5rem);
 
     display: flex;
     flex-direction: column;
@@ -17,16 +33,8 @@
 
 
 .page-body {
-    flex-grow: 1;
-
-    /* The width here is chosen under the following assumptions:
-     * 1. On an "average" font, an "average" character is a little wider than 0.5 rem.
-     * 2. Each line of text should contain no more than 110 characters.
-     * 3. The "side bar" will occupy 30 characters worth of space if required.
-     * Therefore the page body should have at most a width of 140 characters.
-     */
-    max-width: calc(140 * 0.5rem);
     width: 100%;
+    flex-grow: 1;
 
     display: flex;
     flex-direction: row;

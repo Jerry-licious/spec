@@ -27,24 +27,29 @@ export function Page(props: PageProps) {
     onMount(() => {
         (window as any).MathJax?.typesetPromise();
     });
-
-    return <div class={`page-container ${config()?.website.font}`}>
+    
+    return <div class={'main-container'}>
         <Title>{props.titleText}</Title>
-        <ParentChainDisplay parentChain={props.parentChain ?? []} />
-        <main class={'page-body'}>
-            <article class={'page-content-container'}>
-                {
-                    props.displayTitle ? <h1 class={'page-title'}>
-                        {props.title}
-                    </h1> : null
-                }
-                <div class={'page-content'}>
-                    {props.children}
-                </div>
-            </article>
-            <Sidebar>
-                {props.sidebarContent}
-            </Sidebar>
-        </main>
+        <div class={`page-container ${config()?.website.font}`}>
+            {
+                props.parentChain && props.parentChain.length ?
+                    <ParentChainDisplay parentChain={props.parentChain ?? []}/> : null
+            }
+            <main class={'page-body'}>
+                <article class={'page-content-container'}>
+                    {
+                        props.displayTitle ? <h1 class={'page-title'}>
+                            {props.title}
+                        </h1> : null
+                    }
+                    <div class={'page-content'}>
+                        {props.children}
+                    </div>
+                </article>
+                <Sidebar>
+                    {props.sidebarContent}
+                </Sidebar>
+            </main>
+        </div>
     </div>
 }

@@ -1,7 +1,7 @@
 import {UnitData} from "~/db/unit-data";
 import {getUnit, getUnits} from "~/app-data";
 import {createCachedResource, mutateCachedValue} from "solid-cached-resource";
-import {Accessor, InitializedResourceReturn} from "solid-js";
+import {Accessor, createSignal, InitializedResourceReturn} from "solid-js";
 import {fromTagString, toTagString} from "~/tag";
 import {getDataSource} from "~/db/db";
 import {query} from "@solidjs/router";
@@ -49,11 +49,10 @@ export async function cacheRelatedUnits(unit: UnitData) {
         ...unit.indirectlyReferencedBy
     ].map((t) => t.tag));
 
-    console.log('Caching related units!')
-
     for (const related of relatedUnits) {
         // 1. Tags are queried by their strings, so the conversion is useful here.
         // 2. Restructure the item to avoid hydration problems.
         mutateCachedValue(() => ['unit', toTagString(related.tag)], {...related});
     }
 }
+

@@ -7,13 +7,16 @@ import "@fontsource/roboto";
 import "@fontsource/open-sans";
 
 import "./app.css";
+import {DarkThemeProvider} from "~/theme";
 
 export default function App() {
   return (
     <Router
       root={props => (
         <MetaProvider>
-          <Suspense>{props.children}</Suspense>
+            <DarkThemeProvider>
+                <Suspense>{props.children}</Suspense>
+            </DarkThemeProvider>
         </MetaProvider>
       )}
     >

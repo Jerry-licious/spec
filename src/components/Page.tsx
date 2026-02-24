@@ -6,6 +6,7 @@ import {Sidebar} from "~/components/Sidebar";
 import {createAsync} from "@solidjs/router";
 import {getConfig} from "~/app-data";
 import {LinkTarget} from "~/db/link-target";
+import {useDarkTheme} from "~/theme";
 
 
 export interface PageProps {
@@ -22,13 +23,14 @@ export interface PageProps {
 
 export function Page(props: PageProps) {
     const config = createAsync(() => getConfig());
+    const [darkTheme] = useDarkTheme();
 
     // Reload
     onMount(() => {
         (window as any).MathJax?.typesetPromise();
     });
     
-    return <div class={'main-container'}>
+    return <div class={`main-container ${darkTheme() ? 'dark' : 'light'}`}>
         <Title>{props.titleText}</Title>
         <div class={`page-container ${config()?.website.font}`}>
             {

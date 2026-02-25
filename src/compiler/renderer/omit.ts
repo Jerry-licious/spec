@@ -1,18 +1,20 @@
 import {NodeRenderer} from "./renderer";
-import {Node} from "@unified-latex/unified-latex-types";
+import {Argument, Node} from "@unified-latex/unified-latex-types";
 import {match} from "@unified-latex/unified-latex-util-match";
 import {ParserLogger} from "../logging-base";
+import consola from "consola";
+import {replaceNode} from "@unified-latex/unified-latex-util-replace";
+import {getContext} from "~/compiler/util";
 
 
 // The omitter simply removes certain macros from render.
 export class OmitMacro extends NodeRenderer {
     toOmit: Set<string>;
 
-    constructor({toOmit, logger}: {
-        toOmit: Set<string>,
-        logger?: ParserLogger
+    constructor({toOmit}: {
+        toOmit: Set<string>
     }) {
-        super({ logger });
+        super({});
 
         this.toOmit = toOmit;
     }
@@ -23,4 +25,3 @@ export class OmitMacro extends NodeRenderer {
         }
     }
 }
-

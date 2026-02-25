@@ -25,12 +25,22 @@ import {
     TheoremTitleAssigner
 } from "./metadata";
 import {unified} from "unified";
-import {BlockRenderer, CiteRenderer, MathRenderer, OmitMacro, ProofRenderer, RefRenderer} from "./renderer";
+import {
+    BlockRenderer,
+    CiteRenderer,
+    EmptyParagraphFilter,
+    MathRenderer,
+    OmitMacro,
+    ProofRenderer,
+    RefRenderer
+} from "./renderer";
 import {unifiedLatexToHast} from "@unified-latex/unified-latex-to-hast";
 import rehypeStringify from "rehype-stringify";
 import {documentDividers, macrosToOmit} from "~/unit-types";
 import {UnitData} from "~/db/unit-data";
 import {BibliographyData} from "~/db/bib-data";
+import {visit} from "@unified-latex/unified-latex-util-visit";
+import {match} from "@unified-latex/unified-latex-util-match";
 
 
 const divisionMarkers = new Set<string>(documentDividers);
@@ -172,8 +182,7 @@ export class Compiler {
 
         const renderer = unified()
             .use(new OmitMacro({
-                toOmit: macrosToOmit,
-                logger: renderingLogger
+                toOmit: macrosToOmit
             }).asPlugin())
             .use(new MathRenderer({ logger: renderingLogger }).asPlugin())
             .use(new RefRenderer({ logger: renderingLogger }).asPlugin())
@@ -184,6 +193,7 @@ export class Compiler {
             }).asPlugin())
             .use(new ProofRenderer({ logger: renderingLogger }).asPlugin())
             .use(unifiedLatexToHast as any)
+            .use(new EmptyParagraphFilter({ logger: renderingLogger }).asPlugin())
             .use(rehypeStringify);
 
         this.renderToHTML = (node: Node) => {

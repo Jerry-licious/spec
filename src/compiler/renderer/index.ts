@@ -6,3 +6,5 @@ export { OmitMacro } from "./omit";
 export { ProofRenderer } from "./proof-renderer";
 export { RefRenderer } from "./ref-renderer";
 export { NodeRenderer } from "./renderer";
+export { EmptyParagraphFilter } from './paragraph-filter'
+export { HastVisitor } from './transformer'

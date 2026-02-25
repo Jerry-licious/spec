@@ -1,5 +1,5 @@
 import {ParserLogger} from "~/compiler/logging-base";
-import type { Root, Element, ElementContent } from 'hast';
+import type {Element} from 'hast';
 
 export abstract class HastVisitor {
     logger: ParserLogger;

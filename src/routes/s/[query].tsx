@@ -1,8 +1,7 @@
 import {getConfig} from "~/app-data";
-import {getBibliography, searchUnits} from "~/app-data-cache";
+import {searchUnits} from "~/app-data-cache";
 import {createAsync, useParams} from "@solidjs/router";
 import {ErrorBoundary, Show} from "solid-js";
-import {BibliographyDataRow, BibliographyPage} from "~/components/BibliographyPage";
 import {Page} from "~/components/Page";
 import {UnitLinkList} from "~/components/UnitLinkList";
 

@@ -1,7 +1,7 @@
 import {toLinkTarget, UnitData} from "~/db/unit-data";
 import {getConfig, getUnit, getUnits} from "~/app-data";
 import {createCachedResource, mutateCachedValue} from "solid-cached-resource";
-import {Accessor, createSignal, InitializedResourceReturn} from "solid-js";
+import {Accessor, InitializedResourceReturn} from "solid-js";
 import {fromTagString, toTagString} from "~/tag";
 import {getDataSource} from "~/db/db";
 import {query} from "@solidjs/router";

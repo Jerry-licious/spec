@@ -39,8 +39,6 @@ import rehypeStringify from "rehype-stringify";
 import {documentDividers, macrosToOmit} from "~/unit-types";
 import {UnitData} from "~/db/unit-data";
 import {BibliographyData} from "~/db/bib-data";
-import {visit} from "@unified-latex/unified-latex-util-visit";
-import {match} from "@unified-latex/unified-latex-util-match";
 
 
 const divisionMarkers = new Set<string>(documentDividers);

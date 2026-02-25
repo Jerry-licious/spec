@@ -1,11 +1,8 @@
 import {getConfig} from "~/app-data";
-import {getAllBibliography, getBibliography} from "~/app-data-cache";
-import {createAsync, useParams} from "@solidjs/router";
+import {getAllBibliography} from "~/app-data-cache";
+import {createAsync} from "@solidjs/router";
 import {Page} from "~/components/Page";
-import {BibliographyDataRow, BibliographyPage} from "~/components/BibliographyPage";
-import {linkHTML} from "~/db/link-target";
 import {toTagString} from "~/tag";
-import {LinkList} from "~/components/LinkList";
 import {ErrorBoundary, Show} from "solid-js";
 
 

@@ -1,4 +1,3 @@
-import {createEffect} from "solid-js";
 import {useDarkTheme} from "~/theme";
 import './ThemeToggle.css'
 

@@ -1,7 +1,7 @@
 import {Argument, Node} from "@unified-latex/unified-latex-types";
 import {NodeContext, ParsingMessage} from "./error";
 import {ParserLogger} from "./logging-base";
-import {visit, VisitInfo, SKIP} from "@unified-latex/unified-latex-util-visit";
+import {SKIP, visit, VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {getContext} from "./util";
 import {match} from "@unified-latex/unified-latex-util-match";
 

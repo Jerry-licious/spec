@@ -1,6 +1,5 @@
 import {LinkTarget} from "./link-target";
 import {Column, Entity, PrimaryColumn} from "typeorm";
-import {Node} from "@unified-latex/unified-latex-types";
 
 
 @Entity('units')

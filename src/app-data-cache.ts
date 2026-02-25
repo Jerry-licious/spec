@@ -28,6 +28,27 @@ export const getBibliography = query(async (tag: string | number) => {
 }, 'bibliography');
 
 
+export const getAllBibliography = query(async () => {
+    'use server';
+
+    const dataSource = await getDataSource();
+    return (await dataSource.getRepository(BibliographyData).find({}))
+        .map((e) => ({...e})) // Strip of non-serialisable data.
+        // The sorting here is mostly for presentation, so I will not be so rigorous.
+        .sort((a, b) => {
+            const authorComp = a.author.localeCompare(b.author);
+            if (authorComp != 0) return authorComp;
+
+            const aYear = parseInt(a.year) || 0;
+            const bYear = parseInt(b.year) || 0;
+            const yearComp = aYear - bYear;
+            if (yearComp != 0) return yearComp;
+
+            return a.title.localeCompare(b.title);
+        });
+}, 'allBibliography');
+
+
 export const searchUnits = query(async (term: string) => {
     'use server';
 

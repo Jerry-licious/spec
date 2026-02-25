@@ -9,7 +9,7 @@ export interface UnitLinkListProps {
 
 export function UnitLinkList(props: UnitLinkListProps) {
     return <LinkList title={props.title} items={props.items.map((t) => ({
-        innerHTML: linkHTML(t),
+        content: linkHTML(t),
         href: `/t/${toTagString(t.tag)}`
     }))}/>
 }

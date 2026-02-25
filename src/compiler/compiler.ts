@@ -1,5 +1,5 @@
 // Orchestrates the full parsing process.
-import {SpecConfig} from "../configs";
+import {SpecConfig} from "~/configs";
 import {ParserLogger} from "./logging-base";
 import consola from "consola";
 import {messageText} from "./error";
@@ -122,7 +122,7 @@ export class Compiler {
         this.divisions = new Map<number, Division>();
         this.blocks = new Map<number, BlockEnv>();
 
-        this.renderToHTML = (node: Node) => { throw new Error('The renderer is not yet created.') };
+        this.renderToHTML = () => { throw new Error('The renderer is not yet created.') };
 
         this.logger = new ParserLogger({
             onError: message => {

@@ -1,4 +1,4 @@
-import {getConfig} from "../app-data";
+import {getConfig} from "~/app-data";
 import {createAsync} from "@solidjs/router";
 import {UnitPage} from "~/components/UnitPage";
 import {ErrorBoundary, Show} from "solid-js";

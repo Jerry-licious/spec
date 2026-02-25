@@ -33,6 +33,4 @@ export default function AllBibliographyView() {
             </Page>
         </Show>
     </ErrorBoundary>
-
-    return
 }

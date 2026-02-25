@@ -44,6 +44,9 @@ interface CompileResult {
 
     // Bibliography seems so minuscule, so surely I do not need to avoid the writes.
     bibliography: BibliographyData[];
+
+    // Preamble string for mathjax.
+    preamble: string;
 }
 
 
@@ -148,7 +151,8 @@ export class Compiler {
 
         const result = {
             ...this.renderUnits(),
-            bibliography: this.bibliographyData
+            bibliography: this.bibliographyData,
+            preamble: [...this.rawMacros.values()].join('\n')
         };
 
         const messageContent = `Finished compiling with ${this.logger.numErrors} errors and ${this.logger.numWarnings} warnings.`

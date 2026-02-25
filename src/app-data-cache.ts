@@ -6,6 +6,7 @@ import {fromTagString, toTagString} from "~/tag";
 import {getDataSource} from "~/db/db";
 import {query} from "@solidjs/router";
 import {BibliographyData} from "~/db/bib-data";
+import {AuxData} from "~/db/aux-data";
 
 
 // I doubt someone will be browsing back and forth between bibliography entries, so a query should be sufficient.
@@ -47,6 +48,13 @@ export const getAllBibliography = query(async () => {
             return a.title.localeCompare(b.title);
         });
 }, 'allBibliography');
+
+
+export const getPreamble = query(async () => {
+    return await getDataSource()
+        .then((d) => d.getRepository(AuxData).findOneBy({key: 'preamble'}))
+        .then((r) => r ? r.value : '');
+}, 'preamble');
 
 
 export const searchUnits = query(async (term: string) => {

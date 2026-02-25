@@ -6,6 +6,7 @@ import {In} from "typeorm";
 import {loadConfig} from "~/load-configs";
 import {UnitData} from "~/db/unit-data";
 import {BibliographyData} from "~/db/bib-data";
+import {AuxData} from "~/db/aux-data";
 
 
 async function main() {
@@ -99,6 +100,12 @@ async function main() {
         await AppDataSource.query(`
         INSERT INTO units_fts(units_fts) VALUES('rebuild');
         `);
+
+        consola.info('Updating the project preamble.');
+        await AppDataSource.getRepository(AuxData).upsert({
+            key: 'preamble',
+            value: result.preamble,
+        }, ['key']);
 
         consola.success(`Successfully updated the database.`);
     } catch (error) {

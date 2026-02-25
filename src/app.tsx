@@ -1,5 +1,5 @@
 import {MetaProvider} from "@solidjs/meta";
-import {Router} from "@solidjs/router";
+import {createAsync, Router} from "@solidjs/router";
 import {FileRoutes} from "@solidjs/start/router";
 import {Suspense} from "solid-js";
 
@@ -10,17 +10,18 @@ import "./app.css";
 import {DarkThemeProvider} from "~/theme";
 
 export default function App() {
-  return (
-    <Router
-      root={props => (
-        <MetaProvider>
-            <DarkThemeProvider>
-                <Suspense>{props.children}</Suspense>
-            </DarkThemeProvider>
-        </MetaProvider>
-      )}
-    >
-      <FileRoutes />
-    </Router>
-  );
+    return (
+        <Router
+            root={props => (
+                <MetaProvider>
+                    <DarkThemeProvider>
+                        <Suspense>{props.children}</Suspense>
+                    </DarkThemeProvider>
+                </MetaProvider>
+            )}
+
+        >
+            <FileRoutes/>
+        </Router>
+    );
 }

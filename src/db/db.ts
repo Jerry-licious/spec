@@ -4,6 +4,7 @@ import {BibliographyData} from "./bib-data";
 import consola from "consola";
 import {loadConfig} from "~/load-configs";
 import {config} from "~/configs";
+import {AuxData} from "~/db/aux-data";
 
 export let AppDataSource: DataSource;
 
@@ -11,7 +12,9 @@ export let AppDataSource: DataSource;
 export async function getDataSource(): Promise<DataSource> {
     if (AppDataSource && AppDataSource.isInitialized) return AppDataSource;
 
-    await loadConfig();
+    if (!config) {
+        await loadConfig();
+    }
     await initialiseDatabase(config.database);
 
     return AppDataSource;
@@ -25,7 +28,7 @@ export async function initialiseDatabase(dbPath: string) {
         AppDataSource = new DataSource({
             type: 'better-sqlite3',
             database: dbPath,
-            entities: [UnitData, BibliographyData],
+            entities: [UnitData, BibliographyData, AuxData],
             synchronize: true,
         });
         await AppDataSource.initialize();

@@ -7,10 +7,9 @@ import {fromTagString} from "./tag";
 import {query} from "@solidjs/router";
 import {config} from "./configs";
 import {In} from "typeorm";
-import {toLinkTarget, UnitData} from "~/db/unit-data";
+import {UnitData} from "~/db/unit-data";
 import {getDataSource} from "~/db/db";
 import {loadConfig} from "~/load-configs";
-import {LinkTarget} from "~/db/link-target";
 
 
 export const getConfig = query(async () => {
@@ -22,6 +21,7 @@ export const getConfig = query(async () => {
 
     return {...config};
 }, 'config');
+
 
 export async function getUnit(tag: string | number): Promise<UnitData | null> {
     'use server';
@@ -50,5 +50,3 @@ export async function getUnits(tags: number[]): Promise<UnitData[]> {
         tag: In(tags)
     })).map((u) => ({...u}));
 }
-
-

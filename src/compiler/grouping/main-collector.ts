@@ -54,7 +54,7 @@ export class MainCollector extends DocumentVisitor {
 
         const division = new Division({
             sourceNodeName: mainPageType,
-            name: mainPageType,
+            name: 'Main Page',
             title: [s(this.title)],
             label: '',
             tag: mainPageTag,

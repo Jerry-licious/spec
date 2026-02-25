@@ -12,3 +12,4 @@ export { TagAssigner } from "./tag-assigner";
 export { TheoremProofAssigner } from "./theorem-proof-assigner";
 export { TheoremTitleAssigner } from "./theorem-title-assigner";
 export { ReferenceCollector } from "./reference-collector";
+export { TextCollector } from "./text-collector";

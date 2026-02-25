@@ -1,7 +1,7 @@
 import {Argument, Node} from "@unified-latex/unified-latex-types";
 import {NodeContext, ParsingMessage} from "./error";
 import {ParserLogger} from "./logging-base";
-import {visit, VisitInfo} from "@unified-latex/unified-latex-util-visit";
+import {visit, VisitInfo, SKIP} from "@unified-latex/unified-latex-util-visit";
 import {getContext} from "./util";
 import {match} from "@unified-latex/unified-latex-util-match";
 
@@ -18,7 +18,8 @@ export abstract class DocumentVisitor {
         this.logger = logger ?? new ParserLogger({});
     }
 
-    abstract visit(node: Node, visitInfo: VisitInfo): void;
+    // There are other possible options, but skip should be sufficient for now. 
+    abstract visit(node: Node, visitInfo: VisitInfo): void | typeof SKIP;
 
     addError(err: ParsingMessage | string) {
         if (typeof err === "string") {
@@ -66,7 +67,7 @@ export abstract class DocumentVisitor {
 
             this.currentContext = getContext(node);
 
-            this.visit(node, info);
+            return this.visit(node, info);
         });
     }
 }

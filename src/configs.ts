@@ -14,7 +14,8 @@ export const SpecConfigSchema = z.object({
     }).prefault({}),
 
     website: z.object({
-        font: z.enum(['roboto', 'open-sans', 'cmu-serif', 'cmu-sans-serif']).default('cmu-serif')
+        font: z.enum(['roboto', 'open-sans', 'cmu-serif', 'cmu-sans-serif']).default('cmu-serif'),
+        searchLimit: z.int().min(1).default(32),
     }).prefault({})
 });
 

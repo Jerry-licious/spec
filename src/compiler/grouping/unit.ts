@@ -1,11 +1,12 @@
 import {Node} from "@unified-latex/unified-latex-types";
 import {printRaw} from "@unified-latex/unified-latex-util-print-raw";
 import {createHash} from "crypto";
-import {ReferenceCollector} from "../metadata";
+import {ReferenceCollector, TextCollector} from "../metadata";
 import {AppDataSource} from "~/db";
 import {wrapPars} from "@unified-latex/unified-latex-to-hast";
 import {UnitData} from "~/db/unit-data";
 import {LinkTarget} from "~/db/link-target";
+import {macrosToOmit} from "~/unit-types";
 
 // IR units are intermediate representations that come with more structure than merely attaching nodes with metadata.
 // IR units are expected to have tags and numbers.
@@ -31,6 +32,8 @@ export abstract class IRUnit {
     readonly mainContent: Node[];
 
     readonly titleText: string;
+
+    textContent: string;
 
     // Tags directly referenced by this unit.
     directReferences: Set<number>;
@@ -77,6 +80,11 @@ export abstract class IRUnit {
         this.title.forEach((n) => referenceCollector.process(n));
         this.mainContent.forEach((n) => referenceCollector.process(n));
         this.directReferences = referenceCollector.referencedTags;
+
+        const textCollector = new TextCollector({ macrosToOmit: macrosToOmit });
+        this.title.forEach((n) => textCollector.process(n));
+        this.mainContent.forEach((n) => textCollector.process(n));
+        this.textContent = textCollector.getCollectedText();
 
         this.directlyReferencedBy = new Set<number>();
         this.indirectReferences = new Set<number>();
@@ -154,6 +162,7 @@ export abstract class IRUnit {
             titleText: this.titleText,
             titleHTML: this.linkTarget?.titleHtml,
             contentHTML: this.renderBody(renderer),
+            contentText: this.textContent,
 
             lastRendered: new Date(),
 

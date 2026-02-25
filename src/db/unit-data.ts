@@ -1,5 +1,6 @@
 import {LinkTarget} from "./link-target";
 import {Column, Entity, PrimaryColumn} from "typeorm";
+import {Node} from "@unified-latex/unified-latex-types";
 
 
 @Entity('units')
@@ -25,6 +26,9 @@ export class UnitData {
     titleHTML!: string | null;
     @Column('text')
     contentHTML!: string;
+    // Used for searches.
+    @Column('text')
+    contentText!: string;
 
     @Column('datetime')
     lastRendered!: Date;
@@ -43,5 +47,16 @@ export class UnitData {
 
     @Column('simple-json', { nullable: true })
     children!: LinkTarget[] | null;
+}
+
+
+export function toLinkTarget(unit: UnitData): LinkTarget {
+    return {
+        tag: unit.tag,
+        numberingText: unit.numberingText,
+        unitType: unit.unitType,
+        unitName: unit.unitName,
+        titleHtml: unit.titleHTML ?? undefined
+    };
 }
 

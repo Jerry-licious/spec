@@ -1,13 +1,18 @@
 import './SearchBar.css'
 import {useNavigate} from "@solidjs/router";
+import {createSignal} from "solid-js";
 
 export function SearchBar() {
     const navigate = useNavigate();
+    const [query, setQuery] = createSignal('');
 
-    return <input type={'search'} placeholder={'Search...'} onkeydown={(e) => {
+    return <input value={query()} type={'search'} onInput={(e) => setQuery(e.target.value)}
+                  placeholder={'Search...'} onkeydown={(e) => {
         if (e.key === 'Enter') {
-            // TODO: Implement the search function.
-            navigate('/404');
+            const stripped = query().trim();
+            if (stripped) {
+                navigate(`/s/${encodeURIComponent(stripped)}`);
+            }
         }
     }} />
 }

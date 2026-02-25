@@ -7,9 +7,10 @@ import {fromTagString} from "./tag";
 import {query} from "@solidjs/router";
 import {config} from "./configs";
 import {In} from "typeorm";
-import {UnitData} from "~/db/unit-data";
+import {toLinkTarget, UnitData} from "~/db/unit-data";
 import {getDataSource} from "~/db/db";
 import {loadConfig} from "~/load-configs";
+import {LinkTarget} from "~/db/link-target";
 
 
 export const getConfig = query(async () => {
@@ -49,4 +50,5 @@ export async function getUnits(tags: number[]): Promise<UnitData[]> {
         tag: In(tags)
     })).map((u) => ({...u}));
 }
+
 

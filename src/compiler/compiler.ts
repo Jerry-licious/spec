@@ -28,7 +28,7 @@ import {unified} from "unified";
 import {BlockRenderer, CiteRenderer, MathRenderer, OmitMacro, ProofRenderer, RefRenderer} from "./renderer";
 import {unifiedLatexToHast} from "@unified-latex/unified-latex-to-hast";
 import rehypeStringify from "rehype-stringify";
-import {documentDividers} from "~/unit-types";
+import {documentDividers, macrosToOmit} from "~/unit-types";
 import {UnitData} from "~/db/unit-data";
 import {BibliographyData} from "~/db/bib-data";
 
@@ -168,9 +168,7 @@ export class Compiler {
 
         const renderer = unified()
             .use(new OmitMacro({
-                toOmit: new Set([
-                    'label', 'newcommand', 'renewcommand', 'newtheorem', 'bibliographystyle', 'bibliography'
-                ]),
+                toOmit: macrosToOmit,
                 logger: renderingLogger
             }).asPlugin())
             .use(new MathRenderer({ logger: renderingLogger }).asPlugin())

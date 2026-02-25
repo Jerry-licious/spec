@@ -1,13 +1,11 @@
 import "./compiler/loader"
 import {Compiler} from "./compiler/compiler";
-import {AppDataSource, BibliographyData, initialiseDatabase} from "./db";
+import {AppDataSource, initialiseDatabase} from "./db";
 import consola from "consola";
 import {In} from "typeorm";
 import {loadConfig} from "~/load-configs";
 import {UnitData} from "~/db/unit-data";
-
-
-console.log('Happy developing ✨')
+import {BibliographyData} from "~/db/bib-data";
 
 
 async function main() {
@@ -90,6 +88,17 @@ async function main() {
         // Units should just be refreshed every time.
         await bibliographyRepository.deleteAll();
         await bibliographyRepository.insert(result.bibliography);
+
+        consola.info('(Re)building the search index.')
+
+        // SQLite supports fts5: https://sqlite.org/fts5.html
+        await AppDataSource.query(`
+        CREATE VIRTUAL TABLE IF NOT EXISTS units_fts 
+        USING fts5(contentText, content='units', content_rowid='tag');
+        `);
+        await AppDataSource.query(`
+        INSERT INTO units_fts(units_fts) VALUES('rebuild');
+        `);
 
         consola.success(`Successfully updated the database.`);
     } catch (error) {

@@ -1,5 +1,5 @@
-import {UnitData} from "~/db/unit-data";
-import {getUnit, getUnits} from "~/app-data";
+import {toLinkTarget, UnitData} from "~/db/unit-data";
+import {getConfig, getUnit, getUnits} from "~/app-data";
 import {createCachedResource, mutateCachedValue} from "solid-cached-resource";
 import {Accessor, createSignal, InitializedResourceReturn} from "solid-js";
 import {fromTagString, toTagString} from "~/tag";
@@ -27,18 +27,36 @@ export const getBibliography = query(async (tag: string | number) => {
     return entry ? {...entry} : null;
 }, 'bibliography');
 
+
+export const searchUnits = query(async (term: string) => {
+    'use server';
+
+    term = term.trim(); // Just in case.
+    if (!term) return [];
+
+    const dataSource = await getDataSource();
+    const config = await getConfig();
+
+    return (await dataSource.query<UnitData[]>(`
+    SELECT u.* FROM units u
+    INNER JOIN units_fts ON units_fts.rowid = u.tag
+    WHERE units_fts MATCH ?
+    ORDER BY units_fts.rank
+    LIMIT ?
+    `, [term, config.website.searchLimit]))
+        .map((u) => toLinkTarget(u));
+}, 'searchUnits');
+
+
 export function createGetUnit(tag: Accessor<string | number>): InitializedResourceReturn<UnitData> {
     return createCachedResource(() => ['unit', tag()], async ([, tag]) => {
         const unit = await getUnit(tag);
-
-        console.log('cache miss!')
 
         if (!unit) throw new Error('Unit not found.');
 
         return unit;
     }, { refetchOnMount: false });
 }
-
 
 export async function cacheRelatedUnits(unit: UnitData) {
     const relatedUnits = await getUnits([

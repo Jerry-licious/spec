@@ -2,7 +2,7 @@ export const mainPageType = 'document';
 export const mainPageTag = 0;
 
 export const documentDividers = ['part', 'chapter', 'section', 'subsection', 'subsubsection'] as const;
-const documentDividersSet = new Set<string>(documentDividers);
+export const documentDividersSet = new Set<string>(documentDividers);
 
 // Macros to not render.
 export const macrosToOmit = new Set([

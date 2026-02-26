@@ -32,7 +32,7 @@ import {
     MathRenderer,
     OmitMacro,
     ProofRenderer,
-    RefRenderer
+    RefRenderer, UnitTitleRenderer
 } from "./renderer";
 import {unifiedLatexToHast} from "@unified-latex/unified-latex-to-hast";
 import rehypeStringify from "rehype-stringify";
@@ -183,6 +183,7 @@ export class Compiler {
                 toOmit: macrosToOmit
             }).asPlugin())
             .use(new MathRenderer({ logger: renderingLogger }).asPlugin())
+            .use(new UnitTitleRenderer({ logger: renderingLogger }).asPlugin())
             .use(new RefRenderer({ logger: renderingLogger }).asPlugin())
             .use(new CiteRenderer({ logger: renderingLogger }).asPlugin())
             .use(new BlockRenderer({

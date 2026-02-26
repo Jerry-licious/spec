@@ -8,5 +8,6 @@ export const classes = {
     qed: '',
     cite: '',
     citeNote: '',
-    citeRef: 'link-primary'
+    citeRef: 'link-primary',
+    divisionTitle: 'link-foreground',
 } as const;

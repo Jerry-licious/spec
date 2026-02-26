@@ -8,3 +8,4 @@ export { RefRenderer } from "./ref-renderer";
 export { NodeRenderer } from "./renderer";
 export { EmptyParagraphFilter } from './paragraph-filter'
 export { HastVisitor } from './transformer'
+export { UnitTitleRenderer } from './unit-title-renderer'

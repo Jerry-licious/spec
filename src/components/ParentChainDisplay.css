@@ -2,13 +2,18 @@
     flex-grow: 0;
     flex-shrink: 0;
 
-    padding: 5px;
+    padding: 0.8rem;
 
     width: 100%;
 
     align-items: start;
+}
 
-    background: grey;
+.light .parent-chain-display-container {
+    background: var(--neutral-200);
+}
+.dark .parent-chain-display-container {
+    background: var(--neutral-800);
 }
 
 .parent-display {
@@ -16,8 +21,14 @@
 
 .parent-display-slash {
     margin: 0 5px;
+
+    font-family: Roboto, sans-serif;
+
+    font-weight: bolder;
 }
-
-.link-primary {
-
+.light .parent-display-slash {
+    color: var(--neutral-500)
+}
+.dark .parent-display-slash {
+    color: var(--neutral-500)
 }

@@ -6,7 +6,8 @@ export function SearchBar() {
     const navigate = useNavigate();
     const [query, setQuery] = createSignal('');
 
-    return <input value={query()} type={'search'} onInput={(e) => setQuery(e.target.value)}
+    return <input value={query()} type={'search'} class={'search-bar-input'}
+                  onInput={(e) => setQuery(e.target.value)}
                   placeholder={'Search...'} onkeydown={(e) => {
         if (e.key === 'Enter') {
             const stripped = query().trim();

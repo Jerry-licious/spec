@@ -57,6 +57,9 @@ export function Page(props: PageProps) {
                     <div class={'page-content'}>
                         {props.children}
                     </div>
+                    <div class={'thin-sidebar-content'}>
+                        {props.sidebarContent}
+                    </div>
                 </article>
                 <Sidebar>
                     {props.sidebarContent}

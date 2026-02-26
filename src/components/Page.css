@@ -99,15 +99,19 @@
     font-family: "CMU Sans Serif", sans-serif;
 }
 
-
-.link-primary {
-    /* TODO */
-}
-
 .link-foreground {
     text-decoration: none;
     color: inherit;
 }
 .link-foreground:hover {
     text-decoration: underline;
+}
+
+/*
+* The thin side bar is the complement to the side bar. If the side bar cannot show up, it will.
+*/
+@media (width > 65rem) {
+    .thin-sidebar-content {
+        display: none;
+    }
 }

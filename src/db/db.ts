@@ -2,8 +2,8 @@ import {DataSource} from "typeorm";
 import {UnitData} from "./unit-data";
 import {BibliographyData} from "./bib-data";
 import consola from "consola";
-import {loadConfig} from "~/load-configs";
-import {config} from "~/configs";
+import {loadConfig} from "~/load-config";
+import {config} from "~/config";
 import {AuxData} from "~/db/aux-data";
 
 export let AppDataSource: DataSource;

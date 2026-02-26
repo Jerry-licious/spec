@@ -10,6 +10,15 @@
     align-items: center;
 }
 
+.main-container.light {
+    background: var(--neutral-50);
+    color: black;
+}
+
+.main-container.dark {
+    background: var(--neutral-900);
+    color: var(--neutral-50);
+}
 
 .page-container {
     width: 100%;

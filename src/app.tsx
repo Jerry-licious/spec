@@ -7,6 +7,7 @@ import "@fontsource/roboto";
 import "@fontsource/open-sans";
 
 import "./app.css";
+import "./colours.css";
 import {DarkThemeProvider} from "~/theme";
 
 export default function App() {

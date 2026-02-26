@@ -5,11 +5,11 @@
 
 import {fromTagString} from "./tag";
 import {query} from "@solidjs/router";
-import {config} from "./configs";
+import {config} from "./config";
 import {In} from "typeorm";
 import {UnitData} from "~/db/unit-data";
 import {getDataSource} from "~/db/db";
-import {loadConfig} from "~/load-configs";
+import {loadConfig} from "~/load-config";
 
 
 export const getConfig = query(async () => {

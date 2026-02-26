@@ -29,8 +29,11 @@ export function Page(props: PageProps) {
     onMount(() => {
         (window as any).MathJax?.typesetPromise();
     });
-    
-    return <div class={`main-container ${darkTheme() ? 'dark' : 'light'}`}>
+
+    const primaryColourClass = config() ? `primary-${config()?.website.primaryColour}` : 'primary-blue';
+    const neutralColourClass = config() ? `neutral-${config()?.website.neutralColour}` : 'neutral-grey';
+
+    return <div class={`main-container ${darkTheme() ? 'dark' : 'light'} ${primaryColourClass} ${neutralColourClass}`}>
         <Title>{props.titleText}</Title>
         <div class={`page-container ${config()?.website.font}`}>
             {

@@ -1,5 +1,5 @@
 // Orchestrates the full parsing process.
-import {SpecConfig} from "~/configs";
+import {SpecConfig} from "~/config";
 import {ParserLogger} from "./logging-base";
 import consola from "consola";
 import {messageText} from "./error";

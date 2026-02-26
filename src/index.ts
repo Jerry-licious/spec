@@ -3,7 +3,7 @@ import {Compiler} from "./compiler/compiler";
 import {AppDataSource, initialiseDatabase} from "./db";
 import consola from "consola";
 import {In} from "typeorm";
-import {loadConfig} from "~/load-configs";
+import {loadConfig} from "~/load-config";
 import {UnitData} from "~/db/unit-data";
 import {BibliographyData} from "~/db/bib-data";
 import {AuxData} from "~/db/aux-data";

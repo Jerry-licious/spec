@@ -15,6 +15,9 @@ export const SpecConfigSchema = z.object({
 
     website: z.object({
         font: z.enum(['roboto', 'open-sans', 'cmu-serif', 'cmu-sans-serif']).default('cmu-serif'),
+        primaryColour: z.enum(['red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky',
+            'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose']).default('blue'),
+        neutralColour: z.enum(['slate', 'grey', 'zinc', 'stone']).default('grey'),
         searchLimit: z.int().min(1).default(32),
     }).prefault({})
 });

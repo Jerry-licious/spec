@@ -2,7 +2,7 @@
 
 import consola from "consola";
 import {access, readFile, writeFile} from "node:fs/promises";
-import {config, defaultConfig, defaultConfigPath, setConfig, SpecConfig, SpecConfigSchema} from "~/configs";
+import {config, defaultConfig, defaultConfigPath, setConfig, SpecConfig, SpecConfigSchema} from "~/config";
 import {parse, stringify, TomlTable} from "smol-toml";
 
 

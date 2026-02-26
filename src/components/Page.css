@@ -64,11 +64,9 @@
 }
 
 .page-content-container {
+    padding: 1rem;
+
     flex-grow: 1;
-
-    margin-top: 1rem;
-
-    padding: 5px;
 
     display: flex;
     flex-direction: column;

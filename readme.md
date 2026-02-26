@@ -10,6 +10,7 @@
 - Custom proof texts 
 - Custom QED
 - External links with \hyperref.
+- Thin resolution sidebar. 
 - ~~Omit empty paragraphs from render.~~
 - ~~Proper preamble collection~~
 - ~~Have a special collector that gets the main page.~~

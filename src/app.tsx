@@ -6,6 +6,7 @@ import {Suspense} from "solid-js";
 import "@fontsource/roboto";
 import "@fontsource/open-sans";
 import "@fontsource/material-icons";
+import "@fontsource-variable/chivo-mono";
 
 import "./app.css";
 import "./colours.css";

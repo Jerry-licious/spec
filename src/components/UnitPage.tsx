@@ -4,9 +4,8 @@ import {getConfig} from "~/app-data";
 import {mainPageType, shouldDisplayTitle} from "~/unit-types";
 import './UnitPage.css'
 import {UnitLinkList} from "~/components/UnitLinkList";
-import {createMemo, onMount} from "solid-js";
+import {createEffect, createMemo, onMount} from "solid-js";
 import {UnitData} from "~/db/unit-data";
-import {cacheRelatedUnits} from "~/app-data-cache";
 
 
 export interface UnitPageProps {
@@ -14,7 +13,7 @@ export interface UnitPageProps {
 }
 
 function UnitSidebarContent(props: UnitPageProps) {
-    return <div>
+    return <div class={'unit-sidebar-content'}>
         {props.unit.directlyReferences.length ? <UnitLinkList title={'Direct References'} items={props.unit.directlyReferences}/> : ''}
         {props.unit.indirectlyReferences.length ? <UnitLinkList title={'Indirect References'} items={props.unit.indirectlyReferences}/> : ''}
         {props.unit.directlyReferencedBy.length ? <UnitLinkList title={'Direct Backlinks'} items={props.unit.directlyReferencedBy}/> : ''}
@@ -44,9 +43,15 @@ export function UnitPage(props: UnitPageProps) {
         return titleText;
     });
 
-    // Whenever a unit page is loaded, also cache in the adjacent units.
-    onMount(() => {
-        cacheRelatedUnits(props.unit);
+    let containerRef: HTMLDivElement | undefined;
+    createEffect(() => {
+        const _ = props.unit.tag;
+        const mathJax = (window as any).MathJax;
+        if (!mathJax) return;
+        (mathJax.startup?.promise ?? Promise.resolve()).then(() => {
+            mathJax.typesetClear();
+            mathJax.typesetPromise();
+        })
     });
 
     return <Page titleText={titleText()}
@@ -58,7 +63,7 @@ export function UnitPage(props: UnitPageProps) {
                  parentChain={props.unit.parentChain}>
         {
             props.unit.contentHTML.trim() ?
-                <div class={'unit-content-container'} innerHTML={props.unit.contentHTML}/> : null
+                <div class={'unit-content-container'} ref={containerRef} innerHTML={props.unit.contentHTML}/> : null
         }
         {
             props.unit.children && props.unit.children.length > 0 ?

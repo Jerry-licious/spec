@@ -2,14 +2,14 @@ import {createAsync, useParams} from "@solidjs/router";
 import {UnitPage} from "~/components/UnitPage";
 import {getConfig} from "~/app-data";
 import {ErrorBoundary, Show} from "solid-js";
-import {createGetUnit, getPreamble} from "~/app-data-cache";
+import {createGetUnit, getPreamble, getUnit} from "~/app-data-cache";
 
 
 export const route = {
     preload: ({ params }: {  params: { tag: string } }) => {
         getConfig();
         getPreamble();
-        createGetUnit(() => params.tag);
+        getUnit(params.tag);
     },
 };
 
@@ -17,7 +17,7 @@ export const route = {
 export default function UnitView() {
     const params = useParams<{tag: string}>();
     const preamble = createAsync(() => getPreamble());
-    const [unitAccessor] = createGetUnit(() => params.tag);
+    const unitAccessor = createAsync(() => getUnit(params.tag));
 
     return (
         <ErrorBoundary fallback={<><div>Tag not found</div></>}>

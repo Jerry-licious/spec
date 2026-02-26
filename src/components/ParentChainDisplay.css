@@ -8,12 +8,11 @@
 
     align-items: start;
 }
-
 .light .parent-chain-display-container {
-    background: var(--neutral-200);
+    border-bottom: var(--neutral-300) solid 1px;
 }
 .dark .parent-chain-display-container {
-    background: var(--neutral-800);
+    border-bottom: var(--neutral-700) solid 1px;
 }
 
 .parent-display {

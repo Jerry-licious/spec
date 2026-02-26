@@ -23,23 +23,6 @@ export const getConfig = query(async () => {
 }, 'config');
 
 
-export async function getUnit(tag: string | number): Promise<UnitData | null> {
-    'use server';
-
-    if (typeof tag === 'string') {
-        try {
-            tag = fromTagString(tag);
-        } catch (e) {
-            return null;
-        }
-    }
-
-    const dataSource = await getDataSource();
-    const unit = await dataSource.getRepository(UnitData).findOneBy({ tag: tag });
-
-    // Strip the unit of all non-serialisable data.
-    return unit ? {...unit} : null;
-}
 
 
 export async function getUnits(tags: number[]): Promise<UnitData[]> {

@@ -2,19 +2,19 @@ import {getConfig} from "~/app-data";
 import {createAsync} from "@solidjs/router";
 import {UnitPage} from "~/components/UnitPage";
 import {ErrorBoundary, Show} from "solid-js";
-import {createGetUnit, getPreamble} from "~/app-data-cache";
+import {createGetUnit, getPreamble, getUnit} from "~/app-data-cache";
 
 
 export const route = {
     preload: () => {
         getConfig();
-        createGetUnit(() => 0);
+        getUnit(0);
         getPreamble();
     },
 };
 
 export default function Home() {
-    const [mainPageAccessor] = createGetUnit(() => 0);
+    const mainPageAccessor = createAsync(() => getUnit(0));
     const preamble = createAsync(() => getPreamble());
 
     return (

@@ -1,20 +1,13 @@
 import {createContext, createSignal, JSX, useContext} from "solid-js";
+import {cookieStorage, makePersisted} from "@solid-primitives/storage";
 
 
 export function createPersistentToggle(key: string, initialValue: boolean) {
-    const storedValue = typeof window !== "undefined" ? localStorage.getItem(key) : null;
-    const [getter, setter] = createSignal<boolean>(storedValue !== null ? JSON.parse(storedValue) : initialValue);
-
-    return [
-        getter,
-        (value: boolean) => {
-            localStorage.setItem(key, JSON.stringify(value));
-            setter(() => value);
-        }
-    ] as const;
+    return makePersisted(createSignal<boolean>(initialValue), {
+        name: key,
+        storage: cookieStorage,
+    });
 }
-
-
 
 const DarkThemeContext = createContext<ReturnType<typeof createPersistentToggle>>();
 

@@ -3,7 +3,18 @@
 }
 
 .bibtex-code {
-    padding: 5px;
-
     white-space: pre;
+
+    font-family: "Chivo Mono Variable", "Courier New", monospace;
+
+    padding: 1rem;
+    border-radius: 1rem;
+
+    text-wrap: wrap;
+}
+.light .bibtex-code {
+    background-color: var(--neutral-200);
+}
+.dark .bibtex-code {
+    background-color: var(--neutral-800);
 }

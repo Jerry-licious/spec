@@ -6,11 +6,11 @@
 
     width: calc(30 * 0.5rem);
 
-    border-left: black solid 1px;
-
     display: flex;
     flex-direction: column;
     gap: 1rem;
+
+    min-height: 0;
 }
 .light .page-sidebar {
     border-left: var(--neutral-300) solid 1px;

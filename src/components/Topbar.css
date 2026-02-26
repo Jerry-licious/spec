@@ -1,0 +1,36 @@
+.page-topbar {
+    flex-grow: 0;
+    flex-shrink: 0;
+
+    padding: 1rem;
+
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.light .page-topbar {
+    border-bottom: var(--neutral-300) solid 1px;
+}
+.dark .page-topbar {
+    border-bottom: var(--neutral-700) solid 1px;
+}
+
+.fill {
+    flex-grow: 1;
+}
+
+.page-topbar-row {
+    display: flex;
+    flex-direction: row;
+
+    align-items: center;
+}
+
+/*
+* The top bar is the complement to the side bar. If the side bar cannot show up, it will.
+*/
+@media (width > 65rem) {
+    .page-topbar {
+        display: none;
+    }
+}

@@ -3,14 +3,14 @@
 
 # TODO
 
-- Proper style classes
+- ~~Proper style classes.~~
 - ~~Blocks~~/chapters/sections should link to themselves when rendered. 
-- Thin scrollbars. 
+- ~~Thin scrollbars.~~ 
 - Better 404 pages. 
 - Custom proof texts 
 - Custom QED
 - External links with \hyperref.
-- Thin resolution sidebar. 
+- ~~Thin resolution sidebar.~~
 - ~~Omit empty paragraphs from render.~~
 - ~~Proper preamble collection~~
 - ~~Have a special collector that gets the main page.~~

@@ -26,8 +26,12 @@ export const getBibliography = query(async (tag: string | number) => {
     const dataSource = await getDataSource();
     const entry = await dataSource.getRepository(BibliographyData).findOneBy({ tag: tag });
 
+    if (!entry) {
+        new Error('Bibliography entry not found.');
+    }
+
     // Strip the unit of all non-serialisable data.
-    return entry ? {...entry} : null;
+    return {...entry};
 }, 'bibliography');
 
 
@@ -106,7 +110,9 @@ export const getUnit = query(async (tag: string | number) => {
         const dataSource = await getDataSource();
         const unit = await dataSource.getRepository(UnitData).findOneBy({ tag: tag });
 
+        if (!unit) throw new Error('Unit not found.');
+
         // Strip the unit of all non-serialisable data.
-        return unit ? {...unit} : null;
+        return {...unit};
     }
 , 'unit');

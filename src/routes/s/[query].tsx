@@ -19,7 +19,11 @@ export default function SearchUnitsView() {
     const searchResult = createAsync(() => searchUnits(decodeURIComponent(params.query)));
 
     return (
-        <ErrorBoundary fallback={<><div>No search results.</div></>}>
+        <ErrorBoundary fallback={
+            <Page titleText={`Search Failed | ${config()?.siteTitle}`} title={`Search: ${decodeURIComponent(params.query)}`} displayTitle={true}>
+                Failed to search for "{decodeURIComponent(params.query)}". Please try again later.
+            </Page>
+        }>
             <Show when={searchResult() && config()}>
                 <Page titleText={`Search: ${decodeURIComponent(params.query)} | ${config()?.siteTitle}`}
                                               title={`Search: ${decodeURIComponent(params.query)}`}

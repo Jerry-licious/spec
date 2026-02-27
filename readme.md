@@ -3,13 +3,13 @@
 
 # TODO
 
+- Custom proof texts
+- Custom QED
+- External links with \hyperref.
 - ~~Proper style classes.~~
 - ~~Blocks/chapters/sections should link to themselves when rendered.~~
 - ~~Thin scrollbars.~~ 
-- Better 404 pages. 
-- Custom proof texts 
-- Custom QED
-- External links with \hyperref.
+- ~~Better 404 pages.~~
 - ~~Thin resolution sidebar.~~
 - ~~Omit empty paragraphs from render.~~
 - ~~Proper preamble collection~~

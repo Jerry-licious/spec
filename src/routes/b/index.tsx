@@ -17,7 +17,11 @@ export default function AllBibliographyView() {
     const config = createAsync(() => getConfig());
     const bibliography = createAsync(() => getAllBibliography());
 
-    return<ErrorBoundary fallback={<><div>Bibliography not found.</div></>}>
+    return<ErrorBoundary fallback={
+        <Page titleText={`Bibliography Failed to Load | ${config()?.siteTitle}`} title={'Bibliography'} displayTitle={true}>
+            Failed to load bibliography. Please try again later. 
+        </Page>
+    }>
         <Show when={bibliography()}>
             <Page titleText={`Bibliography | ${config()?.siteTitle}`}
                   title={'Bibliography'}

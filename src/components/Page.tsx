@@ -30,13 +30,8 @@ export function Page(props: PageProps) {
     const neutralColourClass = config() ? `neutral-${config()?.website.neutralColour}` : 'neutral-grey';
 
     createEffect(() => {
-        props.children; // Access children.
-        console.log('Mounted!');
-        console.log((window as any).MathJax);
-        queueMicrotask(() => {
-            (window as any).MathJax?.startup?.promise
-                ?.then(() => (window as any).MathJax.typesetPromise());
-        });
+        (window as any).MathJax?.startup?.promise
+            ?.then(() => (window as any).MathJax.typesetPromise());
     });
 
     return <div class={`main-container ${darkTheme() ? 'dark' : 'light'} ${primaryColourClass} ${neutralColourClass}`}>

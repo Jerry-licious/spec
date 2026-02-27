@@ -9,6 +9,7 @@ import {BibliographyData} from "~/db/bib-data";
 import {AuxData} from "~/db/aux-data";
 import consola from "consola";
 import {In} from "typeorm";
+import {LinkTarget} from "~/db/link-target";
 
 
 // I doubt someone will be browsing back and forth between bibliography entries, so a query should be sufficient.
@@ -65,23 +66,39 @@ export const getPreamble = query(async () => {
 }, 'preamble');
 
 
-export const searchUnits = query(async (term: string) => {
+export interface SearchResult {
+    totalResults: number,
+    totalPages: number,
+    results: LinkTarget[]
+}
+
+
+export const searchUnits = query(async (term: string, index: number): Promise<SearchResult> => {
     'use server';
 
     term = term.trim(); // Just in case.
-    if (!term) return [];
+    if (!term) return {
+        totalResults: 0,
+        totalPages: 0,
+        results: []
+    };
 
     const dataSource = await getDataSource();
     const config = await getConfig();
 
-    return (await dataSource.query<UnitData[]>(`
+    const searchResults = (await dataSource.query<UnitData[]>(`
     SELECT u.* FROM units u
     INNER JOIN units_fts ON units_fts.rowid = u.tag
     WHERE units_fts MATCH ?
     ORDER BY units_fts.rank
-    LIMIT ?
-    `, [term, config.website.searchLimit]))
+    `, [term]))
         .map((u) => toLinkTarget(u));
+
+    return {
+        totalResults: searchResults.length,
+        totalPages: Math.ceil(searchResults.length / config.website.searchLimit),
+        results: searchResults.slice(index * config.website.searchLimit, config.website.searchLimit + index * config.website.searchLimit)
+    };
 }, 'searchUnits');
 
 

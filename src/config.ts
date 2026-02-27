@@ -18,7 +18,7 @@ export const SpecConfigSchema = z.object({
         primaryColour: z.enum(['red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky',
             'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose']).default('blue'),
         neutralColour: z.enum(['slate', 'grey', 'zinc', 'stone']).default('grey'),
-        searchLimit: z.int().min(1).default(32),
+        searchLimit: z.int().min(1).default(16),
     }).prefault({})
 });
 

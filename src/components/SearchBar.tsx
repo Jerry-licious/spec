@@ -12,7 +12,7 @@ export function SearchBar() {
         if (e.key === 'Enter') {
             const stripped = query().trim();
             if (stripped) {
-                navigate(`/s/${encodeURIComponent(stripped)}`);
+                navigate(`/s/${encodeURIComponent(stripped)}/0`);
             }
         }
     }} />

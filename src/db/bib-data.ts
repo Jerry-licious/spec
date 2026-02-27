@@ -19,6 +19,8 @@ export class BibliographyData {
     year!: string;
     @Column('text')
     publisher!: string;
+    @Column('text', { nullable: true })
+    url!: string | null;
 
     @Column('simple-json')
     // Auxiliary data that I don't care enough to name.

@@ -6,15 +6,15 @@ import {match} from "@unified-latex/unified-latex-util-match";
 import {getArgumentText} from "./util";
 import path, {join} from "node:path";
 import {readFileSync} from "node:fs";
-import {nextSafeTag} from "../tag";
+import {nextSafeTag} from "~/tag";
 import {ParserLogger} from "./logging-base";
-import {AppDataSource} from "../db";
+import {AppDataSource} from "~/db";
 import {BibliographyData} from "~/db/bib-data";
 
 
 const supportedBibliographyStyles = new Set<string>(['plain', 'alpha', 'raw']);
 
-const essentialEntryTags = new Set<string>(['title', 'booktitle', 'author', 'year', 'publisher']);
+const essentialEntryTags = new Set<string>(['title', 'booktitle', 'author', 'year', 'publisher', 'label', 'url']);
 
 export class BibliographyLoader extends DocumentVisitor {
     bibliographyEntries: Map<string, BibtexEntry>;
@@ -213,7 +213,7 @@ export class BibliographyLoader extends DocumentVisitor {
         const labelMap = new Map<string, BibtexEntry[]>();
 
         const alphabeticalOrder = [...this.bibliographyEntries.values()]
-            .sort((a, b) => this.compareBibliographyEntries(a, b));
+            .sort((a, b) => this.compareBibliographyEntries(a, b))
 
         for (const entry of alphabeticalOrder) {
             const label = this.getAlphaLabel(entry);
@@ -252,6 +252,10 @@ export class BibliographyLoader extends DocumentVisitor {
             }
         }
 
+        this.assignLabels();
+    }
+
+    assignLabels() {
         switch (this.bibliographyStyle) {
             case 'plain':
                 this.assignPlainLabels();
@@ -262,6 +266,17 @@ export class BibliographyLoader extends DocumentVisitor {
             case 'raw':
                 this.assignRawLabels();
                 break;
+        }
+
+        // Finally, overwrite labels with custom ones if they exist.
+        // This is done after the original bibliography style under the idea that,
+        // even if an entry gets a different name, it is still the n-th entry based
+        // on alphabetical order. As such, entries after it should still account
+        // for this.
+        for (const entry of this.bibliographyEntries.values()) {
+            if ('label' in entry.entryTags) {
+                entry.label = entry.entryTags.label;
+            }
         }
     }
 
@@ -287,6 +302,8 @@ export class BibliographyLoader extends DocumentVisitor {
             title,
             year: 'year' in entry.entryTags ? entry.entryTags.year : 'Unknown',
             publisher: 'publisher' in entry.entryTags ? entry.entryTags.publisher : 'Unknown',
+
+            url: 'url' in entry.entryTags ? entry.entryTags.url : null,
 
             // Remove the entries used above.
             aux: Object.fromEntries(Object.entries(entry.entryTags)

@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { program } from "commander";
 // @ts-ignore
 import {runCompiler} from "../src/index.js";

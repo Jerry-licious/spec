@@ -22,7 +22,13 @@ rendered using MathJax. XyJax provides support for commutative diagrams.
 
 # Setup
 
-TODO after GitHub upload. 
+The project depends on [NodeJS](https://nodejs.org/en/download) v22 or above and `npm` v10 or above. 
+
+Visit the [Releases](https://github.com/Jerry-licious/spec/releases) page to download the newest version of the package,
+which should be named something like `spec-<version>.tgz`. Once the project has been downloaded, run
+```
+npm install -g ./spec-<version>.tgz
+```
 
 
 # Usage

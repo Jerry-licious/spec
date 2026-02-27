@@ -11,6 +11,8 @@ export class ProofRenderer extends NodeRenderer {
     render(node: Node): Node | void {
         if (!match.environment(node, 'proof')) return;
 
+        const proofStart = node.args && node.args[0].content.length ? node.args[0].content : s('Proof. ');
+
         return htmlLike({
             tag: 'div',
             attributes: {
@@ -22,7 +24,7 @@ export class ProofRenderer extends NodeRenderer {
                     attributes: {
                         class: classes.proofIntro,
                     },
-                    content: s('Proof. ')
+                    content: proofStart
                 }),
                 ...node.content,
                 htmlLike({

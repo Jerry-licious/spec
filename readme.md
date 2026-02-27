@@ -3,8 +3,10 @@
 
 # TODO
 
+- Proper documentation.
+- Better build/run commands. 
 - ~~Better search options.~~
-- Custom proof texts ~~Requires additional compiler configuration.~~
+- ~~Custom proof texts~~
 - ~~Custom QED~~ Abandoned due to potential config file confusion.
 - ~~Proper style classes.~~
 - ~~Blocks/chapters/sections should link to themselves when rendered.~~

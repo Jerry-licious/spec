@@ -1,6 +1,6 @@
-import {LinkList} from "~/components/LinkList";
-import {linkHTML, LinkTarget} from "~/db/link-target";
-import {toTagString} from "~/tag";
+import {LinkList} from "../components/LinkList";
+import {linkHTML, LinkTarget} from "../db/link-target";
+import {toTagString} from "../tag";
 
 export interface UnitLinkListProps {
     title?: string,

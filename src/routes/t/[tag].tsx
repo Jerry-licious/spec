@@ -1,9 +1,9 @@
 import {createAsync, useParams} from "@solidjs/router";
-import {UnitPage} from "~/components/UnitPage";
-import {getConfig} from "~/app-data";
+import {UnitPage} from "../../components/UnitPage";
+import {getConfig} from "../../app-data";
 import {ErrorBoundary, Show} from "solid-js";
-import {createGetUnit, getPreamble, getUnit} from "~/app-data-cache";
-import {Page} from "~/components/Page";
+import {createGetUnit, getPreamble, getUnit} from "../../app-data-cache";
+import {Page} from "../../components/Page";
 
 
 export const route = {

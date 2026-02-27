@@ -2,12 +2,12 @@ import './Page.css'
 import {ParentChainDisplay} from "./ParentChainDisplay";
 import {createEffect, JSX, onMount} from "solid-js";
 import {Title} from "@solidjs/meta";
-import {Sidebar} from "~/components/Sidebar";
+import {Sidebar} from "../components/Sidebar";
 import {createAsync} from "@solidjs/router";
-import {getConfig} from "~/app-data";
-import {LinkTarget} from "~/db/link-target";
-import {useDarkTheme} from "~/theme";
-import {Topbar} from "~/components/Topbar";
+import {getConfig} from "../app-data";
+import {LinkTarget} from "../db/link-target";
+import {useDarkTheme} from "../theme";
+import {Topbar} from "../components/Topbar";
 
 
 export interface PageProps {

@@ -1,6 +1,9 @@
-import {Filter} from 'bad-words';
+import { RegExpMatcher, englishDataset, englishRecommendedTransformers } from 'obscenity'
 
-const filter = new Filter();
+const matcher = new RegExpMatcher({
+    ...englishDataset.build(),
+    ...englishRecommendedTransformers,
+});
 
 const codingAlphabet = '0123456789ACDEFGHJKLMNPQRTUVWXYZ';
 const aliases: Record<string, string> = {
@@ -38,7 +41,7 @@ export function fromTagString(s: string): number {
 // Paranoia gets to the best of me.
 export function nextSafeTag(fromInclusive: number): number {
     const tagString = toTagString(fromInclusive);
-    if (filter.isProfane(tagString)) {
+    if (matcher.hasMatch(tagString)) {
         return nextSafeTag(fromInclusive + 1);
     }
     return fromInclusive;

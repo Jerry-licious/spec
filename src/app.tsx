@@ -10,7 +10,7 @@ import "@fontsource-variable/chivo-mono";
 
 import "./app.css";
 import "./colours.css";
-import {DarkThemeProvider} from "~/theme";
+import {DarkThemeProvider} from "./theme";
 
 export default function App() {
     return (

@@ -5,7 +5,7 @@ import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {match} from "@unified-latex/unified-latex-util-match";
 import {s} from "@unified-latex/unified-latex-builder";
 import {ParserLogger} from "../logging-base";
-import {mainPageTag, mainPageType} from "~/unit-types";
+import {mainPageTag, mainPageType} from "../../unit-types";
 
 
 export class MainCollector extends DocumentVisitor {

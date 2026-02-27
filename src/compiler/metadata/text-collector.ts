@@ -1,5 +1,5 @@
 // Produces a set of tags directly referenced by the node.
-import {DocumentVisitor} from "~/compiler/visitor";
+import {DocumentVisitor} from "../../compiler/visitor";
 import {SKIP, VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {match} from "@unified-latex/unified-latex-util-match";
 import {Node} from "@unified-latex/unified-latex-types";

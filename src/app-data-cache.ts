@@ -1,15 +1,13 @@
-import {toLinkTarget, UnitData} from "~/db/unit-data";
-import {getConfig, getUnits} from "~/app-data";
+import {toLinkTarget, UnitData} from "./db/unit-data";
+import {getConfig, getUnits} from "./app-data";
 import {createCachedResource, mutateCachedValue} from "solid-cached-resource";
 import {Accessor, InitializedResourceReturn} from "solid-js";
-import {fromTagString, toTagString} from "~/tag";
-import {getDataSource} from "~/db/db";
+import {fromTagString, toTagString} from "./tag";
+import {getDataSource} from "./db/db";
 import {query} from "@solidjs/router";
-import {BibliographyData} from "~/db/bib-data";
-import {AuxData} from "~/db/aux-data";
-import consola from "consola";
-import {In} from "typeorm";
-import {LinkTarget} from "~/db/link-target";
+import {BibliographyData} from "./db/bib-data";
+import {AuxData} from "./db/aux-data";
+import {LinkTarget} from "./db/link-target";
 
 
 // I doubt someone will be browsing back and forth between bibliography entries, so a query should be sufficient.
@@ -32,7 +30,7 @@ export const getBibliography = query(async (tag: string | number) => {
     }
 
     // Strip the unit of all non-serialisable data.
-    return {...entry};
+    return {...entry} as BibliographyData;
 }, 'bibliography');
 
 

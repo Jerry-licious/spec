@@ -1,8 +1,8 @@
 import './Topbar.css'
 import {createAsync} from "@solidjs/router";
-import {getConfig} from "~/app-data";
-import ThemeToggle from "~/components/ThemeToggle";
-import {SearchBar} from "~/components/SearchBar";
+import {getConfig} from "../app-data";
+import ThemeToggle from "../components/ThemeToggle";
+import {SearchBar} from "../components/SearchBar";
 
 // The top bar is the side bar but for thin viewports.
 export function Topbar() {

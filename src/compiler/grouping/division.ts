@@ -1,6 +1,6 @@
 import {IRUnit} from "./unit";
 import {Node} from "@unified-latex/unified-latex-types";
-import {UnitData} from "~/db/unit-data";
+import {UnitData} from "../../db/unit-data";
 
 
 // Divisions include parts chapters, sections, subsections.

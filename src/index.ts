@@ -3,17 +3,25 @@ import {Compiler} from "./compiler/compiler";
 import {AppDataSource, initialiseDatabase} from "./db";
 import consola from "consola";
 import {In} from "typeorm";
-import {loadConfig} from "~/load-config";
-import {UnitData} from "~/db/unit-data";
-import {BibliographyData} from "~/db/bib-data";
-import {AuxData} from "~/db/aux-data";
+import {loadConfig} from "./load-config";
+import {UnitData} from "./db/unit-data";
+import {BibliographyData} from "./db/bib-data";
+import {AuxData} from "./db/aux-data";
 
 
-async function main() {
+
+export interface CompilerOptionOverride {
+    compileAll: boolean;
+}
+
+
+export async function runCompiler({compileAll}: CompilerOptionOverride ) {
     const config = await loadConfig();
     if (!config) {
         process.exit(0);
     }
+
+    config.compiler.compileAll = config.compiler.compileAll || compileAll;
     
     await initialiseDatabase(config.database);
 
@@ -114,27 +122,8 @@ async function main() {
 
         process.exit(42);
     }
-
-    /*
-    const renderer = unified()
-        .use(new OmitMacro({
-            toOmit: new Set([
-                'label', 'newcommand', 'renewcommand', 'newtheorem', 'bibliographystyle', 'bibliography'
-            ])
-        }).asPlugin())
-        .use(new MathRenderer().asPlugin())
-        .use(new RefRenderer().asPlugin())
-        .use(new CiteRenderer().asPlugin())
-        .use(new BlockRenderer({ blockNames }).asPlugin())
-        .use(new ProofRenderer().asPlugin())
-        .use(unifiedLatexToHast as any)
-        .use(rehypeStringify);
-
-    const node = renderer.runSync(root);
-    console.log(renderer.stringify(node as any));
-    */
 }
 
-main().catch(console.error);
+//runCompiler({compileAll: true}).catch(console.error);
 
 

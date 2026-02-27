@@ -1,8 +1,8 @@
-import {getConfig} from "~/app-data";
-import {getAllBibliography} from "~/app-data-cache";
+import {getConfig} from "../../app-data";
+import {getAllBibliography} from "../../app-data-cache";
 import {createAsync} from "@solidjs/router";
-import {Page} from "~/components/Page";
-import {toTagString} from "~/tag";
+import {Page} from "../../components/Page";
+import {toTagString} from "../../tag";
 import {ErrorBoundary, Show} from "solid-js";
 
 

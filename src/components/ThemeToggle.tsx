@@ -1,4 +1,4 @@
-import {useDarkTheme} from "~/theme";
+import {useDarkTheme} from "../theme";
 import './ThemeToggle.css'
 
 export default function ThemeToggle() {

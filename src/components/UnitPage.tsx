@@ -1,11 +1,11 @@
-import {Page} from "~/components/Page";
+import {Page} from "../components/Page";
 import {createAsync} from "@solidjs/router";
-import {getConfig} from "~/app-data";
-import {mainPageType, shouldDisplayTitle} from "~/unit-types";
+import {getConfig} from "../app-data";
+import {mainPageType, shouldDisplayTitle} from "../unit-types";
 import './UnitPage.css'
-import {UnitLinkList} from "~/components/UnitLinkList";
+import {UnitLinkList} from "../components/UnitLinkList";
 import {createEffect, createMemo, onMount} from "solid-js";
-import {UnitData} from "~/db/unit-data";
+import {UnitData} from "../db/unit-data";
 
 
 export interface UnitPageProps {

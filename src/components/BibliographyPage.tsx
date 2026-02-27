@@ -1,8 +1,8 @@
-import {Page} from "~/components/Page";
+import {Page} from "./Page";
 import {createAsync} from "@solidjs/router";
-import {getConfig} from "~/app-data";
+import {getConfig} from "../app-data";
 import './BibliographyPage.css'
-import {BibliographyData} from "~/db/bib-data";
+import {BibliographyData} from "../db/bib-data";
 import {JSX} from "solid-js";
 
 interface BibliographyPageProps {

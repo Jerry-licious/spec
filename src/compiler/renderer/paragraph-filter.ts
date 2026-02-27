@@ -1,4 +1,4 @@
-import {HastVisitor} from "~/compiler/renderer/transformer";
+import {HastVisitor} from "./transformer";
 import {Element} from "hast";
 
 export class EmptyParagraphFilter extends HastVisitor {

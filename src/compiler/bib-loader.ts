@@ -6,10 +6,10 @@ import {match} from "@unified-latex/unified-latex-util-match";
 import {getArgumentText} from "./util";
 import path, {join} from "node:path";
 import {readFileSync} from "node:fs";
-import {nextSafeTag} from "~/tag";
+import {nextSafeTag} from "../tag";
 import {ParserLogger} from "./logging-base";
-import {AppDataSource} from "~/db";
-import {BibliographyData} from "~/db/bib-data";
+import {AppDataSource} from "../db";
+import {BibliographyData} from "../db/bib-data";
 
 
 const supportedBibliographyStyles = new Set<string>(['plain', 'alpha', 'raw']);

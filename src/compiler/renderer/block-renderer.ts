@@ -6,7 +6,7 @@ import {classes} from "./classes";
 import {s} from '@unified-latex/unified-latex-builder';
 import {wrapPars} from "@unified-latex/unified-latex-to-hast";
 import {ParserLogger} from "../logging-base";
-import {toTagString} from "~/tag";
+import {toTagString} from "../../tag";
 
 export class BlockRenderer extends NodeRenderer {
     blockNames: Map<string, string>;

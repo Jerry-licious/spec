@@ -1,5 +1,5 @@
 // Orchestrates the full parsing process.
-import {SpecConfig} from "~/config";
+import {SpecConfig} from "../config";
 import {ParserLogger} from "./logging-base";
 import consola from "consola";
 import {messageText} from "./error";
@@ -36,9 +36,9 @@ import {
 } from "./renderer";
 import {unifiedLatexToHast} from "@unified-latex/unified-latex-to-hast";
 import rehypeStringify from "rehype-stringify";
-import {documentDividers, macrosToOmit} from "~/unit-types";
-import {UnitData} from "~/db/unit-data";
-import {BibliographyData} from "~/db/bib-data";
+import {documentDividers, macrosToOmit} from "../unit-types";
+import {UnitData} from "../db/unit-data";
+import {BibliographyData} from "../db/bib-data";
 
 
 const divisionMarkers = new Set<string>(documentDividers);

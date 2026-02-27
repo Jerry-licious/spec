@@ -1,6 +1,6 @@
 import './ParentChainDisplay.css'
-import {linkHTML, LinkTarget} from "~/db/link-target";
-import {toTagString} from "~/tag";
+import {linkHTML, LinkTarget} from "../db/link-target";
+import {toTagString} from "../tag";
 
 export interface ParentTreeDisplayProps {
     parentChain: LinkTarget[];

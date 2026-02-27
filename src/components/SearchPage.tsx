@@ -1,9 +1,9 @@
 import {createAsync, useParams} from "@solidjs/router";
-import {getConfig} from "~/app-data";
-import {SearchResult, searchUnits} from "~/app-data-cache";
+import {getConfig} from "../app-data";
+import {SearchResult, searchUnits} from "../app-data-cache";
 import {createMemo, ErrorBoundary, JSX, Show} from "solid-js";
-import {Page} from "~/components/Page";
-import {UnitLinkList} from "~/components/UnitLinkList";
+import {Page} from "../components/Page";
+import {UnitLinkList} from "../components/UnitLinkList";
 import './SearchPage.css'
 
 

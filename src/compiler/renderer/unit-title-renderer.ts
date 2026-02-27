@@ -1,12 +1,11 @@
-import {NodeRenderer} from "~/compiler/renderer/renderer";
+import {NodeRenderer} from "./renderer";
 import {Node} from "@unified-latex/unified-latex-types";
 import {match} from "@unified-latex/unified-latex-util-match";
-import {documentDividersSet} from "~/unit-types";
+import {documentDividersSet} from "../../unit-types";
 import {htmlLike} from "@unified-latex/unified-latex-util-html-like";
-import {toTagString} from "~/tag";
-import {classes} from "~/compiler/renderer/classes";
+import {toTagString} from "../../tag";
+import {classes} from "./classes";
 import {s} from "@unified-latex/unified-latex-builder";
-import consola from "consola";
 
 
 const dividerTags = new Map<string, string>([

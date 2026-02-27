@@ -3,9 +3,9 @@
 
 # TODO
 
-- Custom proof texts
-- Custom QED
-- External links with \hyperref.
+- Better search options. 
+- ~~Custom proof texts~~ Requires additional compiler configuration.
+- ~~Custom QED~~ Abandoned due to potential config file confusion.
 - ~~Proper style classes.~~
 - ~~Blocks/chapters/sections should link to themselves when rendered.~~
 - ~~Thin scrollbars.~~ 

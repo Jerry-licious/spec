@@ -30,7 +30,7 @@ export class ProofRenderer extends NodeRenderer {
                     attributes: {
                         class: classes.qed,
                     },
-                    content: s('$\\box$') // TODO: This might not be the correct QED command, we'll see.
+                    content: s('$\\square$')
                 })
             ])
         });

@@ -50,6 +50,12 @@ export function UnitPage(props: UnitPageProps) {
         if (!mathJax) return;
         (mathJax.startup?.promise ?? Promise.resolve()).then(() => {
             mathJax.typesetClear();
+
+            const preambleElement: HTMLScriptElement | null = document.querySelector('#preamble');
+            if (preambleElement) {
+                mathJax.tex2mml(preambleElement.innerText);
+            }
+
             mathJax.typesetPromise();
         })
     });

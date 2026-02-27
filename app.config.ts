@@ -3,7 +3,7 @@ import babel from 'vite-plugin-babel';
 
 export default defineConfig({
     server: {
-        preset: 'bun'
+        preset: 'node-server'
     },
     // For an explanation of this, see babel.md
     vite: {

@@ -14,6 +14,7 @@
   "scripts": {
     "index": "tsx src/index.ts",
     "dev": "vinxi dev",
+    "build": "vinxi build",
     "start": "vinxi start",
     "version": "vinxi version"
   },

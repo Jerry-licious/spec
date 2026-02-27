@@ -5,7 +5,7 @@ export const classes = {
     blockTitle: 'link-foreground',
     proof: '',
     proofIntro: '',
-    qed: '',
+    qed: 'qed',
     cite: '',
     citeNote: '',
     citeRef: 'link-primary',

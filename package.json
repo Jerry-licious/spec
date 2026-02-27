@@ -1,6 +1,6 @@
 {
   "name": "spec",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "main": "dist/index.js",
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.13",
@@ -14,11 +14,10 @@
   "files": [".output", "bin", "src"],
   "scripts": {
     "index": "tsx src/index.ts",
-    "dev": "vinxi dev",
-    "build": "vinxi build",
+    "compile": "node dist/bin/cli.js compile",
+    "build": "tsc --project tsconfig.cli.json && vinxi build",
     "start": "vinxi start",
-    "version": "vinxi version",
-    "prepack": "tsc && vinxi build"
+    "prepack": "tsc --project tsconfig.cli.json && vinxi build"
   },
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.18.6",

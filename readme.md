@@ -199,3 +199,13 @@ when cited, may be rendered as [Theorem 1, [1](#)]. However, if the reference is
 ```
 
 then it will be rendered as [Theorem 1, [Book](#)].
+
+
+# Roadmap
+
+The following are features that I am _considering_ to add to the project in the future, which may not be implemented 
+due to reasons ranging from being occupied to being incompetent. 
+
+- Tikz rendering from the server. 
+- Server side MathJax rendering option.
+

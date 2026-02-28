@@ -9,3 +9,4 @@ export { NodeRenderer } from "./renderer";
 export { EmptyParagraphFilter } from './paragraph-filter'
 export { HastVisitor } from './transformer'
 export { UnitTitleRenderer } from './unit-title-renderer'
+export { ItemNumberer } from './item-numberer'

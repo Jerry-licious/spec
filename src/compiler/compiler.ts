@@ -28,7 +28,7 @@ import {unified} from "unified";
 import {
     BlockRenderer,
     CiteRenderer,
-    EmptyParagraphFilter,
+    EmptyParagraphFilter, ItemNumberer,
     MathRenderer,
     OmitMacro,
     ProofRenderer,
@@ -150,6 +150,8 @@ export class Compiler {
         this.assignLabels();
         this.assignTags();
         this.numberUnits();
+
+        this.numberEnumerates();
 
         this.assignLinks();
         this.assignBlockMetadata();
@@ -428,6 +430,21 @@ export class Compiler {
         numberer.process(this.documentRoot!);
 
         const messageContent = `Finished assigning numbers to divisions and blocks with ${numberLogger.numErrors} errors and ${numberLogger.numWarnings} warnings.`;
+        if (numberLogger.numErrors > 0) {
+            this.logger.error(messageContent);
+        } else {
+            this.logger.success(messageContent);
+        }
+    }
+
+    numberEnumerates() {
+        const numberLogger = new ParserLogger({ parent: this.logger });
+        numberLogger.info('Assigning numbers to enumerate items.');
+
+        const numberer = new ItemNumberer({ logger: numberLogger });
+        numberer.process(this.documentRoot!);
+
+        const messageContent = `Finished assigning numbers to enumerate items with ${numberLogger.numErrors} errors and ${numberLogger.numWarnings} warnings.`;
         if (numberLogger.numErrors > 0) {
             this.logger.error(messageContent);
         } else {

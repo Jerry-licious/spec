@@ -1,7 +1,7 @@
 .unit-content-container {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 0.5rem;
 }
 
 .unit-sidebar {
@@ -20,4 +20,14 @@
     flex: 1;
     overflow-y: auto;
     min-height: 0;
+}
+
+
+.enumerate {
+    margin: 0;
+
+
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }

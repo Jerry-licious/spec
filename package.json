@@ -3,6 +3,7 @@
   "version": "0.1.1",
   "main": "dist/index.js",
   "devDependencies": {
+    "@types/async-lock": "^1.4.2",
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^25.2.0",
     "sql.js": "^1.13.0",
@@ -11,7 +12,11 @@
   },
   "description": "",
   "private": true,
-  "files": [".output", "bin", "src"],
+  "files": [
+    ".output",
+    "bin",
+    "src"
+  ],
   "scripts": {
     "index": "tsx src/index.ts",
     "compile": "node dist/bin/cli.js compile",
@@ -37,8 +42,10 @@
     "@unified-latex/unified-latex-to-hast": "^1.8.3",
     "@unified-latex/unified-latex-types": "^1.8.0",
     "@unified-latex/unified-latex-util-parse": "^1.8.3",
+    "async-lock": "^1.4.1",
     "babel-preset-solid": "^1.9.10",
     "better-sqlite3": "^12.6.2",
+    "chokidar": "^5.0.0",
     "commander": "^14.0.3",
     "computer-modern": "^0.1.3",
     "consola": "^3.4.2",

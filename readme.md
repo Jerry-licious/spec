@@ -33,6 +33,8 @@ npm install -g ./spec-<version>.tgz
 
 # Usage
 
+### Compile
+
 To compile your project, run
 ```
 npx spec compile
@@ -42,6 +44,8 @@ in your project directory. To ensure that all tags are recompiled, use
 npx spec compile --all
 ```
 
+### Server
+
 To start the server, run
 ```
 npx spec serve
@@ -50,6 +54,16 @@ which will start a server on `localhost:3000`. To specify a port, use
 ```
 npx spec serve -p <port>
 ```
+
+
+### Watch
+
+When writing up a document, it may be convenient to have the server on your computer, and compile the document whenever
+a change occurs. Using
+```
+npx spec watch
+```
+will start the server and recompile the document automatically when something is changed. 
 
 #### Exit Codes
 

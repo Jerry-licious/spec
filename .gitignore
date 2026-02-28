@@ -15,3 +15,8 @@ yarn-error.log*
 .vscode/*
 .idea
 .DS_Store
+
+spec.db
+spec.toml
+*.tgz
+*.tex

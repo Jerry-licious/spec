@@ -2,7 +2,9 @@
 
 import { program } from "commander";
 // @ts-ignore
-import {runCompiler} from "../src/index.js";
+import {CompilerOptionOverride, runCompiler} from "../src/index.js";
+import AsyncLock from 'async-lock'
+import chokidar from "chokidar";
 
 
 program.command('serve')
@@ -20,9 +22,44 @@ program.command('serve')
 
 program.command('compile')
     .description('Compiles the website.')
-    .option('--all', 'Force the compiler to rerender every unit, even those that have already been compiled before.', false)
+    .option('--all', 'Force the compiler to rerender every unit, even those that have not changed since the last render.', false)
     .action(async (opts) => {
-        await runCompiler(opts.all);
+        await runCompiler({
+            compileAll: opts.all
+        });
     });
+
+
+const compileLock = new AsyncLock({maxPending: 2});
+function compile(options: CompilerOptionOverride) {
+    compileLock.acquire('compile', () => runCompiler(options)).catch(() => {});
+}
+
+program.command('watch')
+    .description('Starts the server on the given port, and will recompile the website whenever any change is detected in the current directory.')
+    .option('-p, --port <port>', 'Port of the server', (val) => {
+        const n = parseInt(val);
+        if (isNaN(n)) throw new Error('Port must be an integer.');
+        return n;
+    }, 3000)
+    .option('--compileAll', 'Force the compiler to rerender every unit, even those that have already been compiled before.', false)
+    .action(async (opts) => {
+        process.env.PORT = String(opts.port);
+        // @ts-ignore
+        import('../../.output/server/index.mjs');
+
+        console.log('This is going to fire, right?');
+
+        chokidar.watch('.', {
+            ignoreInitial: true,
+            ignored: (path, stats) => !!stats?.isFile() && !/\.(tex|sty|bib)$/.test(path)
+        }).on('add', () => compile({
+            compileAll: opts.all
+        })).on('change', () => compile({
+            compileAll: opts.all
+        })).on('unlink', () => compile({
+            compileAll: opts.all
+        }))
+    })
 
 program.parse();

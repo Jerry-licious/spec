@@ -1,6 +1,7 @@
-# v0.1.2
+# v0.1.2, 2026-02-28
 
 - Added a bit of documentation on commutative diagrams. 
+- Added the `watch` command.
 
 # v0.1.1, 2026-02-27
 

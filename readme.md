@@ -173,6 +173,16 @@ the final `renewcommand` will take effect. For example,
 will produce two copies of `Hello` as opposed to one `Hi` and one `Hello`. 
 
 
+## Commutative Diagrams
+
+As of now, there is no direct support of Tikz in MathJax, which is why commutative diagrams must come from 
+[amscd](https://www.jmilne.org/not/Mamscd.pdf) or 
+[XY-pic](https://mirror.quantum5.ca/CTAN/macros/generic/diagrams/xypic/doc/xyguide.pdf). 
+
+Thanks to [Manh Tien Nguyen](https://darknmt.github.io/html/index.html), there is a 
+[visual editor](https://darknmt.github.io/res/xypic-editor/) for XY-pic, which may come in handy.
+
+
 ## Packages
 
 While specific features of specific packages are occasionally supported by the compiler (which will be stated in this 
@@ -227,4 +237,6 @@ due to reasons ranging from being occupied to being incompetent.
 
 - Tikz rendering from the server. 
 - Server side MathJax rendering option.
+- Watch command for automatic rerendering. 
+- Ability to include images.
 

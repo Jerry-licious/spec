@@ -8,7 +8,7 @@ import {AuxData} from "../db/aux-data";
 import {join, resolve} from "node:path";
 
 export let AppDataSource: DataSource;
-
+let dataSourcePromise: Promise<DataSource> | null = null;
 
 export async function getDataSource(): Promise<DataSource> {
     if (AppDataSource && AppDataSource.isInitialized) return AppDataSource;
@@ -17,13 +17,15 @@ export async function getDataSource(): Promise<DataSource> {
         await loadConfig();
     }
 
-    await initialiseDatabase(resolve(process.cwd(), config.database));
+    if (dataSourcePromise) return dataSourcePromise;
 
-    return AppDataSource;
+    dataSourcePromise = initialiseDatabase(resolve(process.cwd(), config.database));
+
+    return dataSourcePromise;
 }
 
 
-export async function initialiseDatabase(dbPath: string) {
+export async function initialiseDatabase(dbPath: string): Promise<DataSource> {
     try {
         consola.start(`Initialising database from ${dbPath}.`);
 
@@ -33,9 +35,11 @@ export async function initialiseDatabase(dbPath: string) {
             entities: [UnitData, BibliographyData, AuxData],
             synchronize: true,
         });
-        await AppDataSource.initialize();
+        const result = await AppDataSource.initialize();
 
         consola.success(`Successfully initialised database.`);
+
+        return result;
     } catch (error) {
         consola.error('Failed to initialize database.');
         console.error(error);

@@ -120,7 +120,14 @@ to [HTML Colour Codes](https://htmlcolorcodes.com/color-chart/tailwind-color-cha
 
 
 
-# LaTeX 
+# LaTeX
+
+## Inputs
+
+Files may include the content of other files using the `\input{file_name}` command, which will try to find and load 
+`file_name.tex`. The path in `\input` is relative to the file containing it: for example, if `folder/file.tex` contains
+`\input{other}`, then the compiler will read `folder/other.tex` as opposed to `other.tex` from the project root. 
+
 
 ## Theorem Environments
 
@@ -171,6 +178,12 @@ will produce two copies of `Hello` as opposed to one `Hi` and one `Hello`.
 While specific features of specific packages are occasionally supported by the compiler (which will be stated in this 
 document), **absolutely no** LaTeX packages are expected to work with this compiler. The only way to add features is 
 to modify the compiler itself. 
+
+Preambles consisting of custom commands may be imported using the `\usepackage{file_name}` command, which will look for
+`file_name.sty`. Note that commands such as `NeedsTeXFormat` and `ProvidesPackage` are not recognised at all by the 
+compiler. As a result, their arguments will show up on the website. As of now, there is no way to prevent this from
+happening, so please comment these commands out.
+
 
 
 ## Bibliography

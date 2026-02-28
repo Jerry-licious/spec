@@ -2,6 +2,7 @@
 
 - Fixed a bug where the website is not initialised properly. 
 - Adjusted the rendering of `\enumerate` labels. 
+- Added documentation on custom packages and file imports. 
 
 
 

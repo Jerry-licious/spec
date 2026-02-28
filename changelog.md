@@ -2,6 +2,7 @@
 
 - Fixed a bug where theorem counters are not accounted for properly.
 - Fixed a bug where `document` environments are not expanded correctly.
+- Adjusted page width and text spacing.
 
 # v0.1.2, 2026-02-28
 

@@ -15,7 +15,8 @@
   "files": [
     ".output",
     "bin",
-    "src"
+    "src",
+    "dist"
   ],
   "scripts": {
     "index": "tsx src/index.ts",

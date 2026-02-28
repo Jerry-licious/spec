@@ -6,6 +6,7 @@ import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {match} from "@unified-latex/unified-latex-util-match";
 import {ParserLogger} from "../logging-base";
 import {documentDividers} from "../../unit-types";
+import consola from "consola";
 
 export class Numberer extends DocumentVisitor {
     // Association between commands and their corresponding counters.
@@ -26,7 +27,8 @@ export class Numberer extends DocumentVisitor {
         if (macroCounters && ![...macroCounters.keys()].every((k) => countManager.hasCounter(k))) {
             throw new Error('Not all referenced macro counters exist in the manager.')
         }
-        if (environmentCounters && ![...environmentCounters.keys()].every((k) => countManager.hasCounter(k))) {
+
+        if (environmentCounters && ![...environmentCounters.values()].every((k) => countManager.hasCounter(k))) {
             throw new Error('Not all referenced environment counters exist in the manager.')
         }
 

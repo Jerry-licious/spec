@@ -1,7 +1,7 @@
 # v0.1.3, 2026-02-28
 
 - Fixed a bug where theorem counters are not accounted for properly.
-
+- Fixed a bug where `document` environments are not expanded correctly.
 
 # v0.1.2, 2026-02-28
 

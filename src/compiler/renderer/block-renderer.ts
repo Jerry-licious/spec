@@ -27,6 +27,11 @@ export class BlockRenderer extends NodeRenderer {
         const blockName = this.blockNames.get(node.env)!!;
         const blockTitle = node.meta.title ?? [];
 
+        // Get rid of the first parbreak so lemma declarations and contents start in the same paragraph.
+        if (node.content.length && match.parbreak(node.content[0])) {
+            node.content.shift();
+        }
+
         return htmlLike({
             tag: 'div',
             attributes: {

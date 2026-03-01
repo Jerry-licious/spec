@@ -4,6 +4,7 @@
 - Fixed a bug where `document` environments are not expanded correctly.
 - Adjusted page width and text spacing.
 - XyJax diagrams now render somewhat properly in dark mode. 
+- Block environment titles and their content now start in the same paragraph. 
 
 # v0.1.2, 2026-02-28
 

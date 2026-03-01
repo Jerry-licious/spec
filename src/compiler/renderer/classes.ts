@@ -1,9 +1,9 @@
 export const classes = {
     ref: 'link-primary',
     displayEquation: '',
-    blockEnvironment: '',
+    blockEnvironment: 'block-container',
     blockTitle: 'link-foreground',
-    proof: '',
+    proof: 'proof',
     proofIntro: '',
     qed: 'qed',
     cite: '',

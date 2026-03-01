@@ -1,7 +1,7 @@
 .unit-content-container {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 2rem;
 }
 
 .unit-sidebar {
@@ -26,9 +26,16 @@
 .enumerate {
     margin-top: 0;
     margin-bottom: 0;
-    margin-left: 2rem;
+    margin-left: 1.5rem;
 
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 1rem;
+}
+
+
+.block-container, .proof {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }

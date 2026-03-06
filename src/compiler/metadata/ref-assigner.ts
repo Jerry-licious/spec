@@ -117,7 +117,7 @@ export class RefAssigner extends DocumentVisitor {
         // Note that while hyperref does not require looking up the target node to function, I believe that catching an
         // ill-defined reference is still beneficial.
         node.refMeta = {
-            targetTag, text: getArgumentText(node.args[0])
+            targetTag, text: node.args[0].content
         };
     }
 }

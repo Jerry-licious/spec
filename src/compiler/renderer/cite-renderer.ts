@@ -41,7 +41,7 @@ export class CiteRenderer extends NodeRenderer {
                         class: classes.citeRef,
                         href: `/b/${toTagString(node.refMeta.targetTag)}`
                     },
-                    content: s(node.refMeta.text)
+                    content: typeof node.refMeta.text === 'string' ? s(node.refMeta.text) : node.refMeta.text
                 }),
                 s(']')
             ]

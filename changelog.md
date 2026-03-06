@@ -1,6 +1,7 @@
 # v0.1.3
 
 - Removed warnings for missing equation labels.
+- Added support for tex commands in link texts.
 
 
 # v0.1.2, 2026-02-28

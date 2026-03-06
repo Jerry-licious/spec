@@ -23,10 +23,10 @@ export class RefRenderer extends NodeRenderer {
                 href: `/t/${toTagString(node.refMeta.targetTag)}`,
                 class: classes.ref
             },
-            content: {
+            content: typeof node.refMeta.text === 'string' ? {
                 type: "string",
                 content: node.refMeta.text
-            }
+            } : node.refMeta.text
         });
     }
 }

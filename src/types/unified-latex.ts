@@ -17,7 +17,7 @@ export interface TheoremMetadata extends LabeledElementMetadata {
 export interface RefMetadata {
     // Since the ref metadata is created in one step, the fields here will not be optional.
     targetTag: number;
-    text: string; // I find it to be a bit annoying to support tex for the ref argument, so I won't.
+    text: Node[] | string;
 }
 
 

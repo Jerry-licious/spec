@@ -48,8 +48,6 @@ program.command('watch')
         // @ts-ignore
         import('../../.output/server/index.mjs');
 
-        console.log('This is going to fire, right?');
-
         chokidar.watch('.', {
             ignoreInitial: true,
             ignored: (path, stats) => !!stats?.isFile() && !/\.(tex|sty|bib)$/.test(path)

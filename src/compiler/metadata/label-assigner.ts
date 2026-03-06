@@ -2,6 +2,7 @@ import {DocumentVisitor} from "../visitor";
 import {Macro, Node} from "@unified-latex/unified-latex-types";
 import {getArgumentText, getContext} from "../util";
 import {ParserLogger} from "../logging-base";
+import {match} from "@unified-latex/unified-latex-util-match";
 
 export abstract class LabelAssigner extends DocumentVisitor {
     witnessedLabels: Set<string>;
@@ -35,6 +36,8 @@ export abstract class LabelAssigner extends DocumentVisitor {
 
     assignLabel(node: Node, label: string | undefined): void {
         if (!label) {
+            // Only warn if the node is not a math block.
+            if (match.math(node) && node.type === "displaymath") return;
             this.addWarning('Node received no label.');
             return;
         }

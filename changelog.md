@@ -1,3 +1,8 @@
+# v0.1.3
+
+- Removed warnings for missing equation labels.
+
+
 # v0.1.2, 2026-02-28
 
 - Fixed a bug where theorem counters are not accounted for properly.

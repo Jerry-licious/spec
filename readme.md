@@ -18,6 +18,8 @@ to say, this project would not be possible without Gerby.
 multiple passes through the syntax tree to gather and create metadata, and output HTML.
 - [MathJax](https://www.mathjax.org/) and [XyJax](https://github.com/sonoisa/XyJax-v3): All math on the website are 
 rendered using MathJax. XyJax provides support for commutative diagrams. 
+- [TikZJax](https://tikzjax.com/) and [Node TikZJax](https://github.com/prinsss/node-tikzjax): TikzJax provides support
+for commutative diagrams.
 
 
 # Setup

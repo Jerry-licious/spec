@@ -7,7 +7,7 @@ const importEverything = `
 `;
 
 const additionalPreamble = `
-\\AtBeginDocument{\\fontsize{14}{16}\\selectfont}
+\\AtBeginDocument{\\fontsize{12}{16}\\selectfont}
 `;
 
 const tikzLibraries = "calc,decorations.pathmorphing";

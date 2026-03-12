@@ -19,7 +19,9 @@ export function Sidebar(props: SidebarProps) {
         <a href={'/b'} class={'link-primary'}>Bibliography</a>
         <ThemeToggle/>
         <SearchBar/>
-        {props.children}
+        <div class={'sidebar-content'}>
+            {props.children}
+        </div>
         <div class={'advertise-spec'}>
             <a href={githubLink} target="_blank" rel="noopener noreferrer">Powered by Spec</a>
         </div>

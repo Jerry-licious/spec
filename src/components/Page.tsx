@@ -8,6 +8,7 @@ import {getConfig} from "../app-data";
 import {LinkTarget} from "../db/link-target";
 import {useDarkTheme} from "../theme";
 import {Topbar} from "../components/Topbar";
+import {githubLink} from "../about";
 
 
 export interface PageProps {
@@ -54,6 +55,9 @@ export function Page(props: PageProps) {
                     </div>
                     <div class={'thin-sidebar-content'}>
                         {props.sidebarContent}
+                        <div class={'advertise-spec'}>
+                            <a href={githubLink} target="_blank" rel="noopener noreferrer">Powered by Spec</a>
+                        </div>
                     </div>
                 </article>
                 <Sidebar>

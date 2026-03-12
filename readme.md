@@ -190,8 +190,26 @@ will produce two copies of `Hello` as opposed to one `Hi` and one `Hello`.
 
 ## Commutative Diagrams
 
-As of now, there is no direct support of Tikz in MathJax, which is why commutative diagrams must come from 
-[amscd](https://www.jmilne.org/not/Mamscd.pdf) or 
+
+### TikZ
+
+TikZ is supported in a very specific way: blocks of the form
+
+```
+\[
+\begin{tikzcd}
+...
+\end{tikzcd}
+\]
+```
+
+Not all TikZ/quiver functions are supported, due to a lack of `spath3` support by TikZJax. 
+
+Using TikZ may dramatically increase the compile time. 
+
+### MathJax/XyPic
+
+Alternatively, commutative diagrams may be defined using [amscd](https://www.jmilne.org/not/Mamscd.pdf) or 
 [XY-pic](https://mirror.quantum5.ca/CTAN/macros/generic/diagrams/xypic/doc/xyguide.pdf). 
 
 Thanks to [Manh Tien Nguyen](https://darknmt.github.io/html/index.html), there is a 
@@ -250,7 +268,6 @@ then it will be rendered as [Theorem 1, [Book](#)].
 The following are features that I am _considering_ to add to the project in the future, which may not be implemented 
 due to reasons ranging from being occupied to being incompetent. 
 
-- Tikz rendering from the server. 
 - Server side MathJax rendering option.
 - Watch command for automatic rerendering. 
 - Ability to include images.

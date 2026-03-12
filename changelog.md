@@ -1,6 +1,7 @@
 # ???
 
 - Added a limit on searches. 
+- Added support for TikZ figures.
 
 
 # v0.1.3, 2026-03-11

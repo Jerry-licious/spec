@@ -39,6 +39,7 @@ import rehypeStringify from "rehype-stringify";
 import {documentDividers, macrosToOmit} from "../unit-types";
 import {UnitData} from "../db/unit-data";
 import {BibliographyData} from "../db/bib-data";
+import {TikzExtractor} from "./renderer/tikz-extractor";
 
 
 const divisionMarkers = new Set<string>(documentDividers);
@@ -184,7 +185,10 @@ export class Compiler {
             .use(new OmitMacro({
                 toOmit: macrosToOmit
             }).asPlugin())
-            .use(new MathRenderer({ logger: renderingLogger }).asPlugin())
+            .use(new MathRenderer({
+                logger: renderingLogger,
+                preambleDump: [...this.rawMacros.values()].join('\n')
+            }).asPlugin())
             .use(new UnitTitleRenderer({ logger: renderingLogger }).asPlugin())
             .use(new RefRenderer({ logger: renderingLogger }).asPlugin())
             .use(new CiteRenderer({ logger: renderingLogger }).asPlugin())
@@ -195,7 +199,8 @@ export class Compiler {
             .use(new ProofRenderer({ logger: renderingLogger }).asPlugin())
             .use(unifiedLatexToHast as any)
             .use(new EmptyParagraphFilter({ logger: renderingLogger }).asPlugin())
-            .use(rehypeStringify);
+            .use(new TikzExtractor({ logger: renderingLogger }).asPlugin())
+            .use(rehypeStringify, { allowDangerousHtml: true });
 
         this.renderToHTML = (node: Node) => {
             return renderer.stringify(renderer.runSync(node) as any);

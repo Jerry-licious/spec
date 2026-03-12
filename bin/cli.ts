@@ -8,7 +8,7 @@ import chokidar from "chokidar";
 import consola from "consola";
 
 
-const version = "v0.1.3";
+const version = "v0.1.4";
 
 
 program.command('serve')

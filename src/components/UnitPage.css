@@ -57,6 +57,7 @@ As a result, this quick and dirty transform is the only thing I can do to it as 
     display: flex;
     flex-direction: row;
     justify-content: center;
+    user-select: none;
 }
 
 .dark .tikz-container svg {

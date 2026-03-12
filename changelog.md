@@ -2,6 +2,7 @@
 
 - Added a limit on searches. 
 - Added support for TikZ figures.
+- Fixed an inconsistency in search bar styling.
 
 
 # v0.1.3, 2026-03-11

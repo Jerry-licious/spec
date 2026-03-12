@@ -30,3 +30,27 @@
         display: none;
     }
 }
+
+.advertise-spec {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.advertise-spec a {
+    font-size: 0.8rem;
+    text-decoration: none;
+    color: var(--neutral-500);
+}
+
+.advertise-spec a:hover {
+    text-decoration: underline;
+}
+
+.light .advertise-spec a:hover {
+    color: var(--primary-600);
+}
+.dark .advertise-spec a:hover {
+    color: var(--primary-400);
+}
+

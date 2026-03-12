@@ -23,7 +23,7 @@
 .dark .link-primary {
     color: var(--primary-400);
 }
-.darl .link-primary:hover {
+.dark .link-primary:hover {
     color: var(--primary-300);
 }
 .light .link-primary {

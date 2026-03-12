@@ -2,8 +2,9 @@ import {JSX} from "solid-js";
 import './Sidebar.css'
 import {createAsync} from "@solidjs/router";
 import {getConfig} from "../app-data";
-import {SearchBar} from "../components/SearchBar";
+import {SearchBar} from "./SearchBar";
 import ThemeToggle from "../components/ThemeToggle";
+import {githubLink} from "../about";
 
 export interface SidebarProps {
     children: JSX.Element | JSX.Element[] | string;
@@ -19,5 +20,8 @@ export function Sidebar(props: SidebarProps) {
         <ThemeToggle/>
         <SearchBar/>
         {props.children}
+        <div class={'advertise-spec'}>
+            <a href={githubLink} target="_blank" rel="noopener noreferrer">Powered by Spec</a>
+        </div>
     </div>
 }

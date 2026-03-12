@@ -118,7 +118,7 @@
 */
 @media (width > 65rem) {
     .thin-sidebar-content {
-        display: none;
+        display: none !important;
     }
 }
 

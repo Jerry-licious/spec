@@ -22,8 +22,10 @@ export function Sidebar(props: SidebarProps) {
         <div class={'sidebar-content'}>
             {props.children}
         </div>
-        <div class={'advertise-spec'}>
-            <a href={githubLink} target="_blank" rel="noopener noreferrer">Powered by Spec</a>
-        </div>
+        {
+            config()?.website.advertiseSpec ? <div class={'advertise-spec'}>
+                <a href={githubLink} target="_blank" rel="noopener noreferrer">Powered by Spec</a>
+            </div> : null
+        }
     </div>
 }

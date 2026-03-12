@@ -55,9 +55,11 @@ export function Page(props: PageProps) {
                     </div>
                     <div class={'thin-sidebar-content'}>
                         {props.sidebarContent}
-                        <div class={'advertise-spec'}>
-                            <a href={githubLink} target="_blank" rel="noopener noreferrer">Powered by Spec</a>
-                        </div>
+                        {
+                            config()?.website.advertiseSpec ? <div class={'advertise-spec'}>
+                                <a href={githubLink} target="_blank" rel="noopener noreferrer">Powered by Spec</a>
+                            </div> : null
+                        }
                     </div>
                 </article>
                 <Sidebar>

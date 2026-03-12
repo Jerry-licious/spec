@@ -1,3 +1,8 @@
+# ???
+
+- Added a limit on searches. 
+
+
 # v0.1.3, 2026-03-11
 
 - Removed warnings for missing equation labels.

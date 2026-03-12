@@ -127,6 +127,7 @@ to. May slow down the compiler significantly when there is a large number of tag
 - `neutralColour`: Used to colour background, lines, and shade elements. Must be one of `slate`, `grey`, `zinc`, 
 `stone`. These colours can hardly be distinguished in light mode, but are more different in dark mode. 
 - `searchLimit`: Maximum amount of search results to display per page. 
+- `maxSearchPages`: Maximum number of pages for searches. 
 
 The colour scheme is taken from [Tailwind](https://tailwindcss.com/docs/colors), thanks 
 to [HTML Colour Codes](https://htmlcolorcodes.com/color-chart/tailwind-color-chart/). The `grey` here refers to the 

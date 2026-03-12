@@ -89,7 +89,8 @@ export const searchUnits = query(async (term: string, index: number): Promise<Se
     INNER JOIN units_fts ON units_fts.rowid = u.tag
     WHERE units_fts MATCH ?
     ORDER BY units_fts.rank
-    `, [term]))
+    LIMIT ?
+    `, [term, config.website.searchLimit * config.website.maxSearchPages]))
         .map((u) => toLinkTarget(u));
 
     return {

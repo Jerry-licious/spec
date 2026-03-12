@@ -19,6 +19,7 @@ export const SpecConfigSchema = z.object({
             'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose']).default('blue'),
         neutralColour: z.enum(['slate', 'grey', 'zinc', 'stone']).default('grey'),
         searchLimit: z.int().min(1).default(16),
+        maxSearchPages: z.int().min(1).default(48),
     }).prefault({})
 });
 

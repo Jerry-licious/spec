@@ -270,6 +270,6 @@ The following are features that I am _considering_ to add to the project in the 
 due to reasons ranging from being occupied to being incompetent. 
 
 - Server side MathJax rendering option.
-- Watch command for automatic rerendering. 
 - Ability to include images.
+- Left side bar as index?
 

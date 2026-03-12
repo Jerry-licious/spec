@@ -55,9 +55,13 @@ export class BlockRenderer extends NodeRenderer {
                                 ...blockTitle,
                                 s(')')
                             ] : [],
-                            s('. ')
+                            s('.')
                         ]
                     })
+                }),
+                htmlLike({
+                    tag: 'span',
+                    content: s(' ')
                 }),
                 ...node.content
             ])

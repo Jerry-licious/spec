@@ -5,6 +5,7 @@
 - Fixed an inconsistency in search bar styling.
 - Added self-promotion. 
 - Added version self-reporting.
+- Slightly adjusted block rendering. 
 
 
 # v0.1.3, 2026-03-11

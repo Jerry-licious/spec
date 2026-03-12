@@ -23,6 +23,7 @@
     "compile": "node dist/bin/cli.js compile",
     "build": "tsc --project tsconfig.cli.json && vinxi build",
     "start": "vinxi start",
+    "dev": "vinxi dev",
     "prepack": "tsc --project tsconfig.cli.json && vinxi build"
   },
   "dependencies": {

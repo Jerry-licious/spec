@@ -5,6 +5,10 @@ import { program } from "commander";
 import {CompilerOptionOverride, runCompiler} from "../src/index.js";
 import AsyncLock from 'async-lock'
 import chokidar from "chokidar";
+import consola from "consola";
+
+
+const version = "v0.1.3";
 
 
 program.command('serve')
@@ -15,6 +19,8 @@ program.command('serve')
         return n;
     }, 3000)
     .action(async (opts) => {
+        consola.info(`Spec ${version}. Starting the server...`);
+        
         process.env.PORT = String(opts.port);
         // @ts-ignore
         await import('../../.output/server/index.mjs');
@@ -24,10 +30,16 @@ program.command('compile')
     .description('Compiles the website.')
     .option('--all', 'Force the compiler to rerender every unit, even those that have not changed since the last render.', false)
     .action(async (opts) => {
+        consola.info(`Spec ${version}. Starting the compiler...`);
+        
         await runCompiler({
             compileAll: opts.all
         });
     });
+
+program.command('version')
+    .description("Displays the current version.")
+    .action(() => consola.info("Spec {version}"));
 
 
 const compileLock = new AsyncLock({maxPending: 2});
@@ -45,6 +57,9 @@ program.command('watch')
     .option('--compileAll', 'Force the compiler to rerender every unit, even those that have already been compiled before.', false)
     .action(async (opts) => {
         process.env.PORT = String(opts.port);
+
+        consola.info(`Spec ${version}. Watching the current directory...`);
+        
         // @ts-ignore
         import('../../.output/server/index.mjs');
 

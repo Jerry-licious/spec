@@ -1,13 +1,13 @@
 import './Page.css'
 import {ParentChainDisplay} from "./ParentChainDisplay";
-import {createEffect, JSX, onMount} from "solid-js";
+import {createEffect, JSX} from "solid-js";
 import {Title} from "@solidjs/meta";
-import {Sidebar} from "../components/Sidebar";
+import {Sidebar} from "./Sidebar";
 import {createAsync} from "@solidjs/router";
 import {getConfig} from "../app-data";
 import {LinkTarget} from "../db/link-target";
 import {useDarkTheme} from "../theme";
-import {Topbar} from "../components/Topbar";
+import {Topbar} from "./Topbar";
 import {githubLink} from "../about";
 
 

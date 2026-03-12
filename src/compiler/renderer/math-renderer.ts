@@ -8,7 +8,7 @@ import {htmlLike} from "@unified-latex/unified-latex-util-html-like";
 import {classes} from "./classes";
 import {ParserLogger} from "../logging-base";
 
-import {createSyncFn, runAsWorker} from "synckit";
+import {createSyncFn} from "synckit";
 import { resolve } from 'path';
 
 const tikz2Svg = createSyncFn(

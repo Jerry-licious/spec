@@ -2,7 +2,7 @@
 
 import { program } from "commander";
 // @ts-ignore
-import {CompilerOptionOverride, runCompiler} from "../src/index.js";
+import {CompilerOptionOverride, runCompiler} from "../src";
 import AsyncLock from 'async-lock'
 import chokidar from "chokidar";
 import consola from "consola";

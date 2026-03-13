@@ -1,3 +1,8 @@
+# Unreleased
+
+- Slightly nudged some element spacing.
+
+
 # v0.1.4, 2026-03-12
 
 - Added a limit on searches. 

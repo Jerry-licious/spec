@@ -1,4 +1,4 @@
-# Unreleased
+# v0.1.5, 2026-03-13
 
 - Slightly nudged some element spacing.
 - Fixed a bug where the primary colour config does not apply. 

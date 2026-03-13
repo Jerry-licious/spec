@@ -1,6 +1,6 @@
 import './Page.css'
 import {ParentChainDisplay} from "./ParentChainDisplay";
-import {createEffect, JSX} from "solid-js";
+import {createEffect, createMemo, JSX} from "solid-js";
 import {Title} from "@solidjs/meta";
 import {Sidebar} from "./Sidebar";
 import {createAsync} from "@solidjs/router";
@@ -27,15 +27,15 @@ export function Page(props: PageProps) {
     const config = createAsync(() => getConfig());
     const [darkTheme] = useDarkTheme();
 
-    const primaryColourClass = config() ? `primary-${config()?.website.primaryColour}` : 'primary-blue';
-    const neutralColourClass = config() ? `neutral-${config()?.website.neutralColour}` : 'neutral-grey';
+    const primaryColourClass = createMemo(() => config() ? `primary-${config()?.website.primaryColour}` : 'primary-blue');
+    const neutralColourClass = createMemo(() => config() ? `neutral-${config()?.website.neutralColour}` : 'neutral-grey');
 
     createEffect(() => {
         (window as any).MathJax?.startup?.promise
             ?.then(() => (window as any).MathJax.typesetPromise());
     });
 
-    return <div class={`main-container ${darkTheme() ? 'dark' : 'light'} ${primaryColourClass} ${neutralColourClass}`}>
+    return <div class={`main-container ${darkTheme() ? 'dark' : 'light'} ${primaryColourClass()} ${neutralColourClass()}`}>
         <Title>{props.titleText}</Title>
         <div class={`page-container ${config()?.website.font}`}>
             <Topbar/>

@@ -17,6 +17,8 @@ export class ReferenceCollector extends DocumentVisitor {
     visit(node: Node, visitInfo: VisitInfo): void {
         // For tag references, bibliography will be ignored.
         if (!(match.macro(node) && refCommands.has(node.content) && node.refMeta)) return;
+        if (node.refMeta.targetTag < 0) return;
+
         this.referencedTags.add(node.refMeta.targetTag);
     }
 

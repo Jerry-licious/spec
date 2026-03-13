@@ -124,6 +124,6 @@ export async function runCompiler({compileAll}: CompilerOptionOverride ) {
     }
 }
 
-//runCompiler({compileAll: true}).catch(console.error);
+runCompiler({compileAll: true}).catch(console.error);
 
 

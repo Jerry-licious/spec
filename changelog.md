@@ -2,6 +2,7 @@
 
 - Slightly nudged some element spacing.
 - Fixed a bug where the primary colour config does not apply. 
+- Fixed a bug where unknown refs crash the compiler. 
 
 
 # v0.1.4, 2026-03-12

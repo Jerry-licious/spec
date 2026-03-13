@@ -17,17 +17,32 @@ export class RefRenderer extends NodeRenderer {
             return;
         }
 
+        if (node.refMeta.targetTag >= 0) {
+            return htmlLike({
+                tag: 'a',
+                attributes: {
+                    href: `/t/${toTagString(node.refMeta.targetTag)}`,
+                    class: classes.ref
+                },
+                content: typeof node.refMeta.text === 'string' ? {
+                    type: "string",
+                    content: node.refMeta.text
+                } : node.refMeta.text
+            });
+        }
+
         return htmlLike({
             tag: 'a',
             attributes: {
-                href: `/t/${toTagString(node.refMeta.targetTag)}`,
-                class: classes.ref
+                href: `/404`,
+                class: classes.refInvalid
             },
             content: typeof node.refMeta.text === 'string' ? {
                 type: "string",
                 content: node.refMeta.text
             } : node.refMeta.text
         });
+
     }
 }
 

@@ -1,5 +1,6 @@
 export const classes = {
     ref: 'link-primary',
+    refInvalid: 'link-invalid',
     displayEquation: '',
     blockEnvironment: 'block-container',
     blockTitle: 'link-foreground',

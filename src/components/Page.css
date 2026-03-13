@@ -23,14 +23,12 @@
 .dark .link-primary {
     color: var(--primary-400);
 }
-.dark .link-primary:hover {
-    color: var(--primary-300);
-}
 .light .link-primary {
-    color: var(--primary-700);
+    color: var(--primary-500);
 }
-.light .link-primary:hover {
-    color: var(--primary-600);
+
+.link-invalid {
+    opacity: 0.8;
 }
 
 .page-container {

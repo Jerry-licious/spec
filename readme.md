@@ -136,6 +136,8 @@ The colour scheme is taken from [Tailwind](https://tailwindcss.com/docs/colors),
 to [HTML Colour Codes](https://htmlcolorcodes.com/color-chart/tailwind-color-chart/). The `grey` here refers to the 
 `neutral` in Tailwind. 
 
+To use a favicon, place the icon under `public/favicon.ico`. 
+
 
 
 # LaTeX

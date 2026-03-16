@@ -19,11 +19,13 @@ export default function Home() {
     const preamble = createAsync(() => getPreamble());
     const config = createAsync(() => getConfig());
 
+    const errorDescription = "The main page has not been initialised, which suggests that the website has not been compiled yet.";
+
     return (
         <ErrorBoundary fallback={
-            <Page titleText={`${config()?.siteTitle}`}
+            <Page titleText={`${config()?.siteTitle}`} description={errorDescription}
                   title={`${config()?.siteTitle}`} displayTitle={true}>
-                The main page has not been initialised, which suggests that the website has not been compiled yet.
+                {errorDescription}
             </Page>
         }>
             <Show when={mainPageAccessor()}>

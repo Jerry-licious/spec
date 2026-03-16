@@ -80,15 +80,20 @@ export function SearchPage(props: SearchPageProps) {
     const config = createAsync(() => getConfig());
     const searchResult = createAsync(() => searchUnits(props.query, props.page));
 
+    const description = createMemo(() => `${searchResult()?.results} results found.`)
+
     return (
         <ErrorBoundary fallback={
-            <Page titleText={`Search Failed | ${config()?.siteTitle}`} title={`Search: ${props.query}`} displayTitle={true}>
+            <Page titleText={`Search Failed | ${config()?.siteTitle}`}
+                  description={"No results found."}
+                  title={`Search: ${props.query}`} displayTitle={true}>
                 Failed to search for "{props.query}". Please try again later.
             </Page>
         }>
             <Show when={searchResult() && config()}>
                 <Page titleText={`Search: ${props.query} | ${config()?.siteTitle}`}
                       title={`Search: ${props.query}`}
+                      description={description()}
                       displayTitle={true}>
                     {
                         searchResult()!.totalResults ? searchResultsText(searchResult()!, props.page) : null

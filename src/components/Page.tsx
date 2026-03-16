@@ -1,7 +1,7 @@
 import './Page.css'
 import {ParentChainDisplay} from "./ParentChainDisplay";
 import {createEffect, createMemo, JSX} from "solid-js";
-import {Title} from "@solidjs/meta";
+import {Meta, Title} from "@solidjs/meta";
 import {Sidebar} from "./Sidebar";
 import {createAsync} from "@solidjs/router";
 import {getConfig} from "../app-data";
@@ -16,6 +16,7 @@ export interface PageProps {
     displayTitle: boolean;
     title?: JSX.Element | JSX.Element[] | string;
     children: JSX.Element | JSX.Element[] | string;
+    description?: string;
 
     parentChain?: LinkTarget[];
 
@@ -36,6 +37,13 @@ export function Page(props: PageProps) {
     });
 
     return <div class={`main-container ${darkTheme() ? 'dark' : 'light'} ${primaryColourClass()} ${neutralColourClass()}`}>
+
+
+        <Meta property="og:title" content={props.titleText} />
+        {
+            props.description ? <Meta property="og:description" content={props.description} /> : null
+        }
+
         <Title>{props.titleText}</Title>
         <div class={`page-container ${config()?.website.font}`}>
             <Topbar/>

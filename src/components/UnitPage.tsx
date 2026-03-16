@@ -4,7 +4,7 @@ import {getConfig} from "../app-data";
 import {mainPageType, shouldDisplayTitle} from "../unit-types";
 import './UnitPage.css'
 import {UnitLinkList} from "../components/UnitLinkList";
-import {createEffect, createMemo, onMount} from "solid-js";
+import {createEffect, createMemo, onMount, Show} from "solid-js";
 import {UnitData} from "../db/unit-data";
 
 
@@ -25,7 +25,7 @@ export function UnitPage(props: UnitPageProps) {
     const config = createAsync(() => getConfig());
 
     const titleText = createMemo(() => {
-        let titleText = props.unit.unitName;
+        let titleText: string | undefined = props.unit.unitName;
         if (props.unit.numberingText) {
             titleText = titleText + ' ' + props.unit.numberingText;
         }
@@ -37,13 +37,14 @@ export function UnitPage(props: UnitPageProps) {
         if (props.unit.unitType !== mainPageType) {
             titleText = `${titleText} | ${config()?.siteTitle}`;
         } else {
-            titleText = config()?.siteTitle ?? 'Unknown Site Title';
+            titleText = config()?.siteTitle;
         }
 
         return titleText;
     });
 
-    let containerRef: HTMLDivElement | undefined;
+    const description = props.unit.contentText.slice(0, 50);
+
     createEffect(() => {
         const _ = props.unit.tag;
         const mathJax = (window as any).MathJax;
@@ -60,23 +61,26 @@ export function UnitPage(props: UnitPageProps) {
         })
     });
 
-    return <Page titleText={titleText()}
-                 displayTitle={shouldDisplayTitle(props.unit.unitType)}
-                 title={<span>
+    return <Show when={config()}>
+        <Page titleText={titleText() ?? ''}
+              displayTitle={shouldDisplayTitle(props.unit.unitType)}
+              title={<span>
                      {props.unit.numberingText ? `${props.unit.numberingText} ` : null}<span innerHTML={props.unit.titleHTML ?? ''}/>
                  </span>}
-                 sidebarContent={<UnitSidebarContent {...props} />}
-                 parentChain={props.unit.parentChain}>
-        {
-            props.unit.contentHTML.trim() ?
-                <div class={'unit-content-container'} ref={containerRef} innerHTML={props.unit.contentHTML}/> : null
-        }
-        {
-            props.unit.children && props.unit.children.length > 0 ?
-                // Only say "content" if there is a need to separate this portion from the previous.
-                <UnitLinkList title={props.unit.contentHTML.trim() ? 'Contents' : ''}
-                          items={props.unit.children}/> : null
-        }
-    </Page>
+              description={description}
+              sidebarContent={<UnitSidebarContent {...props} />}
+              parentChain={props.unit.parentChain}>
+            {
+                props.unit.contentHTML.trim() ?
+                    <div class={'unit-content-container'} innerHTML={props.unit.contentHTML}/> : null
+            }
+            {
+                props.unit.children && props.unit.children.length > 0 ?
+                    // Only say "content" if there is a need to separate this portion from the previous.
+                    <UnitLinkList title={props.unit.contentHTML.trim() ? 'Contents' : ''}
+                                  items={props.unit.children}/> : null
+            }
+        </Page>
+    </Show>
 }
 

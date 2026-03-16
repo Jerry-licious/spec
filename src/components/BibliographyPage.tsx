@@ -25,9 +25,10 @@ export function BibliographyDataRow(props: BibliographyDataRowProps) {
 
 export function BibliographyPage(props: BibliographyPageProps) {
     const config = createAsync(() => getConfig());
+    const description = `${props.bibliography.author} (${props.bibliography.year})`;
 
     return <Page titleText={`${props.bibliography.title} | ${config()?.siteTitle}`}
-                 title={props.bibliography.title}
+                 title={props.bibliography.title} description={description}
                  displayTitle={true}>
         <table class={'bibliography-table'}>
             <tbody>

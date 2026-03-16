@@ -1,6 +1,7 @@
 # Unreleased
 
 - Fixed a bug where the QED square is placed improperly in some situations.
+- Included additional metadata when loading.
 
 
 # v0.1.5, 2026-03-13

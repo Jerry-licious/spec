@@ -19,11 +19,14 @@ export default function BibliographyView() {
     const bibAccessor = createAsync(() => getBibliography(params.tag));
     const config = createAsync(() => getConfig());
 
+    const notFoundMessage = `The bibliography entry "${params.tag}" does not exist.`;
+
     return (
         <ErrorBoundary fallback={
             <Page titleText={`Bibliography Not Found | ${config()?.siteTitle}`}
+                  description={notFoundMessage}
                   title={`Bibliography "${params.tag}" Not Found.`} displayTitle={true}>
-                The bibliography entry "{params.tag}" does not exist.
+                {notFoundMessage}
             </Page>
         }>
             <Show when={bibAccessor()}>

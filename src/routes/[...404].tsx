@@ -12,10 +12,11 @@ export const route = {
 
 export default function NotFound() {
     const config = createAsync(() => getConfig());
+    const notFoundDescription = "The page that you are looking for does not exist.";
 
-  return (
-      <Page titleText={`404 | ${config()?.siteTitle}`} title={`404`} displayTitle={true}>
-          The page that you are looking for does not exist.
-      </Page>
-  );
+    return (
+        <Page titleText={`404 | ${config()?.siteTitle}`} description={notFoundDescription} title={`404`} displayTitle={true}>
+            {notFoundDescription}
+        </Page>
+    );
 }

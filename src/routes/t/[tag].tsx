@@ -21,11 +21,13 @@ export default function UnitView() {
     const unitAccessor = createAsync(() => getUnit(params.tag));
     const config = createAsync(() => getConfig());
 
+    const notFoundMessage = `The page "${params.tag}" does not exist.`;
+
     return (
         <ErrorBoundary fallback={
-            <Page titleText={`Page Not Found | ${config()?.siteTitle}`}
+            <Page titleText={`Page Not Found | ${config()?.siteTitle}`} description={notFoundMessage}
                   title={`Page "${params.tag}" Not Found.`} displayTitle={true}>
-                The page "{params.tag}" does not exist.
+                {notFoundMessage}
             </Page>
         }>
             <Show when={unitAccessor()}>

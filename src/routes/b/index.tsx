@@ -17,9 +17,12 @@ export default function AllBibliographyView() {
     const config = createAsync(() => getConfig());
     const bibliography = createAsync(() => getAllBibliography());
 
+    const failMessage = "Failed to load bibliography. Please try again later. ";
+
     return<ErrorBoundary fallback={
-        <Page titleText={`Bibliography Failed to Load | ${config()?.siteTitle}`} title={'Bibliography'} displayTitle={true}>
-            Failed to load bibliography. Please try again later. 
+        <Page titleText={`Bibliography Failed to Load | ${config()?.siteTitle}`} description={failMessage}
+              title={'Bibliography'} displayTitle={true}>
+            {failMessage}
         </Page>
     }>
         <Show when={bibliography()}>

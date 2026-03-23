@@ -1,9 +1,10 @@
 import {DocumentVisitor} from "../visitor";
-import {Environment, Macro, Node} from "@unified-latex/unified-latex-types";
+import {Node} from "@unified-latex/unified-latex-types";
 import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {match} from "@unified-latex/unified-latex-util-match";
 import {nextSafeTag} from "../../tag";
 import {ParserLogger} from "../logging-base";
+import {isLabelableDisplayMath, TaggableNode} from "./util";
 
 
 // In the present system, each unit, such as a chapter, section, or a theorem, will be assigned a unique ID known as a
@@ -12,7 +13,7 @@ import {ParserLogger} from "../logging-base";
 export class TagAssigner extends DocumentVisitor {
     labelTagMap: Map<string, number>;
     nextAvailableTag: number;
-    tagNodeMap: Map<number, Macro | Environment>;
+    tagNodeMap: Map<number, TaggableNode>;
 
     taggableMacros: Set<string>;
     taggableEnvironments: Set<string>;
@@ -27,7 +28,7 @@ export class TagAssigner extends DocumentVisitor {
         super({ logger });
 
         this.labelTagMap = labelTagMap ?? new Map();
-        this.tagNodeMap = new Map<number, Macro | Environment>();
+        this.tagNodeMap = new Map<number, TaggableNode>();
 
         this.taggableMacros = taggableMacros ?? new Set<string>();
         this.taggableEnvironments = taggableEnvironments ?? new Set<string>();
@@ -40,8 +41,12 @@ export class TagAssigner extends DocumentVisitor {
     }
 
     visit(node: Node, visitInfo: VisitInfo): void {
-        if (!((match.anyEnvironment(node) && this.taggableEnvironments.has(node.env)) ||
-            (match.anyMacro(node) && this.taggableMacros.has(node.content)))) return;
+        if (!(// Taggable environments.
+            (match.anyEnvironment(node) && this.taggableEnvironments.has(node.env)) ||
+            // Taggable macros.
+            (match.anyMacro(node) && this.taggableMacros.has(node.content)) ||
+            // Taggable display maths. Only labeled display maths may be tagged.
+            (isLabelableDisplayMath(node) && node.meta?.label))) return;
 
         // If a label is already present, attempt to acquire it.
         if (node.meta && node.meta.label) {

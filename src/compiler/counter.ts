@@ -48,6 +48,7 @@ export class CountManager {
             this.addCounter('section', 'chapter');
             this.addCounter('subsection', 'section');
             this.addCounter('subsubsection', 'subsection');
+            this.addCounter('equation', 'chapter');
         }
     }
 

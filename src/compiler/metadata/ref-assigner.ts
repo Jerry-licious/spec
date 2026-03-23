@@ -1,9 +1,10 @@
 import {DocumentVisitor} from "../visitor";
-import {Environment, Macro, Node} from "@unified-latex/unified-latex-types";
+import {DisplayMath, Environment, Macro, Node} from "@unified-latex/unified-latex-types";
 import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {match} from "@unified-latex/unified-latex-util-match";
 import {capitaliseFirstLetter, getArgumentText} from "../util";
 import {ParserLogger} from "../logging-base";
+import {TaggableNode} from "./util";
 
 
 // Injects necessary metadata for ref, autoref, and hyperref.
@@ -11,13 +12,13 @@ export const refCommands = new Set<string>(['ref', 'autoref', 'hyperref']);
 
 
 export class RefAssigner extends DocumentVisitor {
-    tagNodeMap: Map<number, Macro | Environment>;
+    tagNodeMap: Map<number, TaggableNode>;
     labelTagMap: Map<string, number>;
     macroNames: Map<string, string>;
     environmentNames: Map<string, string>;
 
     constructor({ tagNodeMap, labelTagMap, macroNames, environmentNames, logger }: {
-        tagNodeMap?: Map<number, Macro | Environment>;
+        tagNodeMap?: Map<number, TaggableNode>;
         labelTagMap?: Map<string, number>;
         macroNames?: Map<string, string>;
         environmentNames?: Map<string, string>;
@@ -25,14 +26,18 @@ export class RefAssigner extends DocumentVisitor {
     }) {
         super({ logger });
 
-        this.tagNodeMap = tagNodeMap ?? new Map<number, Macro | Environment>();
+        this.tagNodeMap = tagNodeMap ?? new Map<number, TaggableNode>();
         this.labelTagMap = labelTagMap ?? new Map<string, number>();
         this.macroNames = macroNames ?? new Map<string, string>();
         this.environmentNames = environmentNames ?? new Map<string, string>();
     }
 
 
-    getNodeName(node: Macro | Environment): string {
+    getNodeName(node: TaggableNode): string {
+        if (match.math(node)) {
+            return "Equation";
+        }
+
         if (match.anyMacro(node)) {
             const macro = node.content;
             if (this.macroNames.has(macro)) {

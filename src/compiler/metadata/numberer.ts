@@ -7,6 +7,7 @@ import {match} from "@unified-latex/unified-latex-util-match";
 import {ParserLogger} from "../logging-base";
 import {documentDividers} from "../../unit-types";
 import consola from "consola";
+import {isLabelableDisplayMath} from "./util";
 
 export class Numberer extends DocumentVisitor {
     // Association between commands and their corresponding counters.
@@ -50,6 +51,13 @@ export class Numberer extends DocumentVisitor {
                 ...node.meta,
                 numbering: this.countManager.increment(this.environmentCounters.get(node.env)!!)
             }
+        }
+        // Only number display math elements with labels.
+        if (isLabelableDisplayMath(node) && node.meta?.label) {
+            node.meta = {
+                ...node.meta,
+                numbering: this.countManager.increment('equation')
+            };
         }
     }
 }

@@ -55,7 +55,7 @@ declare module '@unified-latex/unified-latex-types/' {
         meta?: ElementMetadata;
     }
     interface DisplayMath {
-        meta?: ElementMetadata;
+        meta?: LabeledElementMetadata;
     }
     interface Group {
         meta?: ElementMetadata;

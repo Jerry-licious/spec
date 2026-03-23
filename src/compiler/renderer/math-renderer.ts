@@ -7,6 +7,7 @@ import {printRaw} from "@unified-latex/unified-latex-util-print-raw";
 import {htmlLike} from "@unified-latex/unified-latex-util-html-like";
 import {classes} from "./classes";
 import {ParserLogger} from "../logging-base";
+import { m, s } from "@unified-latex/unified-latex-builder";
 
 import {createSyncFn} from "synckit";
 import { resolve } from 'path';
@@ -81,6 +82,11 @@ export class MathRenderer extends NodeRenderer {
 
         // Here it would be an align environment or something of this kind.
         if (match.anyEnvironment(node) && node.type === 'mathenv') {
+            // If the node does have a label, I will inject an extra command for its numbering.
+            if (node.meta?.label) {
+                node.content.push(m('tag', s(node.meta.numbering?.join('.') ?? '?')))
+            }
+
             return htmlLike({
                 tag: 'div',
                 attributes: {

@@ -5,7 +5,7 @@ import consola from "consola";
 import {messageText} from "./error";
 import {BibliographyLoader} from "./bib-loader";
 import {Loader} from "./loader";
-import {Environment, Macro, Node, Root} from "@unified-latex/unified-latex-types";
+import {DisplayMath, Environment, Macro, Node, Root} from "@unified-latex/unified-latex-types";
 import {CountManager} from "./counter";
 import {capitaliseFirstLetter} from "./util";
 import {BibtexEntry} from "@orcid/bibtex-parse-js";
@@ -40,6 +40,7 @@ import {documentDividers, macrosToOmit} from "../unit-types";
 import {UnitData} from "../db/unit-data";
 import {BibliographyData} from "../db/bib-data";
 import {TikzExtractor} from "./renderer/tikz-extractor";
+import {TaggableNode} from "./metadata/util";
 
 
 const divisionMarkers = new Set<string>(documentDividers);
@@ -70,7 +71,7 @@ export class Compiler {
     // Hash of the existing units.
     unitTagHash: Map<number, string>;
     // Mapping from unit tags to their nodes.
-    unitTagNode: Map<number, Macro | Environment>;
+    unitTagNode: Map<number, TaggableNode>;
 
     // Mapping from bibliography keys to tags.
     bibliographyKeyTags: Map<string, number>;
@@ -107,7 +108,7 @@ export class Compiler {
 
         this.unitLabelTags = unitLabelTags;
         this.unitTagHash = unitTagHash;
-        this.unitTagNode = new Map<number, Macro | Environment>();
+        this.unitTagNode = new Map<number, TaggableNode>();
 
         this.bibliographyKeyTags = bibliographyLabelTags;
         this.bibliographyEntries = new Map<string, BibtexEntry>();

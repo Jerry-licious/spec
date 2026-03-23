@@ -43,8 +43,9 @@ program.command('version')
 
 
 const compileLock = new AsyncLock({maxPending: 2});
-function compile(options: CompilerOptionOverride) {
+function compile(options: CompilerOptionOverride, port: number) {
     compileLock.acquire('compile', () => runCompiler(options)).catch(() => {});
+    fetch(`http://localhost:${port}/invalidate`, { method: 'POST' }).catch(() => {})
 }
 
 program.command('watch')
@@ -68,11 +69,11 @@ program.command('watch')
             ignored: (path, stats) => !!stats?.isFile() && !/\.(tex|sty|bib)$/.test(path)
         }).on('add', () => compile({
             compileAll: opts.all
-        })).on('change', () => compile({
+        }, opts.port)).on('change', () => compile({
             compileAll: opts.all
-        })).on('unlink', () => compile({
+        }, opts.port)).on('unlink', () => compile({
             compileAll: opts.all
-        }))
+        }, opts.port))
     })
 
 program.parse();

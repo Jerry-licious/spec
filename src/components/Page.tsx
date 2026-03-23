@@ -9,6 +9,7 @@ import {LinkTarget} from "../db/link-target";
 import {useDarkTheme} from "../theme";
 import {Topbar} from "./Topbar";
 import {githubLink} from "../about";
+import {InvalidateListener} from "./InvalidateListener";
 
 
 export interface PageProps {
@@ -43,6 +44,8 @@ export function Page(props: PageProps) {
         {
             props.description ? <Meta property="og:description" content={props.description} /> : null
         }
+
+        <InvalidateListener/>
 
         <Title>{props.titleText}</Title>
         <div class={`page-container ${config()?.website.font}`}>

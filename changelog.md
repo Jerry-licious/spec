@@ -1,6 +1,7 @@
 # Unreleased
 
 - Added support for equation referencing. 
+- Added automatic reloading on changes in watch mode. 
 
 
 # v0.1.6, 2026-03-19

@@ -36,8 +36,9 @@ export abstract class LabelAssigner extends DocumentVisitor {
 
     assignLabel(node: Node, label: string | undefined): void {
         if (!label) {
-            // Only warn if the node is not a math block.
+            // Only warn if the node is not a math block or equation environment.
             if (match.math(node) && node.type === "displaymath") return;
+            if (match.anyEnvironment(node) && node.type === "mathenv") return;
             if (match.environment(node, "tikzcd")) return;
 
             this.addWarning('Node received no label.');

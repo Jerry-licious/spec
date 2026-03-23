@@ -6,7 +6,7 @@ import {classes} from "./classes";
 import {toTagString} from "../../tag";
 
 
-const refCommands = new Set<string>(['ref', 'autoref', 'hyperref']);
+const refCommands = new Set<string>(['ref', 'autoref', 'hyperref', 'eqref']);
 
 
 export class RefRenderer extends NodeRenderer {
@@ -18,10 +18,15 @@ export class RefRenderer extends NodeRenderer {
         }
 
         if (node.refMeta.targetTag >= 0) {
+            // If the target is inside a unit (e.g. an equation inside a section),
+            // link to the parent unit's page with an anchor to the target element.
+            const href = node.refMeta.parentTag !== undefined
+                ? `/t/${toTagString(node.refMeta.parentTag)}#${node.refMeta.anchor}`
+                : `/t/${toTagString(node.refMeta.targetTag)}`;
             return htmlLike({
                 tag: 'a',
                 attributes: {
-                    href: `/t/${toTagString(node.refMeta.targetTag)}`,
+                    href,
                     class: classes.ref
                 },
                 content: typeof node.refMeta.text === 'string' ? {

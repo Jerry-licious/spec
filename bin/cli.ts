@@ -6,6 +6,7 @@ import {CompilerOptionOverride, runCompiler} from "../src";
 import AsyncLock from 'async-lock'
 import chokidar from "chokidar";
 import consola from "consola";
+import { createServer, ServerResponse } from "node:http";
 
 
 const version = "v0.1.6";
@@ -43,8 +44,11 @@ program.command('version')
 
 
 const compileLock = new AsyncLock({maxPending: 2});
-function compile(options: CompilerOptionOverride) {
-    compileLock.acquire('compile', () => runCompiler(options)).catch(() => {});
+function compile(options: CompilerOptionOverride, onDone?: () => void) {
+    compileLock.acquire('compile', async () => {
+        await runCompiler(options);
+        onDone?.();
+    }).catch(() => {});
 }
 
 program.command('watch')
@@ -59,20 +63,41 @@ program.command('watch')
         process.env.PORT = String(opts.port);
 
         consola.info(`Spec ${version}. Watching the current directory...`);
-        
+
         // @ts-ignore
         import('../../.output/server/index.mjs');
+
+        // SSE server for live reload: browsers connect and get notified after each recompile.
+        const sseClients = new Set<ServerResponse>();
+        const liveReloadPort = opts.port + 1;
+        createServer((req, res) => {
+            res.writeHead(200, {
+                'Content-Type': 'text/event-stream',
+                'Cache-Control': 'no-cache',
+                'Connection': 'keep-alive',
+                'Access-Control-Allow-Origin': '*',
+            });
+            sseClients.add(res);
+            req.on('close', () => sseClients.delete(res));
+        }).listen(liveReloadPort);
+        consola.info(`Live reload server on port ${liveReloadPort}.`);
+
+        const notifyReload = () => {
+            for (const client of sseClients) {
+                client.write('data: reload\n\n');
+            }
+        };
 
         chokidar.watch('.', {
             ignoreInitial: true,
             ignored: (path, stats) => !!stats?.isFile() && !/\.(tex|sty|bib)$/.test(path)
         }).on('add', () => compile({
             compileAll: opts.all
-        })).on('change', () => compile({
+        }, notifyReload)).on('change', () => compile({
             compileAll: opts.all
-        })).on('unlink', () => compile({
+        }, notifyReload)).on('unlink', () => compile({
             compileAll: opts.all
-        }))
+        }, notifyReload))
     })
 
 program.parse();

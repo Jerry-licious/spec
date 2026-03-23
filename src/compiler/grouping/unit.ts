@@ -168,10 +168,10 @@ export abstract class IRUnit {
 
             parentChain: [...this.parentTagChain()].map((r) => allUnits.get(r)!.linkTarget!),
 
-            directlyReferences: [...this.directReferences].map((r) => allUnits.get(r)!.linkTarget!),
-            indirectlyReferences: this.indirectReferences ? [...this.indirectReferences].map((r) => allUnits.get(r)!.linkTarget!) : [],
-            directlyReferencedBy: [...this.directlyReferencedBy].map((r) => allUnits.get(r)!.linkTarget!),
-            indirectlyReferencedBy: [...this.indirectlyReferencedBy].map((r) => allUnits.get(r)!.linkTarget!),
+            directlyReferences: [...this.directReferences].filter((r) => allUnits.has(r)).map((r) => allUnits.get(r)!.linkTarget!),
+            indirectlyReferences: this.indirectReferences ? [...this.indirectReferences].filter((r) => allUnits.has(r)).map((r) => allUnits.get(r)!.linkTarget!) : [],
+            directlyReferencedBy: [...this.directlyReferencedBy].filter((r) => allUnits.has(r)).map((r) => allUnits.get(r)!.linkTarget!),
+            indirectlyReferencedBy: [...this.indirectlyReferencedBy].filter((r) => allUnits.has(r)).map((r) => allUnits.get(r)!.linkTarget!),
         });
     }
 }

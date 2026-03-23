@@ -6,6 +6,7 @@ import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {match} from "@unified-latex/unified-latex-util-match";
 import {ParserLogger} from "../logging-base";
 import {documentDividers} from "../../unit-types";
+import {getEnvName, multiRowMathEnvironments, splitMathRows} from "../util";
 import consola from "consola";
 
 export class Numberer extends DocumentVisitor {
@@ -45,10 +46,40 @@ export class Numberer extends DocumentVisitor {
                 numbering: this.countManager.increment(this.macroCounters.get(node.content)!!)
             };
         }
-        if (match.anyEnvironment(node) && this.environmentCounters.has(node.env)) {
-            node.meta = {
-                ...node.meta,
-                numbering: this.countManager.increment(this.environmentCounters.get(node.env)!!)
+        const envName = match.anyEnvironment(node) ? getEnvName(node.env) : undefined;
+        if (envName && this.environmentCounters.has(envName)) {
+            const counter = this.environmentCounters.get(envName)!!;
+
+            // Multi-row environments: increment once per row and store per-row numberings.
+            // Rows with \nonumber or custom \tag{} do not increment the counter.
+            if (multiRowMathEnvironments.has(envName)) {
+                const rows = splitMathRows((node as any).content);
+                const existingRows = (node.meta as any)?.equationRows as { label?: string; numbering?: number[]; customTag?: string; nonumber?: boolean }[] | undefined;
+                let firstNumbering: number[] | undefined;
+                const equationRows = rows.map((_, i) => {
+                    const existing = existingRows && existingRows[i] ? existingRows[i] : {};
+                    if (existing.nonumber || existing.customTag) {
+                        return { ...existing };
+                    }
+                    const numbering = this.countManager.increment(counter);
+                    if (!firstNumbering) firstNumbering = numbering;
+                    return { ...existing, numbering };
+                });
+                node.meta = {
+                    ...node.meta,
+                    numbering: firstNumbering,
+                    equationRows,
+                };
+            } else {
+                // Custom \tag{} — don't increment the counter.
+                if ((node.meta as any)?.customTag) {
+                    // No numbering assigned; the custom tag is used instead.
+                } else {
+                    node.meta = {
+                        ...node.meta,
+                        numbering: this.countManager.increment(counter)
+                    }
+                }
             }
         }
     }

@@ -7,10 +7,17 @@ export interface UnitLinkListProps {
     items: LinkTarget[],
 }
 
-export function UnitLinkList(props: UnitLinkListProps) {
-    return <LinkList title={props.title} items={props.items.map((t) => ({
+function linkTargetToItem(t: LinkTarget): { content: string; href: string; children?: { content: string; href: string; children?: any }[] } {
+    return {
         content: linkHTML(t),
-        href: `/t/${toTagString(t.tag)}`
-    }))}/>
+        href: `/t/${toTagString(t.tag)}`,
+        ...(t.children && t.children.length > 0
+            ? { children: t.children.map(linkTargetToItem) }
+            : {})
+    };
+}
+
+export function UnitLinkList(props: UnitLinkListProps) {
+    return <LinkList title={props.title} items={props.items.map(linkTargetToItem)}/>
 }
 

@@ -2,12 +2,12 @@ import {DocumentVisitor} from "../visitor";
 import {Environment, Macro, Node} from "@unified-latex/unified-latex-types";
 import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {match} from "@unified-latex/unified-latex-util-match";
-import {capitaliseFirstLetter, getArgumentText} from "../util";
+import {capitaliseFirstLetter, getArgumentText, getEnvName} from "../util";
 import {ParserLogger} from "../logging-base";
 
 
 // Injects necessary metadata for ref, autoref, and hyperref.
-export const refCommands = new Set<string>(['ref', 'autoref', 'hyperref']);
+export const refCommands = new Set<string>(['ref', 'autoref', 'hyperref', 'eqref']);
 
 
 export class RefAssigner extends DocumentVisitor {
@@ -42,7 +42,7 @@ export class RefAssigner extends DocumentVisitor {
             this.addWarning(`Missing name for the macro ${macro}. Capitalising its first letter to fill in.`);
             return capitaliseFirstLetter(macro);
         } else {
-            const env = node.env;
+            const env = getEnvName(node.env);
             if (this.environmentNames.has(env)) {
                 return this.environmentNames.get(env)!!;
             }
@@ -50,6 +50,27 @@ export class RefAssigner extends DocumentVisitor {
             this.addWarning(`Missing name for the environment ${env}. Capitalising its first letter to fill in.`);
             return capitaliseFirstLetter(env);
         }
+    }
+
+    // For multi-row math environments (align), find the numbering for a specific label.
+    // Handles custom \tag{} and falls back to the node's primary numbering.
+    getNumberingForLabel(targetNode: Node, label: string): string {
+        const meta = targetNode.meta as any;
+
+        // Check multi-row equation data first (align environments).
+        if (meta?.equationRows) {
+            for (const row of meta.equationRows) {
+                if (row.label === label) {
+                    if (row.customTag) return row.customTag;
+                    if (row.numbering) return row.numbering.join('.');
+                }
+            }
+        }
+
+        // Single equation with custom \tag{}.
+        if (meta?.customTag) return meta.customTag;
+
+        return meta?.numbering ? meta.numbering.join('.') : '';
     }
 
     visit(node: Node, visitInfo: VisitInfo): void {
@@ -96,10 +117,21 @@ export class RefAssigner extends DocumentVisitor {
             return;
         }
 
+        // For multi-row environments (align), look up the specific row's numbering by label.
+        const numbering = this.getNumberingForLabel(targetNode, referenceLabel);
+
         if (node.content === 'ref') {
             node.refMeta = {
                 targetTag,
-                text: targetNode.meta.numbering ? targetNode.meta.numbering.join('.') : '',
+                text: numbering,
+            };
+            return;
+        }
+
+        if (node.content === 'eqref') {
+            node.refMeta = {
+                targetTag,
+                text: `(${numbering})`,
             };
             return;
         }
@@ -108,7 +140,7 @@ export class RefAssigner extends DocumentVisitor {
             // In the case of autoref, the name of the node is required to generate the text of the ref.
             node.refMeta = {
                 targetTag,
-                text: `${this.getNodeName(targetNode)} ${targetNode.meta.numbering ? targetNode.meta.numbering.join('.') : ''}`
+                text: `${this.getNodeName(targetNode)} ${numbering}`
             };
             return;
         }

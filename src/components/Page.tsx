@@ -45,7 +45,11 @@ export function Page(props: PageProps) {
         }
 
         <Title>{props.titleText}</Title>
-        <div class={`page-container ${config()?.website.font}`}>
+        <div class={`page-container ${config()?.website.font}`} style={{
+            'font-size': `${config()?.website.fontSize ?? 16}px`,
+            'line-height': `${config()?.website.lineHeight ?? 1.3}`,
+            'max-width': `calc(${config()?.website.contentWidth ?? 120} * 0.5rem)`,
+        }}>
             <Topbar/>
             {
                 props.parentChain && props.parentChain.length ?

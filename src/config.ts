@@ -15,6 +15,9 @@ export const SpecConfigSchema = z.object({
 
     website: z.object({
         font: z.enum(['roboto', 'open-sans', 'cmu-serif', 'cmu-sans-serif']).default('cmu-serif'),
+        fontSize: z.number().min(10).max(28).default(16),
+        lineHeight: z.number().min(1).max(3).default(1.3),
+        contentWidth: z.number().min(40).max(200).default(120),
         primaryColour: z.enum(['red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky',
             'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose']).default('blue'),
         neutralColour: z.enum(['slate', 'grey', 'zinc', 'stone']).default('grey'),

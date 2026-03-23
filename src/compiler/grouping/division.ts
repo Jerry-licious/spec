@@ -51,10 +51,22 @@ export class Division extends IRUnit {
         };
     }
 
+    // Build a recursive LinkTarget tree so that a chapter's children list includes
+    // subsections nested under sections, and subsubsections nested under subsections.
+    private recursiveLinkTarget(div: Division): import("../../db/link-target").LinkTarget {
+        const target = { ...div.linkTarget! };
+        if (div.children.length > 0) {
+            target.children = div.children.map((c) => this.recursiveLinkTarget(c));
+        }
+        return target;
+    }
+
     renderToUnitData(allUnits: Map<number, IRUnit>, renderer: (node: Node) => string): UnitData {
         const data = super.renderToUnitData(allUnits, renderer);
 
-        data.children = this.children.length ? this.children.map((c) => c.linkTarget!) : null;
+        data.children = this.children.length
+            ? this.children.map((c) => this.recursiveLinkTarget(c))
+            : null;
 
         return data;
     }

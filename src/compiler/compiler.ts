@@ -36,6 +36,9 @@ import {
 } from "./renderer";
 import {unifiedLatexToHast} from "@unified-latex/unified-latex-to-hast";
 import rehypeStringify from "rehype-stringify";
+import {visit} from "@unified-latex/unified-latex-util-visit";
+import {match} from "@unified-latex/unified-latex-util-match";
+import {toTagString} from "../tag";
 import {documentDividers, macrosToOmit} from "../unit-types";
 import {UnitData} from "../db/unit-data";
 import {BibliographyData} from "../db/bib-data";
@@ -158,6 +161,7 @@ export class Compiler {
         this.assignBlockMetadata();
 
         this.collectUnits();
+        this.resolveEquationLinks();
         this.computeUnitReferences();
 
         const result = {
@@ -251,6 +255,40 @@ export class Compiler {
             ...Array.from(this.divisions.entries()),
             ...Array.from(this.blocks.entries()),
         ]);
+    }
+
+    // After units are collected, map equation tags to their containing unit's tag.
+    // Then update refMeta on ref macros that point to equations, so they link
+    // to the parent unit's page with an anchor to the equation element.
+    resolveEquationLinks() {
+        const equationParentMap = new Map<number, number>();
+
+        // Scan each unit's content for tagged nodes that are NOT units (i.e. equations).
+        const scanForEquations = (nodes: Node[], unitTag: number) => {
+            for (const node of nodes) {
+                const meta = node.meta as any;
+                if (meta && meta.tag !== undefined && !this.units.has(meta.tag)) {
+                    equationParentMap.set(meta.tag, unitTag);
+                }
+                if ('content' in node && Array.isArray((node as any).content)) {
+                    scanForEquations((node as any).content, unitTag);
+                }
+            }
+        };
+
+        for (const [unitTag, unit] of this.units) {
+            scanForEquations(unit.mainContent, unitTag);
+        }
+
+        // Walk the document and update refMeta for refs that target equations.
+        visit(this.documentRoot!, (node) => {
+            if (!match.anyMacro(node) || !node.refMeta) return;
+            const targetTag = node.refMeta.targetTag;
+            if (targetTag >= 0 && equationParentMap.has(targetTag)) {
+                node.refMeta.parentTag = equationParentMap.get(targetTag)!;
+                node.refMeta.anchor = `eq-${toTagString(targetTag)}`;
+            }
+        });
     }
 
     computeUnitReferences() {
@@ -357,6 +395,11 @@ export class Compiler {
         envCollector.process(this.documentRoot!);
         this.blockTypes = envCollector.blockTypes;
 
+        // Register equation counter and environment for numbering.
+        if (!this.countManager.hasCounter('equation')) {
+            this.countManager.addCounter('equation', 'chapter');
+        }
+
         const macroCollector = new CustomMacroCollector({ logger: definitionLogger });
         macroCollector.process(this.documentRoot!);
         this.rawMacros = macroCollector.rawMacros;
@@ -404,8 +447,10 @@ export class Compiler {
         const tagLogger = new ParserLogger({ parent: this.logger });
         tagLogger.info('Assigning tags to divisions and blocks.');
 
+        const equationEnvs = new Set<string>(['equation', 'align', 'multline', 'gather', 'flalign']);
         const tagAssigner = new TagAssigner({
-            taggableEnvironments: new Set<string>(this.blockTypes.keys()),
+            taggableEnvironments: new Set<string>([...this.blockTypes.keys(), ...equationEnvs]),
+            nonUnitEnvironments: equationEnvs,
             taggableMacros: new Set<string>(documentDividers),
             labelTagMap: this.unitLabelTags,
             nextAvailableTag: this.nextAvailableTag,
@@ -429,8 +474,14 @@ export class Compiler {
 
         const numberer = new Numberer({
             countManager: this.countManager, logger: numberLogger,
-            environmentCounters: new Map<string, string>(
-                [...this.blockTypes.entries()].map(([k, v]) => [k, v.associatedCounter]))
+            environmentCounters: new Map<string, string>([
+                ...[...this.blockTypes.entries()].map(([k, v]) => [k, v.associatedCounter] as [string, string]),
+                ['equation', 'equation'],
+                ['align', 'equation'],
+                ['multline', 'equation'],
+                ['gather', 'equation'],
+                ['flalign', 'equation']
+            ])
         });
         numberer.process(this.documentRoot!);
 
@@ -465,7 +516,14 @@ export class Compiler {
             tagNodeMap: this.unitTagNode,
             labelTagMap: this.unitLabelTags,
             macroNames: new Map<string, string>([...documentDividers].map((d) => [d, capitaliseFirstLetter(d)])),
-            environmentNames: new Map<string, string>([...this.blockTypes.entries()].map(([k, v]) => [k, v.name])),
+            environmentNames: new Map<string, string>([
+                ...[...this.blockTypes.entries()].map(([k, v]) => [k, v.name] as [string, string]),
+                ['equation', 'Equation'],
+                ['align', 'Equation'],
+                ['multline', 'Equation'],
+                ['gather', 'Equation'],
+                ['flalign', 'Equation']
+            ]),
             logger: linkLogger
         });
         refAssigner.process(this.documentRoot!);

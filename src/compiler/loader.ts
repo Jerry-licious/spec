@@ -3,12 +3,21 @@ import {Macro, Node, Root} from "@unified-latex/unified-latex-types";
 import {match} from "@unified-latex/unified-latex-util-match";
 import path, {join} from "node:path";
 import {readFile} from "node:fs/promises";
-import {parse} from "@unified-latex/unified-latex-util-parse";
+import {getParser} from "@unified-latex/unified-latex-util-parse";
 import {visit} from "@unified-latex/unified-latex-util-visit";
 import {printRaw} from "@unified-latex/unified-latex-util-print-raw";
 
 const packageCommands = ['usepackage', 'RequirePackage']
 const inputCommands = ['input', 'include'];
+
+// Custom parser with eqref macro registered (same signature as \ref: starred + mandatory arg).
+const customParser = getParser({
+    macros: {
+        eqref: { signature: "s m" },
+        tag: { signature: "s m" },
+    }
+});
+const parse = (str: string) => customParser.parse(str);
 
 export class Loader {
     readonly visitedFiles: Set<string> = new Set();

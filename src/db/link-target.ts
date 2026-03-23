@@ -6,6 +6,9 @@ export interface LinkTarget {
 
     // HTML title, if it exists.
     titleHtml?: string;
+
+    // Nested children (subsections inside sections, etc.)
+    children?: LinkTarget[];
 }
 
 

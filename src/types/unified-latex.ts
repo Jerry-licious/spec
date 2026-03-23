@@ -17,7 +17,7 @@ export interface TheoremMetadata extends LabeledElementMetadata {
     parentIRUnit?: IRUnit;
 
     // For math environments only.
-    tagInjected?: boolean;
+    numberingInjected?: boolean;
 }
 export interface RefMetadata {
     // Since the ref metadata is created in one step, the fields here will not be optional.

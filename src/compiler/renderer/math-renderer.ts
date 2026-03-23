@@ -11,6 +11,7 @@ import { m, s } from "@unified-latex/unified-latex-builder";
 
 import {createSyncFn} from "synckit";
 import { resolve } from 'path';
+import {toTagString} from "../../tag";
 
 const tikz2Svg = createSyncFn(
     resolve(__dirname, './tikz-worker')
@@ -83,15 +84,16 @@ export class MathRenderer extends NodeRenderer {
         // Here it would be an align environment or something of this kind.
         if (match.anyEnvironment(node) && node.type === 'mathenv') {
             // If the node does have a label, I will inject an extra command for its numbering.
-            if (node.meta?.label && !node.meta.tagInjected) {
+            if (node.meta?.label && !node.meta.numberingInjected) {
                 node.content.push(m('tag', s(node.meta.numbering?.join('.') ?? '?')));
-                node.meta.tagInjected = true;
+                node.meta.numberingInjected = true;
             }
 
             return htmlLike({
                 tag: 'div',
                 attributes: {
                     class: classes.displayEquation,
+                    id: node.meta?.tag ? toTagString(node.meta.tag) : ''
                 },
                 content: {
                     type: 'string',

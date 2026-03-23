@@ -1,6 +1,6 @@
 import {DocumentVisitor} from "../visitor";
 import {Node} from "@unified-latex/unified-latex-types";
-import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
+import {visit, VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {match} from "@unified-latex/unified-latex-util-match";
 import {BlockEnv} from "./block";
 import {Division} from "./division";
@@ -61,7 +61,8 @@ export class BlockCollector extends DocumentVisitor {
         }
 
         const blockName = this.blockNames.get(node.env)!!;
-        this.blocks.set(node.meta.tag, new BlockEnv({
+
+        const blockEnv = new BlockEnv({
             name: blockName,
             title: node.meta.title ?? [],
             mainContent: [node],
@@ -71,7 +72,20 @@ export class BlockCollector extends DocumentVisitor {
             numbering: node.meta.numbering ?? [],
             proofs: node.meta.proofs ?? [],
             parent: this.currentDivision
+        });
+
+        // Assign all its content with this as the parent IR unit.
+        // Used for equations to figure out which page they belong to.
+        [node.content, ...node.meta.proofs ?? []].forEach((contentNode) =>
+            visit(contentNode, (child) => {
+            if (!match.anyEnvironment(child)) return;
+
+            child.meta = {
+                ...child.meta, parentIRUnit: blockEnv
+            };
         }));
+
+        this.blocks.set(node.meta.tag, blockEnv);
     }
 }
 

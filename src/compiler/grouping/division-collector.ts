@@ -1,7 +1,7 @@
 import {Division} from "./division";
 import {DocumentVisitor} from "../visitor";
 import {Node} from "@unified-latex/unified-latex-types";
-import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
+import {visit, VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {match} from "@unified-latex/unified-latex-util-match";
 import {ParserLogger} from "../logging-base";
 
@@ -107,6 +107,18 @@ export class DivisionCollector extends DocumentVisitor {
         const division = new Division({
             ...divisionArgs, mainContent
         });
+
+        // Assign each child a parent IR unit.
+        // Used for equations to figure out which page they belong to.
+        // TODO: In the future, this assignment may be used for the block section.
+        mainContent.forEach((contentNode) => visit(contentNode, (child) => {
+            if (!match.anyEnvironment(child)) return;
+
+            child.meta = {
+                ...child.meta, parentIRUnit: division
+            };
+        }));
+
         for (const child of children) {
             division.addChild(child);
         }

@@ -4,7 +4,7 @@ import {Node} from "@unified-latex/unified-latex-types";
 
 export type TaggableNode = Macro | Environment | DisplayMath;
 
-export function isLabelableDisplayMath(node: Node) {
-    return match.anyEnvironment(node) && node.type === "mathenv";
+export function isLabelableDisplayMath(node: Node): node is Environment {
+    return match.anyEnvironment(node) && node.type === 'mathenv';
 }
 

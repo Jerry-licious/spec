@@ -83,8 +83,9 @@ export class MathRenderer extends NodeRenderer {
         // Here it would be an align environment or something of this kind.
         if (match.anyEnvironment(node) && node.type === 'mathenv') {
             // If the node does have a label, I will inject an extra command for its numbering.
-            if (node.meta?.label) {
-                node.content.push(m('tag', s(node.meta.numbering?.join('.') ?? '?')))
+            if (node.meta?.label && !node.meta.tagInjected) {
+                node.content.push(m('tag', s(node.meta.numbering?.join('.') ?? '?')));
+                node.meta.tagInjected = true;
             }
 
             return htmlLike({

@@ -20,7 +20,8 @@ export class BlockEnv extends IRUnit {
     }) {
         super({
             ...args,
-            sourceNodeType: "environment"
+            sourceNodeType: "environment",
+            parasitic: false,
         });
 
         this.proofs = args.proofs;

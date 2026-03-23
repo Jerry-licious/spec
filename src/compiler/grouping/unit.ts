@@ -48,7 +48,9 @@ export abstract class IRUnit {
     // All the information needed to represent a link to this unit.
     linkTarget?: LinkTarget;
 
-    constructor({parent, mainContent, sourceNodeType, sourceNodeName, name, label, title, tag, numbering}: {
+    parasitic: boolean;
+
+    constructor({parent, mainContent, sourceNodeType, sourceNodeName, name, label, title, tag, numbering, parasitic}: {
         parent?: IRUnit;
         mainContent?: Node[];
         sourceNodeType: 'environment' | 'macro';
@@ -58,6 +60,9 @@ export abstract class IRUnit {
         title?: Node[];
         tag: number;
         numbering?: number[];
+
+        // A *parasitic* node is one that isn't "supposed" to live on its own page.
+        parasitic: boolean;
     }) {
         this.parent = parent;
         this.mainContent = mainContent ?? [];
@@ -72,6 +77,8 @@ export abstract class IRUnit {
 
         this.tag = tag;
         this.numbering = numbering ?? [];
+
+        this.parasitic = parasitic;
 
         this.titleText = this.title.map((n) => printRaw(n)).join('');
 

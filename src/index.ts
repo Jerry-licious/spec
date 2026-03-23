@@ -84,6 +84,8 @@ export async function runCompiler({compileAll}: CompilerOptionOverride ) {
         const primaryColumns = unitRepository.metadata.columns
             .filter((c) => c.isPrimary).map((c) => c.databaseName);
 
+        console.log(result.unitsToUpdate)
+
         await unitRepository.upsert(result.unitsToUpdate, primaryColumns);
 
         consola.info(`Deleting ${result.unitsToDelete.length} units from the database.`);

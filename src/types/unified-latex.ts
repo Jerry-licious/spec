@@ -1,5 +1,6 @@
 import "@unified-latex/unified-latex-types"
 import {Environment, Node} from "@unified-latex/unified-latex-types"
+import {IRUnit} from "../compiler/grouping";
 
 
 export interface ElementMetadata {
@@ -13,6 +14,10 @@ export interface LabeledElementMetadata extends ElementMetadata {
 export interface TheoremMetadata extends LabeledElementMetadata {
     title?: Node[]; // Theorems/lemmas may come with a title.
     proofs?: Environment[];
+    parentIRUnit?: IRUnit;
+
+    // For math environments only.
+    tagInjected?: boolean;
 }
 export interface RefMetadata {
     // Since the ref metadata is created in one step, the fields here will not be optional.

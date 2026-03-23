@@ -9,7 +9,15 @@ import {DisplayMath, Environment, Macro, Node, Root} from "@unified-latex/unifie
 import {CountManager} from "./counter";
 import {capitaliseFirstLetter} from "./util";
 import {BibtexEntry} from "@orcid/bibtex-parse-js";
-import {BlockCollector, BlockEnv, Division, DivisionCollector, IRUnit, MainCollector} from "./grouping";
+import {
+    BlockCollector,
+    BlockEnv,
+    Division,
+    DivisionCollector,
+    IRUnit, LabeledEquation,
+    LabeledEquationCollector,
+    MainCollector
+} from "./grouping";
 import {
     BlockType,
     BlockTypeCollector,
@@ -91,6 +99,7 @@ export class Compiler {
     units: Map<number, IRUnit>;
     divisions: Map<number, Division>;
     blocks: Map<number, BlockEnv>;
+    equations: Map<number, LabeledEquation>;
 
     renderToHTML: (node: Node) => string;
 
@@ -123,6 +132,7 @@ export class Compiler {
         this.units = new Map<number, IRUnit>();
         this.divisions = new Map<number, Division>();
         this.blocks = new Map<number, BlockEnv>();
+        this.equations = new Map<number, LabeledEquation>();
 
         this.renderToHTML = () => { throw new Error('The renderer is not yet created.') };
 
@@ -247,10 +257,12 @@ export class Compiler {
     collectUnits() {
         this.collectDivisions();
         this.collectBlocks();
+        this.collectLabeledEquations();
 
         this.units = new Map<number, IRUnit>([
             ...Array.from(this.divisions.entries()),
             ...Array.from(this.blocks.entries()),
+            ...Array.from(this.equations.entries())
         ]);
     }
 
@@ -578,6 +590,22 @@ export class Compiler {
 
         const messageContent = `Collected ${this.blocks.size} block environments with ${blockLogger.numErrors} errors and ${blockLogger.numWarnings} warnings.`;
         if (blockLogger.numErrors > 0) {
+            this.logger.error(messageContent);
+        } else {
+            this.logger.success(messageContent);
+        }
+    }
+
+    collectLabeledEquations() {
+        const equationLogger = new ParserLogger({ parent: this.logger });
+        equationLogger.info('Collecting labeled equation environments.');
+
+        const blockCollector = new LabeledEquationCollector({ logger: equationLogger });
+        blockCollector.process(this.documentRoot!);
+        this.equations = blockCollector.equations;
+
+        const messageContent = `Collected ${this.equations.size} block environments with ${equationLogger.numErrors} errors and ${equationLogger.numWarnings} warnings.`;
+        if (equationLogger.numErrors > 0) {
             this.logger.error(messageContent);
         } else {
             this.logger.success(messageContent);

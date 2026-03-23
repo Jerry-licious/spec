@@ -34,7 +34,7 @@ export class RefAssigner extends DocumentVisitor {
 
 
     getNodeName(node: TaggableNode): string {
-        if (match.math(node)) {
+        if (match.math(node) || (match.anyEnvironment(node) && node.type === 'mathenv')) {
             return "Equation";
         }
 

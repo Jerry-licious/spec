@@ -201,7 +201,7 @@ export class Compiler {
                 preambleDump: [...this.rawMacros.values()].join('\n')
             }).asPlugin())
             .use(new UnitTitleRenderer({ logger: renderingLogger }).asPlugin())
-            .use(new RefRenderer({ logger: renderingLogger }).asPlugin())
+            .use(new RefRenderer({ tagUnitMap: this.units, logger: renderingLogger }).asPlugin())
             .use(new CiteRenderer({ logger: renderingLogger }).asPlugin())
             .use(new BlockRenderer({
                 blockNames: new Map<string, string>([...this.blockTypes.entries()].map(([k, v]) => [k, v.name])),

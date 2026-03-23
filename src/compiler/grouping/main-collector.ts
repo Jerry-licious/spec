@@ -1,7 +1,7 @@
 import {Division} from "./division";
 import {DocumentVisitor} from "../visitor";
 import {Node} from "@unified-latex/unified-latex-types";
-import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
+import {visit, VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {match} from "@unified-latex/unified-latex-util-match";
 import {s} from "@unified-latex/unified-latex-builder";
 import {ParserLogger} from "../logging-base";
@@ -61,6 +61,16 @@ export class MainCollector extends DocumentVisitor {
             numbering: [],
             mainContent
         });
+
+        mainContent.forEach((contentNode) => visit(contentNode, (child) => {
+            if (!match.anyEnvironment(child)) return;
+            // Do not overwrite existing assignments.
+            if (child.meta?.parentIRUnit) return;
+
+            child.meta = {
+                ...child.meta, parentIRUnit: division
+            };
+        }));
 
         // Every unit eventually comes back to the main document, so there is no need to assign the main document as a
         // parent.

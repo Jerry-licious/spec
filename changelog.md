@@ -1,3 +1,8 @@
+# Unreleased
+
+- Added support for equation referencing. 
+
+
 # v0.1.6, 2026-03-19
 
 - Fixed a bug where the QED square is placed improperly in some situations.

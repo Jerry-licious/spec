@@ -13,7 +13,7 @@ import {
     BlockCollector,
     BlockEnv,
     Division,
-    DivisionCollector,
+    DivisionCollector, Figure, FigureCollector,
     IRUnit,
     LabeledEquation,
     LabeledEquationCollector,
@@ -25,7 +25,7 @@ import {
     CiteAssigner,
     CustomMacroCollector,
     EnvironmentLabelAssigner,
-    EquationLabelAssigner,
+    EquationLabelAssigner, FigureCaptionNumberer,
     MacroLabelAssigner,
     Numberer,
     RefAssigner,
@@ -43,7 +43,9 @@ import {
     OmitMacro,
     ProofRenderer,
     RefRenderer,
-    UnitTitleRenderer
+    UnitTitleRenderer,
+    FigureCaptionRenderer,
+    FigureRenderer
 } from "./renderer";
 import {unifiedLatexToHast} from "@unified-latex/unified-latex-to-hast";
 import rehypeStringify from "rehype-stringify";
@@ -104,6 +106,7 @@ export class Compiler {
     divisions: Map<number, Division>;
     blocks: Map<number, BlockEnv>;
     equations: Map<number, LabeledEquation>;
+    figures: Map<number, Figure>;
 
     renderToHTML: (node: Node) => string;
 
@@ -137,6 +140,7 @@ export class Compiler {
         this.divisions = new Map<number, Division>();
         this.blocks = new Map<number, BlockEnv>();
         this.equations = new Map<number, LabeledEquation>();
+        this.figures = new Map<number, Figure>();
 
         this.renderToHTML = () => { throw new Error('The renderer is not yet created.') };
 
@@ -204,12 +208,18 @@ export class Compiler {
         });
         equationLabelAssigner.process(this.documentRoot!);
 
+        const environmentCounters = new Map<string, string>([...this.blockTypes.entries()]
+            .map(([k, v]) => [k, v.associatedCounter]));
+        environmentCounters.set("figure", "figure");
+
         const numberer = new Numberer({
-            countManager: this.countManager, logger: numberLogger,
-            environmentCounters: new Map<string, string>(
-                [...this.blockTypes.entries()].map(([k, v]) => [k, v.associatedCounter]))
+            countManager: this.countManager, logger: numberLogger, environmentCounters
         });
         numberer.process(this.documentRoot!);
+
+        // Also propagate the numbers down to captions.
+        const captionNumberer = new FigureCaptionNumberer({logger: numberLogger});
+        captionNumberer.process(this.documentRoot!);
 
         // Following this, macros and environments gain a persistent tag by having a label, which allows
         // reloads to be less tedious during writing sessions.
@@ -224,10 +234,14 @@ export class Compiler {
         });
         macroLabelCollector.process(this.documentRoot!);
 
+        const environmentLabelWhitelist = new Set<string>(this.blockTypes.keys());
+        // Also allow figures to receive labels.
+        environmentLabelWhitelist.add("figure");
+
         const environmentLabelAssigner = new EnvironmentLabelAssigner({
             macroLabelRecipients: macroLabelCollector.labelRecipients,
             witnessedLabels: macroLabelCollector.witnessedLabels,
-            whiteList: new Set<string>(this.blockTypes.keys()),
+            whiteList: environmentLabelWhitelist,
             logger: numberLogger
         });
         environmentLabelAssigner.process(this.documentRoot!);
@@ -253,6 +267,8 @@ export class Compiler {
                 logger: renderingLogger,
                 preambleDump: [...this.rawMacros.values()].join('\n')
             }).asPlugin())
+            .use(new FigureCaptionRenderer({ logger: renderingLogger }).asPlugin())
+            .use(new FigureRenderer({ logger: renderingLogger }).asPlugin())
             .use(new UnitTitleRenderer({ logger: renderingLogger }).asPlugin())
             .use(new RefRenderer({ tagUnitMap: this.units, logger: renderingLogger }).asPlugin())
             .use(new CiteRenderer({ logger: renderingLogger }).asPlugin())
@@ -311,7 +327,7 @@ export class Compiler {
     collectUnits() {
         this.collectDivisions();
         this.collectBlocks();
-        this.collectLabeledEquations();
+        this.collectParasiticEnvironments();
 
         this.units = new Map<number, IRUnit>([
             ...Array.from(this.divisions.entries()),
@@ -486,12 +502,14 @@ export class Compiler {
         const linkLogger = new ParserLogger({ parent: this.logger });
         linkLogger.info('Assigning link metadata to \\ref and \\cite commands.');
 
+        const environmentNames = new Map<string, string>([...this.blockTypes.entries()].map(([k, v]) => [k, v.name]));
+        environmentNames.set('figure', 'Figure');
+
         const refAssigner = new RefAssigner({
             tagNodeMap: this.unitTagNode,
             labelTagMap: this.unitLabelTags,
             macroNames: new Map<string, string>([...documentDividers].map((d) => [d, capitaliseFirstLetter(d)])),
-            environmentNames: new Map<string, string>([...this.blockTypes.entries()].map(([k, v]) => [k, v.name])),
-            logger: linkLogger
+            environmentNames, logger: linkLogger
         });
         refAssigner.process(this.documentRoot!);
 
@@ -608,16 +626,20 @@ export class Compiler {
         }
     }
 
-    collectLabeledEquations() {
-        const equationLogger = new ParserLogger({ parent: this.logger });
-        equationLogger.info('Collecting labeled equation environments.');
+    collectParasiticEnvironments() {
+        const parasiticLogger = new ParserLogger({ parent: this.logger });
+        parasiticLogger.info('Collecting parasitic environments.');
 
-        const blockCollector = new LabeledEquationCollector({ logger: equationLogger });
+        const blockCollector = new LabeledEquationCollector({ logger: parasiticLogger });
         blockCollector.process(this.documentRoot!);
         this.equations = blockCollector.equations;
 
-        const messageContent = `Collected ${this.equations.size} block environments with ${equationLogger.numErrors} errors and ${equationLogger.numWarnings} warnings.`;
-        if (equationLogger.numErrors > 0) {
+        const figureCollector = new FigureCollector({ logger: parasiticLogger });
+        figureCollector.process(this.documentRoot!);
+        this.figures = figureCollector.figures;
+
+        const messageContent = `Collected ${this.equations.size} parasitic environments with ${parasiticLogger.numErrors} errors and ${parasiticLogger.numWarnings} warnings.`;
+        if (parasiticLogger.numErrors > 0) {
             this.logger.error(messageContent);
         } else {
             this.logger.success(messageContent);

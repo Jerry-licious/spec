@@ -11,5 +11,7 @@ export const classes = {
     citeNote: '',
     citeRef: 'link-primary',
     divisionTitle: 'link-foreground',
-    tikz: 'tikz-container'
+    tikz: 'tikz-container',
+    figure: 'figure',
+    figureCaption: 'figure-caption',
 } as const;

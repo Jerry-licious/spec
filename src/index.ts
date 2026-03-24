@@ -12,16 +12,20 @@ import {AuxData} from "./db/aux-data";
 
 export interface CompilerOptionOverride {
     compileAll: boolean;
+    conservative?: boolean;
+    targetFile?: string;
 }
 
 
-export async function runCompiler({compileAll}: CompilerOptionOverride ) {
+export async function runCompiler({compileAll, conservative, targetFile}: CompilerOptionOverride ) {
     const config = await loadConfig();
     if (!config) {
         process.exit(0);
     }
 
     config.compiler.compileAll = config.compiler.compileAll || compileAll;
+    // Compile all will disable conservative mode.
+    conservative = conservative && !compileAll;
     
     await initialiseDatabase(config.database);
 
@@ -76,7 +80,7 @@ export async function runCompiler({compileAll}: CompilerOptionOverride ) {
         unitTagHash
     });
 
-    const result = await parser.parseFile(config.document);
+    const result = await parser.parseFile(targetFile ?? config.document);
 
     try {
         consola.info(`Inserting/updating ${result.unitsToUpdate.length} units into the database.`);
@@ -86,11 +90,14 @@ export async function runCompiler({compileAll}: CompilerOptionOverride ) {
 
         await unitRepository.upsert(result.unitsToUpdate, primaryColumns);
 
-        consola.info(`Deleting ${result.unitsToDelete.length} units from the database.`);
+        // Only delete old units outside of conservative mode.
+        if (!conservative) {
+            consola.info(`Deleting ${result.unitsToDelete.length} units from the database.`);
 
-        await unitRepository.delete({
-            tag: In(result.unitsToDelete)
-        });
+            await unitRepository.delete({
+                tag: In(result.unitsToDelete)
+            });
+        }
 
         consola.info(`Inserting ${result.bibliography.length} bibliography entries.`)
 

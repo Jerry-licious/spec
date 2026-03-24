@@ -55,7 +55,8 @@ program.command('watch')
         if (isNaN(n)) throw new Error('Port must be an integer.');
         return n;
     }, 3000)
-    .option('--compileAll', 'Force the compiler to rerender every unit, even those that have already been compiled before.', false)
+    .option('--conservative', 'Only compile files that change to maximise speed. Destroys the main page and will lead to broken links GLOBALLY. ', false)
+    .option('--compileAll', 'Force the compiler to rerender every unit, even those that have already been compiled before. Disables conservative mode. ', false)
     .action(async (opts) => {
         process.env.PORT = String(opts.port);
 
@@ -64,15 +65,27 @@ program.command('watch')
         // @ts-ignore
         import('../../.output/server/index.mjs');
 
+        function listener(path: string) {
+            if (opts.conservative && !opts.compileAll && path.endsWith('.tex')) {
+                compile({
+                    compileAll: opts.compileAll,
+                    targetFile: path,
+                    conservative: true
+                }, opts.port);
+            } else {
+                compile({
+                    compileAll: opts.compileAll
+                }, opts.port);
+            }
+        }
+
         chokidar.watch('.', {
             ignoreInitial: true,
             ignored: (path, stats) => !!stats?.isFile() && !/\.(tex|sty|bib)$/.test(path)
-        }).on('add', () => compile({
-            compileAll: opts.all
-        }, opts.port)).on('change', () => compile({
-            compileAll: opts.all
-        }, opts.port)).on('unlink', () => compile({
-            compileAll: opts.all
+        }).on('add', listener)
+            .on('change', listener)
+            .on('unlink', () => compile({
+            compileAll: opts.compileAll
         }, opts.port))
     })
 

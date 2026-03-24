@@ -32,14 +32,16 @@ export function Page(props: PageProps) {
     const primaryColourClass = createMemo(() => config() ? `primary-${config()?.website.primaryColour}` : 'primary-blue');
     const neutralColourClass = createMemo(() => config() ? `neutral-${config()?.website.neutralColour}` : 'neutral-grey');
 
+    const fontSize = createMemo(() => config()?.website.fontSize ?? 16);
+    const lineHeight = createMemo(() => config()?.website.lineHeight ?? 1.3);
+    const alignment = createMemo(() => config()?.website.textAlign ?? 'left');
+
     createEffect(() => {
         (window as any).MathJax?.startup?.promise
             ?.then(() => (window as any).MathJax.typesetPromise());
     });
 
     return <div class={`main-container ${darkTheme() ? 'dark' : 'light'} ${primaryColourClass()} ${neutralColourClass()}`}>
-
-
         <Meta property="og:title" content={props.titleText} />
         {
             props.description ? <Meta property="og:description" content={props.description} /> : null
@@ -48,7 +50,12 @@ export function Page(props: PageProps) {
         <InvalidateListener/>
 
         <Title>{props.titleText}</Title>
-        <div class={`page-container ${config()?.website.font}`}>
+        <div class={`page-container ${config()?.website.font}`}
+             style={{
+                 "font-size": `${fontSize()}px`,
+                 "line-height": `${lineHeight()}`,
+                 "text-align": `${alignment()}`,
+             }}>
             <Topbar/>
             {
                 props.parentChain && props.parentChain.length ?

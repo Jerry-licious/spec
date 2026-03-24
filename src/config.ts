@@ -15,11 +15,19 @@ export const SpecConfigSchema = z.object({
 
     website: z.object({
         font: z.enum(['roboto', 'open-sans', 'cmu-serif', 'cmu-sans-serif']).default('cmu-serif'),
+        fontSize: z.int().min(1).default(16),
+        lineHeight: z.float32().default(1.3),
+        textAlign: z.enum(['left', 'center', 'right', 'justify']).default('left'),
+
         primaryColour: z.enum(['red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky',
             'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose']).default('blue'),
         neutralColour: z.enum(['slate', 'grey', 'zinc', 'stone']).default('grey'),
+
         searchLimit: z.int().min(1).default(16),
         maxSearchPages: z.int().min(1).default(48),
+
+        recentChanges: z.boolean().default(true),
+
         advertiseSpec: z.boolean().default(true),
     }).prefault({})
 });

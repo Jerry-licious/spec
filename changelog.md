@@ -3,6 +3,7 @@
 - Added support for equation referencing. 
 - Added automatic reloading on changes in watch mode. 
 - Adjusted spacing of `\item` content. 
+- Added font size, line height, and alignment config options.
 
 
 # v0.1.6, 2026-03-19

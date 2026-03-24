@@ -62,15 +62,17 @@ export class MainCollector extends DocumentVisitor {
             mainContent
         });
 
-        mainContent.forEach((contentNode) => visit(contentNode, (child) => {
-            if (!match.anyEnvironment(child)) return;
-            // Do not overwrite existing assignments.
-            if (child.meta?.parentIRUnit) return;
+        for (const c of mainContent) {
+            visit(c, (child) => {
+                if (!match.anyEnvironment(child)) return;
+                // Do not overwrite existing assignments.
+                if (child.meta?.parentIRUnit) return;
 
-            child.meta = {
-                ...child.meta, parentIRUnit: division
-            };
-        }));
+                child.meta = {
+                    ...child.meta, parentIRUnit: division
+                };
+            })
+        }
 
         // Every unit eventually comes back to the main document, so there is no need to assign the main document as a
         // parent.

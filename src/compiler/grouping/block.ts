@@ -28,8 +28,9 @@ export class BlockEnv extends IRUnit {
         this.proofs = args.proofs;
 
         const referenceCollector = new ReferenceCollector();
-        this.proofs.forEach((n) => referenceCollector.process(n));
-        referenceCollector.referencedTags.forEach((t) => this.directReferences.add(t));
+
+        for (const n of this.proofs) referenceCollector.process(n);
+        for (const t of referenceCollector.referencedTags) this.directReferences.add(t);
     }
 
     hashData(): Record<string, string> {

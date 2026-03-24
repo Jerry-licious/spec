@@ -111,13 +111,9 @@ export class DivisionCollector extends DocumentVisitor {
         // Assign each child a parent IR unit.
         // Used for equations to figure out which page they belong to.
         // TODO: In the future, this assignment may be used for the block section.
-        mainContent.forEach((contentNode) => visit(contentNode, (child) => {
-            if (!match.anyEnvironment(child)) return;
-
-            child.meta = {
-                ...child.meta, parentIRUnit: division
-            };
-        }));
+        for (const c of mainContent) {
+            division.assignAsParent(c);
+        }
 
         for (const child of children) {
             division.addChild(child);

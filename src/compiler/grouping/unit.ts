@@ -7,6 +7,8 @@ import {wrapPars} from "@unified-latex/unified-latex-to-hast";
 import {UnitData} from "../../db/unit-data";
 import {LinkTarget} from "../../db/link-target";
 import {macrosToOmit} from "../../unit-types";
+import {match} from "@unified-latex/unified-latex-util-match";
+import {visit} from "@unified-latex/unified-latex-util-visit";
 
 // IR units are intermediate representations that come with more structure than merely attaching nodes with metadata.
 // IR units are expected to have tags and numbers.
@@ -87,13 +89,14 @@ export abstract class IRUnit {
 
         // Initialise the list of direct references here.
         const referenceCollector = new ReferenceCollector();
-        this.title.forEach((n) => referenceCollector.process(n));
-        this.mainContent.forEach((n) => referenceCollector.process(n));
+
+        for (const n of this.title) referenceCollector.process(n);
+        for (const n of this.mainContent) referenceCollector.process(n);
         this.directReferences = referenceCollector.referencedTags;
 
         const textCollector = new TextCollector({ macrosToOmit: macrosToOmit });
-        this.title.forEach((n) => textCollector.process(n));
-        this.mainContent.forEach((n) => textCollector.process(n));
+        for (const n of this.title) textCollector.process(n);
+        for (const n of this.mainContent) textCollector.process(n);
         this.textContent = textCollector.getCollectedText();
 
         this.directlyReferencedBy = new Set<number>();
@@ -188,6 +191,17 @@ export abstract class IRUnit {
             parasitic: this.parasitic,
             isDivision: this.isDivision,
         });
+    }
+
+    // Assigns the current IR node as the parent of all environments in the given node.
+    assignAsParent(node: Node) {
+        visit(node, (child) => {
+            if (!match.anyEnvironment(child)) return;
+
+            child.meta = {
+                ...child.meta, parentIRUnit: this
+            };
+        })
     }
 }
 

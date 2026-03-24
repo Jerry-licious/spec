@@ -74,16 +74,12 @@ export class BlockCollector extends DocumentVisitor {
             parent: this.currentDivision
         });
 
-        // Assign all its content with this as the parent IR unit.
-        // Used for equations to figure out which page they belong to.
-        [node.content, ...node.meta.proofs ?? []].forEach((contentNode) =>
-            visit(contentNode, (child) => {
-            if (!match.anyEnvironment(child)) return;
-
-            child.meta = {
-                ...child.meta, parentIRUnit: blockEnv
-            };
-        }));
+        for (const c of node.content) {
+            blockEnv.assignAsParent(c);
+        }
+        for (const p of node.meta.proofs ?? []) {
+            blockEnv.assignAsParent(p);
+        }
 
         this.blocks.set(node.meta.tag, blockEnv);
     }

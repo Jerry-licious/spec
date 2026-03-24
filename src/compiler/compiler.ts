@@ -362,7 +362,9 @@ export class Compiler {
                     const refUnit = this.units.get(ref)!;
                     // If the references have already been figured out, then there is no need to visit it again.
                     if (refUnit.indirectReferences) {
-                        refUnit.indirectReferences.forEach((r) => visited.add(r));
+                        for (const r of refUnit.indirectReferences) {
+                            visited.add(r);
+                        }
                     } else {
                         queue.push(this.units.get(ref)!);
                     }
@@ -371,8 +373,11 @@ export class Compiler {
 
             // Remove itself from the list if present.
             visited.delete(unit.tag);
+
             // Indirect references are "strict". Direct references are not to be included.
-            unit.directReferences.forEach((ref) => visited.delete(ref));
+            for (const ref of unit.directReferences) {
+                visited.delete(ref)
+            }
 
             unit.indirectReferences = visited;
         }

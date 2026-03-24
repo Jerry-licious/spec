@@ -23,8 +23,6 @@ export class RefRenderer extends NodeRenderer {
     }
 
     renderParasitic(node: Macro, target: IRUnit) {
-        console.log("Surely this was called")
-
         const targetTagString = toTagString(target.tag);
         const href = `/t/${toTagString(target.parent?.tag ?? 0)}#${targetTagString}`;
 

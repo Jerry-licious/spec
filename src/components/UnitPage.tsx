@@ -4,7 +4,7 @@ import {getConfig} from "../app-data";
 import {mainPageType, shouldDisplayTitle} from "../unit-types";
 import './UnitPage.css'
 import {UnitLinkList} from "../components/UnitLinkList";
-import {createEffect, createMemo, JSX, onMount, Show} from "solid-js";
+import {createEffect, createMemo, JSX, Show} from "solid-js";
 import {UnitData} from "../db/unit-data";
 
 

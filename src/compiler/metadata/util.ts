@@ -1,6 +1,5 @@
-import {Argument, DisplayMath, Environment, Macro} from "@unified-latex/unified-latex-types";
+import {DisplayMath, Environment, Macro, Node} from "@unified-latex/unified-latex-types";
 import {match} from "@unified-latex/unified-latex-util-match";
-import {Node} from "@unified-latex/unified-latex-types";
 
 export type TaggableNode = Macro | Environment | DisplayMath;
 

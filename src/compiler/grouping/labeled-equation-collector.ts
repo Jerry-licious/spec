@@ -1,12 +1,8 @@
 import {DocumentVisitor} from "../visitor";
-import {Environment, Node} from "@unified-latex/unified-latex-types";
-import {visit, VisitInfo} from "@unified-latex/unified-latex-util-visit";
-import {match} from "@unified-latex/unified-latex-util-match";
-import {BlockEnv} from "./block";
-import {Division} from "./division";
+import {Node} from "@unified-latex/unified-latex-types";
+import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {ParserLogger} from "../logging-base";
 import {isLabelableDisplayMath} from "../metadata/util";
-import {IRUnit} from "./unit";
 import {LabeledEquation} from "./labeled-equation";
 
 

@@ -1,5 +1,5 @@
 import {IRUnit} from "./unit";
-import {Environment, Node} from "@unified-latex/unified-latex-types";
+import {Environment} from "@unified-latex/unified-latex-types";
 
 // Currently there's nothing to change.
 export class LabeledEquation extends IRUnit {

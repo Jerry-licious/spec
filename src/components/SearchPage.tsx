@@ -1,4 +1,4 @@
-import {createAsync, useParams} from "@solidjs/router";
+import {createAsync} from "@solidjs/router";
 import {getConfig} from "../app-data";
 import {SearchResult, searchUnits} from "../app-data-cache";
 import {createMemo, ErrorBoundary, JSX, Show} from "solid-js";

@@ -7,10 +7,10 @@ import {printRaw} from "@unified-latex/unified-latex-util-print-raw";
 import {htmlLike} from "@unified-latex/unified-latex-util-html-like";
 import {classes} from "./classes";
 import {ParserLogger} from "../logging-base";
-import { m, s } from "@unified-latex/unified-latex-builder";
+import {m, s} from "@unified-latex/unified-latex-builder";
 
 import {createSyncFn} from "synckit";
-import { resolve } from 'path';
+import {resolve} from 'path';
 import {toTagString} from "../../tag";
 
 const tikz2Svg = createSyncFn(

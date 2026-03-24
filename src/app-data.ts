@@ -3,7 +3,6 @@
 // App related database functions. Stored separately from the other database functions to avoid accidentally importing
 // server-related elements when compiling.
 
-import {fromTagString} from "./tag";
 import {query} from "@solidjs/router";
 import {config} from "./config";
 import {In} from "typeorm";

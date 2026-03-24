@@ -5,7 +5,7 @@ import consola from "consola";
 import {messageText} from "./error";
 import {BibliographyLoader} from "./bib-loader";
 import {Loader} from "./loader";
-import {DisplayMath, Environment, Macro, Node, Root} from "@unified-latex/unified-latex-types";
+import {Node, Root} from "@unified-latex/unified-latex-types";
 import {CountManager} from "./counter";
 import {capitaliseFirstLetter} from "./util";
 import {BibtexEntry} from "@orcid/bibtex-parse-js";
@@ -14,7 +14,8 @@ import {
     BlockEnv,
     Division,
     DivisionCollector,
-    IRUnit, LabeledEquation,
+    IRUnit,
+    LabeledEquation,
     LabeledEquationCollector,
     MainCollector
 } from "./grouping";
@@ -36,11 +37,13 @@ import {unified} from "unified";
 import {
     BlockRenderer,
     CiteRenderer,
-    EmptyParagraphFilter, ItemNumberer,
+    EmptyParagraphFilter,
+    ItemNumberer,
     MathRenderer,
     OmitMacro,
     ProofRenderer,
-    RefRenderer, UnitTitleRenderer
+    RefRenderer,
+    UnitTitleRenderer
 } from "./renderer";
 import {unifiedLatexToHast} from "@unified-latex/unified-latex-to-hast";
 import rehypeStringify from "rehype-stringify";

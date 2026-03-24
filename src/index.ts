@@ -9,7 +9,6 @@ import {BibliographyData} from "./db/bib-data";
 import {AuxData} from "./db/aux-data";
 
 
-
 export interface CompilerOptionOverride {
     compileAll: boolean;
     conservative?: boolean;

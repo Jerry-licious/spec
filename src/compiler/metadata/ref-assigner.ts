@@ -1,5 +1,5 @@
 import {DocumentVisitor} from "../visitor";
-import {DisplayMath, Environment, Macro, Node} from "@unified-latex/unified-latex-types";
+import {Node} from "@unified-latex/unified-latex-types";
 import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {match} from "@unified-latex/unified-latex-util-match";
 import {capitaliseFirstLetter, getArgumentText} from "../util";

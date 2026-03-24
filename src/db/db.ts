@@ -5,7 +5,7 @@ import consola from "consola";
 import {loadConfig} from "../load-config";
 import {config} from "../config";
 import {AuxData} from "../db/aux-data";
-import {join, resolve} from "node:path";
+import {resolve} from "node:path";
 
 export let AppDataSource: DataSource;
 let dataSourcePromise: Promise<DataSource> | null = null;

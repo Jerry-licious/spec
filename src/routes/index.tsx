@@ -2,7 +2,7 @@ import {getConfig} from "../app-data";
 import {createAsync} from "@solidjs/router";
 import {UnitPage} from "../components/UnitPage";
 import {ErrorBoundary, Show} from "solid-js";
-import {createGetUnit, getPreamble, getRecentChanges, getUnit} from "../app-data-cache";
+import {getPreamble, getRecentChanges, getUnit} from "../app-data-cache";
 import {Page} from "../components/Page";
 import {UnitLinkList} from "../components/UnitLinkList";
 

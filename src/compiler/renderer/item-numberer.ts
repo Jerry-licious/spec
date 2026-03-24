@@ -1,4 +1,3 @@
-import {Element} from "hast";
 import {DocumentVisitor} from "../visitor";
 import {Node} from "@unified-latex/unified-latex-types";
 import {SKIP, VisitInfo} from "@unified-latex/unified-latex-util-visit";

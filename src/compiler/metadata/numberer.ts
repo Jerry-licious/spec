@@ -6,7 +6,6 @@ import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {match} from "@unified-latex/unified-latex-util-match";
 import {ParserLogger} from "../logging-base";
 import {documentDividers} from "../../unit-types";
-import consola from "consola";
 import {isLabelableDisplayMath} from "./util";
 
 export class Numberer extends DocumentVisitor {

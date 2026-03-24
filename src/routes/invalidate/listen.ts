@@ -1,4 +1,4 @@
-import type { APIEvent } from "@solidjs/start/server";
+import type {APIEvent} from "@solidjs/start/server";
 
 declare global {
     var __invalidate_controllers: Set<ReadableStreamDefaultController> | undefined;

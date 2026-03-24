@@ -137,6 +137,8 @@ export abstract class IRUnit {
     }
 
     renderLinkTarget(renderer: (node: Node) => string) {
+        if (this.linkTarget) return;
+
         this.linkTarget = {
             tag: this.tag,
             numberingText: this.numbering.join('.'),

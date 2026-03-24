@@ -82,7 +82,7 @@ export function UnitPage(props: UnitPageProps) {
                 props.unit.children && props.unit.children.length > 0 ?
                     // Only say "content" if there is a need to separate this portion from the previous.
                     <UnitLinkList title={props.unit.contentHTML.trim() ? 'Contents' : ''}
-                                  items={props.unit.children}/> : null
+                                  items={props.unit.children} depth={config()?.website.tableOfContentsDepth ?? 0}/> : null
             }
         </Page>
     </Show>

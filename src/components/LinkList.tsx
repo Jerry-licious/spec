@@ -4,6 +4,8 @@ import {JSX} from "solid-js";
 export interface LinkListItem {
     content: string | JSX.Element;
     href: string;
+
+    children: LinkListItem[];
 }
 
 
@@ -20,6 +22,9 @@ export function LinkList(props: LinkListProps) {
                 {
                     typeof item.content === 'string' ? <a href={item.href} class={'link-primary'} innerHTML={item.content}/> :
                         <a href={item.href} class={'link-primary'}>{item.content}</a>
+                }
+                {
+                    item.children.length ? <LinkList items={item.children}/> : null
                 }
             </li>)}
         </ul>

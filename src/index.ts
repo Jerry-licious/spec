@@ -130,6 +130,6 @@ export async function runCompiler({compileAll, conservative, targetFile}: Compil
     }
 }
 
-//runCompiler({compileAll: true}).catch(console.error);
+runCompiler({compileAll: true}).catch(console.error);
 
 

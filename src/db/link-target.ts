@@ -6,6 +6,9 @@ export interface LinkTarget {
 
     // HTML title, if it exists.
     titleHtml?: string;
+
+    // Children, if they exist.
+    children?: LinkTarget[];
 }
 
 

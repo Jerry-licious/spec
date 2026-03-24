@@ -60,4 +60,14 @@ export class Division extends IRUnit {
 
         return data;
     }
+
+    renderLinkTarget(renderer: (node: Node) => string) {
+        super.renderLinkTarget(renderer);
+
+        for (const child of this.children) {
+            if (!child.linkTarget) child.renderLinkTarget(renderer);
+        }
+
+        this.linkTarget!.children = this.children.map((c) => c.linkTarget!);
+    }
 }

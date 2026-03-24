@@ -27,6 +27,7 @@ export const SpecConfigSchema = z.object({
         maxSearchPages: z.int().min(1).default(48),
 
         recentChanges: z.int().min(0).max(32).default(10),
+        tableOfContentsDepth: z.int().min(0).max(4).default(2),
 
         advertiseSpec: z.boolean().default(true),
     }).prefault({})

@@ -93,9 +93,18 @@ indirectReferences = true
 
 [website]
 font = "cmu-serif"
+fontSize = 16
+lineHeight = 1.3
+textAlign = "left"
+
 primaryColour = "blue"
 neutralColour = "grey"
+
 searchLimit = 16
+maxSearchPages = 48
+
+recentChanges = 10
+advertiseSpec = true
 ```
 
 ### Shared Config Fields
@@ -124,12 +133,21 @@ to. May slow down the compiler significantly when there is a large number of tag
 ([Roboto](https://fontsource.org/fonts/roboto)), `open-sans` ([Open Sans](https://fontsource.org/fonts/open-sans)),
   `cmu-serif` ([CMU Serif](https://fontlibrary.org/en/font/cmu-serif), default serif font in LaTeX), and 
 `cmu-sans-serif` ([CMU Sans Serif](https://fontlibrary.org/en/font/cmu-sans-serif)).
+- `fontSize`: Size of text in content blocks, in `px`. 
+- `lineHeight`: Height of each line.
+- `textAlign`: Alignment of context texts. Must be one of `left`, `center`, `right`, `justify`. 
+
+
 - `primaryColour`: Used to colour links and buttons. Must be one of `red`, `orange`, `amber`, `yellow`, `lime`, `green`, `emerald`, `teal`, `cyan`, `sky`,
   `blue`, `indigo`, `violet`, `purple`, `fuchsia`, `pink`, and `rose`. 
 - `neutralColour`: Used to colour background, lines, and shade elements. Must be one of `slate`, `grey`, `zinc`, 
-`stone`. These colours can hardly be distinguished in light mode, but are more different in dark mode. 
+`stone`. These colours can hardly be distinguished in light mode, but are more different in dark mode.
+
+
 - `searchLimit`: Maximum amount of search results to display per page. 
 - `maxSearchPages`: Maximum number of pages for searches. 
+
+- `recentChanges`: The number of recent changes to show on the sidebar of the main page. If set to `0`, the recent changes section will never show up. 
 - `advertiseSpec`: Attribute spec in the sidebar. 
 
 The colour scheme is taken from [Tailwind](https://tailwindcss.com/docs/colors), thanks 

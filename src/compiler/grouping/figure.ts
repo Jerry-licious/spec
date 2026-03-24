@@ -5,7 +5,7 @@ import {Environment} from "@unified-latex/unified-latex-types";
 export class Figure extends IRUnit {
     constructor({parent, environment, label, tag, numbering}: {
         parent?: IRUnit;
-        environment?: Environment;
+        environment: Environment;
         label?: string;
         tag: number;
         numbering?: number[];
@@ -13,7 +13,7 @@ export class Figure extends IRUnit {
         super({
             parent, mainContent: environment ? [environment] : [],
             sourceNodeType: 'environment', sourceNodeName: 'figure',
-            name: 'Figure', label, title: [], tag, numbering, parasitic: true,
+            name: 'Figure', label, title: environment.meta?.title ?? [], tag, numbering, parasitic: true,
             isDivision: false
         });
     }

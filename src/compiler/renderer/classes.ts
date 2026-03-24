@@ -13,5 +13,5 @@ export const classes = {
     divisionTitle: 'link-foreground',
     tikz: 'tikz-container',
     figure: 'figure',
-    figureCaption: 'figure-caption',
+    figureCaption: 'figure-caption link-foreground',
 } as const;

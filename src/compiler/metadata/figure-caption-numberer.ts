@@ -13,7 +13,12 @@ export class FigureCaptionNumberer extends DocumentVisitor {
             if (!match.macro(child, 'caption')) return;
 
             child.meta = {
-                ...child.meta, numbering: node.meta?.numbering
+                ...child.meta, numbering: node.meta?.numbering, tag: node.meta?.tag
+            };
+
+            node.meta = {
+                ...node.meta,
+                title: child.args ? child.args.flatMap((a) => a.content) : []
             };
         });
 

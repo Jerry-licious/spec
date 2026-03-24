@@ -217,10 +217,6 @@ export class Compiler {
         });
         numberer.process(this.documentRoot!);
 
-        // Also propagate the numbers down to captions.
-        const captionNumberer = new FigureCaptionNumberer({logger: numberLogger});
-        captionNumberer.process(this.documentRoot!);
-
         // Following this, macros and environments gain a persistent tag by having a label, which allows
         // reloads to be less tedious during writing sessions.
         // As such, it is beneficial to automatically generate one if it is not present.
@@ -332,7 +328,8 @@ export class Compiler {
         this.units = new Map<number, IRUnit>([
             ...Array.from(this.divisions.entries()),
             ...Array.from(this.blocks.entries()),
-            ...Array.from(this.equations.entries())
+            ...Array.from(this.equations.entries()),
+            ...Array.from(this.figures.entries())
         ]);
     }
 
@@ -461,8 +458,10 @@ export class Compiler {
         const tagLogger = new ParserLogger({ parent: this.logger });
         tagLogger.info('Assigning tags to divisions and blocks.');
 
+        const taggableEnvironments = new Set<string>(this.blockTypes.keys());
+        taggableEnvironments.add('figure');
         const tagAssigner = new TagAssigner({
-            taggableEnvironments: new Set<string>(this.blockTypes.keys()),
+            taggableEnvironments: taggableEnvironments,
             taggableMacros: new Set<string>(documentDividers),
             labelTagMap: this.unitLabelTags,
             nextAvailableTag: this.nextAvailableTag,
@@ -471,6 +470,11 @@ export class Compiler {
         tagAssigner.process(this.documentRoot!);
         this.nextAvailableTag = tagAssigner.nextAvailableTag;
         this.unitTagNode = tagAssigner.tagNodeMap;
+
+
+        // Propagate number and tag information down to captions.
+        const captionNumberer = new FigureCaptionNumberer({logger: tagLogger});
+        captionNumberer.process(this.documentRoot!);
 
         const messageContent = `Finished assigning ${this.unitTagNode.size} tags to divisions and blocks with ${tagLogger.numErrors} errors and ${tagLogger.numWarnings} warnings.`;
         if (tagLogger.numErrors > 0) {

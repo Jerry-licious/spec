@@ -160,9 +160,8 @@ export class Compiler {
 
         this.collectDefinitions();
 
-        this.assignLabels();
+        this.assignLabelsAndNumbers();
         this.assignTags();
-        this.numberUnits();
 
         this.adjustEnumerates();
 
@@ -186,6 +185,56 @@ export class Compiler {
         }
 
         return result;
+    }
+
+
+    assignLabelsAndNumbers() {
+        const numberLogger = new ParserLogger({ parent: this.logger });
+        numberLogger.info('Assigning labels and numbers to divisions and blocks.');
+
+        // The situation here is as follows: labels are fully optional for equations in that very little is gained by
+        // an equation having a label when this label is not used.
+        // However, since only equations with labels are numbered, they must come first.
+
+        const equationLabelAssigner = new EquationLabelAssigner({
+            logger: numberLogger,
+        });
+        equationLabelAssigner.process(this.documentRoot!);
+
+        const numberer = new Numberer({
+            countManager: this.countManager, logger: numberLogger,
+            environmentCounters: new Map<string, string>(
+                [...this.blockTypes.entries()].map(([k, v]) => [k, v.associatedCounter]))
+        });
+        numberer.process(this.documentRoot!);
+
+        // Following this, macros and environments gain a persistent tag by having a label, which allows
+        // reloads to be less tedious during writing sessions.
+        // As such, it is beneficial to automatically generate one if it is not present.
+        // While there are more advanced methods of creating persistent labels. I believe that
+        // the numbering and environment/macro type are sufficient to serve as a basic anchor,
+        // which is why the numberer comes before the macro and environment label assigners.
+
+        const macroLabelCollector = new MacroLabelAssigner({
+            labelRecipients: new Set<string>(documentDividers), logger: numberLogger,
+            witnessedLabels: equationLabelAssigner.witnessedLabels,
+        });
+        macroLabelCollector.process(this.documentRoot!);
+
+        const environmentLabelAssigner = new EnvironmentLabelAssigner({
+            macroLabelRecipients: macroLabelCollector.labelRecipients,
+            witnessedLabels: macroLabelCollector.witnessedLabels,
+            whiteList: new Set<string>(this.blockTypes.keys()),
+            logger: numberLogger
+        });
+        environmentLabelAssigner.process(this.documentRoot!);
+
+        const messageContent = `Finished assigning labels and numbers to divisions and blocks with ${numberLogger.numErrors} errors and ${numberLogger.numWarnings} warnings.`;
+        if (numberLogger.numErrors > 0) {
+            this.logger.error(messageContent);
+        } else {
+            this.logger.success(messageContent);
+        }
     }
 
 
@@ -241,6 +290,7 @@ export class Compiler {
         const toUpdate: UnitData[] = [];
         for (const unit of this.units.values()) {
             // Skip any node with the same hash as the stored.
+
             if (!this.compileAll && this.unitTagHash.has(unit.tag) && unit.hash() === this.unitTagHash.get(unit.tag)) continue;
 
             toUpdate.push(unit.renderToUnitData(this.units, this.renderToHTML));
@@ -383,37 +433,6 @@ export class Compiler {
         }
     }
 
-    assignLabels() {
-        const labelLogger = new ParserLogger({ parent: this.logger });
-        labelLogger.info('Assigning labels to divisions, blocks, and equations.');
-
-        const macroLabelCollector = new MacroLabelAssigner({
-            labelRecipients: new Set<string>(documentDividers), logger: labelLogger,
-        });
-        macroLabelCollector.process(this.documentRoot!);
-
-        const environmentLabelAssigner = new EnvironmentLabelAssigner({
-            macroLabelRecipients: macroLabelCollector.labelRecipients,
-            witnessedLabels: macroLabelCollector.witnessedLabels,
-            whiteList: new Set<string>(this.blockTypes.keys()),
-            logger: labelLogger
-        });
-        environmentLabelAssigner.process(this.documentRoot!);
-
-        const equationLabelAssigner = new EquationLabelAssigner({
-            witnessedLabels: environmentLabelAssigner.witnessedLabels,
-            logger: labelLogger,
-        });
-        equationLabelAssigner.process(this.documentRoot!);
-
-        const messageContent = `Finished assigning labels to divisions, blocks, and equations with ${labelLogger.numErrors} errors and ${labelLogger.numWarnings} warnings.`;
-        if (labelLogger.numErrors > 0) {
-            this.logger.error(messageContent);
-        } else {
-            this.logger.success(messageContent);
-        }
-    }
-
     assignTags() {
         const tagLogger = new ParserLogger({ parent: this.logger });
         tagLogger.info('Assigning tags to divisions and blocks.');
@@ -431,25 +450,6 @@ export class Compiler {
 
         const messageContent = `Finished assigning ${this.unitTagNode.size} tags to divisions and blocks with ${tagLogger.numErrors} errors and ${tagLogger.numWarnings} warnings.`;
         if (tagLogger.numErrors > 0) {
-            this.logger.error(messageContent);
-        } else {
-            this.logger.success(messageContent);
-        }
-    }
-
-    numberUnits() {
-        const numberLogger = new ParserLogger({ parent: this.logger });
-        numberLogger.info('Assigning numbers to divisions and blocks.');
-
-        const numberer = new Numberer({
-            countManager: this.countManager, logger: numberLogger,
-            environmentCounters: new Map<string, string>(
-                [...this.blockTypes.entries()].map(([k, v]) => [k, v.associatedCounter]))
-        });
-        numberer.process(this.documentRoot!);
-
-        const messageContent = `Finished assigning numbers to divisions and blocks with ${numberLogger.numErrors} errors and ${numberLogger.numWarnings} warnings.`;
-        if (numberLogger.numErrors > 0) {
             this.logger.error(messageContent);
         } else {
             this.logger.success(messageContent);

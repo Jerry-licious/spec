@@ -3,6 +3,9 @@ import {Macro, Node} from "@unified-latex/unified-latex-types";
 import {getArgumentText, getContext} from "../util";
 import {ParserLogger} from "../logging-base";
 import {match} from "@unified-latex/unified-latex-util-match";
+import {getEnvironmentName, isLabelableDisplayMath, reservedLabelStart} from "./util";
+import {createHash} from "crypto";
+
 
 export abstract class LabelAssigner extends DocumentVisitor {
     witnessedLabels: Set<string>;
@@ -39,12 +42,32 @@ export abstract class LabelAssigner extends DocumentVisitor {
             // Only warn if the node is not a math block.
             if (match.math(node) && node.type === "displaymath") return;
             if (match.environment(node, "tikzcd")) return;
+            if (isLabelableDisplayMath(node)) return;
 
-            this.addWarning('Node received no label.');
+            // If no label is collected, one will be automatically generated from its context.
+            this.addWarning('Node received no label. Automatically generating a label in its place.');
+
+            let nodeKey = "unknown";
+            if (match.macro(node)) nodeKey = node.content;
+            if (match.environment(node)) nodeKey = getEnvironmentName(node);
+
+            const numbering = match.macro(node) || match.environment(node) ? node.meta?.numbering ?? [] : [];
+
+            const hash = createHash('sha256').update(`${nodeKey} ${numbering.join('.')}`).digest('hex');
+
+            node.meta = {
+                ...node.meta, label: `auto:${hash}`
+            };
+
             return;
         }
         if (this.witnessedLabels.has(label)) {
             this.addWarning(`The label ${label} is already used. As such, this node received no label.`);
+            return;
+        }
+
+        if (label.startsWith(reservedLabelStart)) {
+            this.addError(`The "auto:" prefix is reserved for automatically generated labels.`);
             return;
         }
 

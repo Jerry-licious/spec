@@ -4,6 +4,7 @@
 - Added automatic reloading on changes in watch mode. 
 - Adjusted spacing of `\item` content. 
 - Added font size, line height, and alignment config options.
+- Units now get an automatically generated label based on its numbering if none is given. 
 
 
 # v0.1.6, 2026-03-19

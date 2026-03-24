@@ -2,6 +2,7 @@
 
 - Added support for equation referencing. 
 - Added automatic reloading on changes in watch mode. 
+- Adjusted spacing of `\item` content. 
 
 
 # v0.1.6, 2026-03-19

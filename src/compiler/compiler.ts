@@ -49,6 +49,7 @@ import {UnitData} from "../db/unit-data";
 import {BibliographyData} from "../db/bib-data";
 import {TikzExtractor} from "./renderer/tikz-extractor";
 import {TaggableNode} from "./metadata/util";
+import {ItemParagraphBreaker} from "./renderer/item-paragraph-breaker";
 
 
 const divisionMarkers = new Set<string>(documentDividers);
@@ -163,7 +164,7 @@ export class Compiler {
         this.assignTags();
         this.numberUnits();
 
-        this.numberEnumerates();
+        this.adjustEnumerates();
 
         this.assignLinks();
         this.assignBlockMetadata();
@@ -455,14 +456,17 @@ export class Compiler {
         }
     }
 
-    numberEnumerates() {
+    adjustEnumerates() {
         const numberLogger = new ParserLogger({ parent: this.logger });
-        numberLogger.info('Assigning numbers to enumerate items.');
+        numberLogger.info('Adjusting the rendering of enumerate items.');
 
         const numberer = new ItemNumberer({ logger: numberLogger });
         numberer.process(this.documentRoot!);
 
-        const messageContent = `Finished assigning numbers to enumerate items with ${numberLogger.numErrors} errors and ${numberLogger.numWarnings} warnings.`;
+        const breaker = new ItemParagraphBreaker({ logger: numberLogger });
+        breaker.process(this.documentRoot!);
+
+        const messageContent = `Finished adjusting enumerate items with ${numberLogger.numErrors} errors and ${numberLogger.numWarnings} warnings.`;
         if (numberLogger.numErrors > 0) {
             this.logger.error(messageContent);
         } else {

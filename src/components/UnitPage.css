@@ -33,6 +33,10 @@
     gap: 0.5rem;
 }
 
+.enumerate li > * {
+    margin-bottom: 0.5rem;
+}
+
 
 .block-container, .proof {
     display: flex;

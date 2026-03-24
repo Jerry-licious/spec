@@ -22,6 +22,7 @@ export class BlockEnv extends IRUnit {
             ...args,
             sourceNodeType: "environment",
             parasitic: false,
+            isDivision: false,
         });
 
         this.proofs = args.proofs;

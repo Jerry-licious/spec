@@ -4,12 +4,13 @@ import {getConfig} from "../app-data";
 import {mainPageType, shouldDisplayTitle} from "../unit-types";
 import './UnitPage.css'
 import {UnitLinkList} from "../components/UnitLinkList";
-import {createEffect, createMemo, onMount, Show} from "solid-js";
+import {createEffect, createMemo, JSX, onMount, Show} from "solid-js";
 import {UnitData} from "../db/unit-data";
 
 
 export interface UnitPageProps {
-    unit: UnitData
+    unit: UnitData;
+    additionalSidebarContent?: JSX.Element | JSX.Element[] | string;
 }
 
 function UnitSidebarContent(props: UnitPageProps) {
@@ -18,6 +19,9 @@ function UnitSidebarContent(props: UnitPageProps) {
         {props.unit.indirectlyReferences.length ? <UnitLinkList title={'Indirect References'} items={props.unit.indirectlyReferences}/> : ''}
         {props.unit.directlyReferencedBy.length ? <UnitLinkList title={'Direct Backlinks'} items={props.unit.directlyReferencedBy}/> : ''}
         {props.unit.indirectlyReferencedBy.length ? <UnitLinkList title={'Indirect Backlinks'} items={props.unit.indirectlyReferencedBy}/> : ''}
+        {
+            props.additionalSidebarContent ?? null
+        }
     </div>
 }
 

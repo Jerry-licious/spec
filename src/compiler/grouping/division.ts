@@ -34,6 +34,7 @@ export class Division extends IRUnit {
             ...args,
             sourceNodeType: "macro",
             parasitic: false,
+            isDivision: true
         });
 
         this.children = args.children ?? [];

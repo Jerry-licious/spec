@@ -26,7 +26,7 @@ export const SpecConfigSchema = z.object({
         searchLimit: z.int().min(1).default(16),
         maxSearchPages: z.int().min(1).default(48),
 
-        recentChanges: z.boolean().default(true),
+        recentChanges: z.int().min(0).max(32).default(10),
 
         advertiseSpec: z.boolean().default(true),
     }).prefault({})

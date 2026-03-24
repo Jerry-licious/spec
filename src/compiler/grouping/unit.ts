@@ -49,8 +49,9 @@ export abstract class IRUnit {
     linkTarget?: LinkTarget;
 
     parasitic: boolean;
+    isDivision: boolean;
 
-    constructor({parent, mainContent, sourceNodeType, sourceNodeName, name, label, title, tag, numbering, parasitic}: {
+    constructor({parent, mainContent, sourceNodeType, sourceNodeName, name, label, title, tag, numbering, parasitic, isDivision}: {
         parent?: IRUnit;
         mainContent?: Node[];
         sourceNodeType: 'environment' | 'macro';
@@ -63,6 +64,7 @@ export abstract class IRUnit {
 
         // A *parasitic* node is one that isn't "supposed" to live on its own page.
         parasitic: boolean;
+        isDivision: boolean;
     }) {
         this.parent = parent;
         this.mainContent = mainContent ?? [];
@@ -79,6 +81,7 @@ export abstract class IRUnit {
         this.numbering = numbering ?? [];
 
         this.parasitic = parasitic;
+        this.isDivision = isDivision;
 
         this.titleText = this.title.map((n) => printRaw(n)).join('');
 
@@ -179,6 +182,9 @@ export abstract class IRUnit {
             indirectlyReferences: this.indirectReferences ? [...this.indirectReferences].map((r) => allUnits.get(r)!.linkTarget!) : [],
             directlyReferencedBy: [...this.directlyReferencedBy].map((r) => allUnits.get(r)!.linkTarget!),
             indirectlyReferencedBy: [...this.indirectlyReferencedBy].map((r) => allUnits.get(r)!.linkTarget!),
+
+            parasitic: this.parasitic,
+            isDivision: this.isDivision,
         });
     }
 }

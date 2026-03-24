@@ -113,22 +113,40 @@ export function createGetUnit(tag: Accessor<string | number>): InitializedResour
 }
 
 export const getUnit = query(async (tag: string | number) => {
-        'use server';
+    'use server';
 
-        if (typeof tag === 'string') {
-            try {
-                tag = fromTagString(tag);
-            } catch (e) {
-                return null;
-            }
+    if (typeof tag === 'string') {
+        try {
+            tag = fromTagString(tag);
+        } catch (e) {
+            return null;
         }
-
-        const dataSource = await getDataSource();
-        const unit = await dataSource.getRepository(UnitData).findOneBy({ tag: tag });
-
-        if (!unit) throw new Error('Unit not found.');
-
-        // Strip the unit of all non-serialisable data.
-        return {...unit};
     }
-, 'unit');
+
+    const dataSource = await getDataSource();
+    const unit = await dataSource.getRepository(UnitData).findOneBy({ tag: tag });
+
+    if (!unit) throw new Error('Unit not found.');
+
+    // Strip the unit of all non-serialisable data.
+    return {...unit};
+}, 'unit');
+
+
+export const getRecentChanges = query(async () => {
+    'use server';
+
+    const config = await getConfig();
+    if (config.website.searchLimit === 0) return [];
+
+    const dataSource = await getDataSource();
+
+    return dataSource.getRepository(UnitData).find({
+        where: { parasitic: false },
+        order: { lastRendered: "desc" },
+        take: config.website.recentChanges
+    }).then((entries) => entries
+        .sort((a, b) => Number(a.isDivision) - Number(b.isDivision))
+        .map(toLinkTarget));
+}, 'recentChanges')
+

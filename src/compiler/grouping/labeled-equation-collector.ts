@@ -25,7 +25,6 @@ export class LabeledEquationCollector extends DocumentVisitor {
         if (!isLabelableDisplayMath(node)) return;
 
         if (!node.meta || !node.meta.tag || !node.meta.parentIRUnit) {
-            this.addError('Missing metadata for equation.');
             return;
         }
 

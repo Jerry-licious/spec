@@ -13,7 +13,8 @@ export class LabeledEquation extends IRUnit {
         super({
             parent, mainContent: environment ? [environment] : [],
             sourceNodeType: 'environment', sourceNodeName: 'equation',
-            name: 'Equation', label, title: [], tag, numbering, parasitic: true
+            name: 'Equation', label, title: [], tag, numbering, parasitic: true,
+            isDivision: false
         });
     }
 }

@@ -1,5 +1,5 @@
 import {LinkTarget} from "./link-target";
-import {Column, Entity, PrimaryColumn} from "typeorm";
+import {Column, Entity, Index, PrimaryColumn} from "typeorm";
 
 
 @Entity('units')
@@ -29,6 +29,7 @@ export class UnitData {
     @Column('text')
     contentText!: string;
 
+    @Index()
     @Column('datetime')
     lastRendered!: Date;
 
@@ -46,6 +47,11 @@ export class UnitData {
 
     @Column('simple-json', { nullable: true })
     children!: LinkTarget[] | null;
+
+    @Column('boolean', { nullable: true, default: false })
+    parasitic!: boolean | null;
+    @Column('boolean', { nullable: true, default: false })
+    isDivision!: boolean | null;
 }
 
 

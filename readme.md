@@ -76,7 +76,8 @@ will start the compiler in conservative mode, which causes the following:
 - When a change is detected, **only** render the changed file. This will dramatically speed up compile times. 
 - Render whenever a Tex file is detected to change regardless whether it belongs to a project or not.
 - Replace the main page with the file that is being edited. 
-- Cause links leaving and entering the file to be broken. 
+- Cause links leaving and entering the file to be broken.
+- Break all counters in edited files. 
 
 As conservative mode breaks many things, it is best to recompile the project after using it. 
 

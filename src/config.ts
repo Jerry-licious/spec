@@ -18,6 +18,7 @@ export const SpecConfigSchema = z.object({
         fontSize: z.int().min(1).default(16),
         lineHeight: z.float32().default(1.3),
         textAlign: z.enum(['left', 'center', 'right', 'justify']).default('left'),
+        lineWidth: z.int().min(15).max(120).default(45),
 
         primaryColour: z.enum(['red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky',
             'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose']).default('blue'),

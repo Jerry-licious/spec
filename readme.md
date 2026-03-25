@@ -110,6 +110,7 @@ font = "cmu-serif"
 fontSize = 16
 lineHeight = 1.3
 textAlign = "left"
+lineWidth = 45
 
 primaryColour = "blue"
 neutralColour = "grey"
@@ -152,6 +153,7 @@ to. May slow down the compiler significantly when there is a large number of tag
 - `fontSize`: Size of text in content blocks, in `px`. 
 - `lineHeight`: Height of each line.
 - `textAlign`: Alignment of context texts. Must be one of `left`, `center`, `right`, `justify`. 
+- `lineWidth`: Width of the main content block, in `rem` (which scales with font size).
 
 
 - `primaryColour`: Used to colour links and buttons. Must be one of `red`, `orange`, `amber`, `yellow`, `lime`, `green`, `emerald`, `teal`, `cyan`, `sky`,

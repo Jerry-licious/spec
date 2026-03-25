@@ -34,6 +34,7 @@ export function Page(props: PageProps) {
 
     const fontSize = createMemo(() => config()?.website.fontSize ?? 16);
     const lineHeight = createMemo(() => config()?.website.lineHeight ?? 1.3);
+    const lineWidth = createMemo(() => config()?.website.lineWidth ?? 45);
     const alignment = createMemo(() => config()?.website.textAlign ?? 'left');
 
     createEffect(() => {
@@ -55,6 +56,7 @@ export function Page(props: PageProps) {
                  "font-size": `${fontSize()}px`,
                  "line-height": `${lineHeight()}`,
                  "text-align": `${alignment()}`,
+                 "--line-width": `${lineWidth()}rem`,
              }}>
             <Topbar/>
             {

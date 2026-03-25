@@ -7,7 +7,7 @@
 - Units now get an automatically generated label based on its numbering if none is given. 
 - Added the conservative mode to the `watch` command.
 - Added config option to adjust the depth of the table of contents. 
-
+- Added basic image inclusion.
 
 # v0.1.6, 2026-03-19
 

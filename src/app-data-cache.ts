@@ -104,7 +104,6 @@ export const searchUnits = query(async (term: string, index: number): Promise<Se
 export function createGetUnit(tag: Accessor<string | number>): InitializedResourceReturn<UnitData> {
     return createCachedResource(() => ['unit', tag()], async ([, tag]) => {
         const unit = await getUnit(tag);
-        console.log('fetching', tag);
 
         if (!unit) throw new Error('Unit not found.');
 

@@ -270,7 +270,7 @@ export class Compiler {
         // Use a semaphore so I don't load up someone's entire hard drive in memory.
         const copySema = new Sema(10);
 
-        await Promise.all(witnessedPaths.values().map(async (graphicPath) => {
+        await Promise.all([...witnessedPaths.values()].map(async (graphicPath) => {
             let buffer: Buffer;
 
             await copySema.acquire();

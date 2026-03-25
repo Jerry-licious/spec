@@ -46,6 +46,7 @@
     "@unified-latex/unified-latex-types": "^1.8.0",
     "@unified-latex/unified-latex-util-parse": "^1.8.3",
     "async-lock": "^1.4.1",
+    "async-sema": "^3.1.1",
     "babel-preset-solid": "^1.9.10",
     "better-sqlite3": "^12.6.2",
     "chokidar": "^5.0.0",

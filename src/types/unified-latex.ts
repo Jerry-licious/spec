@@ -10,6 +10,8 @@ export interface LabeledElementMetadata extends ElementMetadata {
     label?: string;
     tag?: number;
     numbering?: number[];
+
+    targetFile?: string;
 }
 export interface TheoremMetadata extends LabeledElementMetadata {
     title?: Node[]; // Theorems/lemmas may come with a title.

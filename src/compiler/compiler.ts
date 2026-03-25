@@ -1,4 +1,6 @@
 // Orchestrates the full parsing process.
+import * as fs from "fs/promises"
+import * as crypto from "crypto"
 import {SpecConfig} from "../config";
 import {ParserLogger} from "./logging-base";
 import consola from "consola";
@@ -25,7 +27,7 @@ import {
     CiteAssigner,
     CustomMacroCollector,
     EnvironmentLabelAssigner,
-    EquationLabelAssigner, FigureCaptionNumberer,
+    EquationLabelAssigner, FigureCaptionNumberer, GraphicsPathAssigner,
     MacroLabelAssigner,
     Numberer,
     RefAssigner,
@@ -55,9 +57,17 @@ import {BibliographyData} from "../db/bib-data";
 import {TikzExtractor} from "./renderer/tikz-extractor";
 import {TaggableNode} from "./metadata/util";
 import {ItemParagraphBreaker} from "./renderer/item-paragraph-breaker";
+import path from "node:path";
+import AsyncLock from "async-lock";
+import {Sema} from "async-sema";
+import {GraphicData} from "../db/graphic-data";
+import {AppDataSource} from "../db";
 
 
 const divisionMarkers = new Set<string>(documentDividers);
+
+// Root folder where all the graphics will be deposited.
+const graphicsRoot = "./public/g/";
 
 
 interface CompileResult {
@@ -65,6 +75,9 @@ interface CompileResult {
     unitsToUpdate: UnitData[];
     // Tags to be deleted.
     unitsToDelete: number[];
+
+    graphicsToUpdate: GraphicData[];
+    graphicsToDelete: string[];
 
     // Bibliography seems so minuscule, so surely I do not need to avoid the writes.
     bibliography: BibliographyData[];
@@ -86,6 +99,9 @@ export class Compiler {
     unitTagHash: Map<number, string>;
     // Mapping from unit tags to their nodes.
     unitTagNode: Map<number, TaggableNode>;
+
+    // Hash of the existing figures.
+    graphicPathHash: Map<string, string>;
 
     // Mapping from bibliography keys to tags.
     bibliographyKeyTags: Map<string, number>;
@@ -110,12 +126,13 @@ export class Compiler {
 
     renderToHTML: (node: Node) => string;
 
-    constructor({config, unitLabelTags, bibliographyLabelTags, nextAvailableTag, unitTagHash}: {
+    constructor({config, unitLabelTags, bibliographyLabelTags, nextAvailableTag, unitTagHash, graphicPathHash}: {
         config: SpecConfig;
         unitLabelTags: Map<string, number>;
         bibliographyLabelTags: Map<string, number>;
         nextAvailableTag: number;
         unitTagHash: Map<number, string>;
+        graphicPathHash: Map<string, string>;
     }) {
         this.entry = config.document;
         this.compileAll = config.compiler.compileAll;
@@ -124,6 +141,7 @@ export class Compiler {
 
         this.unitLabelTags = unitLabelTags;
         this.unitTagHash = unitTagHash;
+        this.graphicPathHash = graphicPathHash;
         this.unitTagNode = new Map<number, TaggableNode>();
 
         this.bibliographyKeyTags = bibliographyLabelTags;
@@ -146,7 +164,7 @@ export class Compiler {
 
         this.logger = new ParserLogger({
             onError: message => {
-                consola.info(messageText(message));
+                consola.error(messageText(message));
             },
             onSuccess: message => {
                 consola.success(messageText(message));
@@ -179,6 +197,7 @@ export class Compiler {
         this.computeUnitReferences();
 
         const result = {
+            ...await this.copyGraphics(),
             ...this.renderUnits(),
             bibliography: this.bibliographyData,
             preamble: [...this.rawMacros.values()].join('\n')
@@ -248,6 +267,83 @@ export class Compiler {
         } else {
             this.logger.success(messageContent);
         }
+    }
+
+    async copyGraphics() {
+        const graphicLogger = new ParserLogger({ parent: this.logger });
+        graphicLogger.info('Copying referenced graphics to the public folder.');
+
+        const graphicCollector = new GraphicsPathAssigner();
+        graphicCollector.process(this.documentRoot!);
+
+        const witnessedPaths = graphicCollector.witnessedPaths;
+        const totalWitnessedPaths = witnessedPaths.size;
+        const graphicsToUpdate: GraphicData[] = [];
+
+        // Use a semaphore so I don't load up someone's entire hard drive in memory.
+        const copySema = new Sema(10);
+
+        await Promise.all(witnessedPaths.values().map(async (graphicPath) => {
+            let buffer: Buffer;
+
+            await copySema.acquire();
+
+            try {
+                buffer = await fs.readFile(graphicPath);
+            } catch (e) {
+                graphicLogger.error(`Failed to read ${graphicPath}.`);
+
+                // Failing to read the file should constitute removing it from the witness collection.
+                // I think the collection is copied when using map, so this shouldn't cause a problem.
+                witnessedPaths.delete(graphicPath);
+
+                copySema.release();
+                return;
+            }
+
+            const hash = crypto.createHash('sha256').update(buffer).digest('hex');
+
+            // Skip copying the graphic if the hash already matches up.
+            if (!this.compileAll && this.graphicPathHash.has(graphicPath) && this.graphicPathHash.get(graphicPath) === hash) return;
+
+            try {
+                const targetLocation = path.join(graphicsRoot, graphicPath);
+
+                await fs.mkdir(path.dirname(targetLocation), { recursive: true });
+                await fs.writeFile(targetLocation, buffer);
+            } catch (e) {
+                graphicLogger.error(`Failed to copy ${graphicPath}.`);
+                copySema.release();
+                return;
+            }
+
+            copySema.release();
+            graphicsToUpdate.push(AppDataSource.manager.create(GraphicData, ({
+                path: graphicPath, hash
+            })));
+        }));
+
+        const graphicsToDelete = [...this.graphicPathHash.keys()].filter((t) => !witnessedPaths.has(t));
+
+        await Promise.all(graphicsToDelete.map(async (graphicPath) => {
+            try {
+                await fs.unlink(path.join(graphicsRoot, graphicPath));
+            } catch (e) {
+                graphicLogger.error(`Failed to unlink ${graphicPath}.`);
+            }
+        }));
+
+        const messageContent = `Copied ${graphicsToUpdate.length} graphics files (skipped ${totalWitnessedPaths - graphicsToUpdate.length}) with ${graphicLogger.numErrors} errors and ${graphicLogger.numWarnings} warnings.`
+        if (graphicLogger.numErrors > 0) {
+            this.logger.error(messageContent);
+        } else {
+            this.logger.success(messageContent);
+        }
+
+        return {
+            graphicsToUpdate: graphicsToUpdate,
+            graphicsToDelete
+        };
     }
 
 

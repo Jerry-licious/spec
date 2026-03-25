@@ -7,6 +7,7 @@ import {loadConfig} from "./load-config";
 import {UnitData} from "./db/unit-data";
 import {BibliographyData} from "./db/bib-data";
 import {AuxData} from "./db/aux-data";
+import {GraphicData} from "./db/graphic-data";
 
 
 export interface CompilerOptionOverride {
@@ -30,9 +31,12 @@ export async function runCompiler({compileAll, conservative, targetFile}: Compil
 
     const unitRepository = AppDataSource.getRepository(UnitData);
     const bibliographyRepository = AppDataSource.getRepository(BibliographyData);
+    const graphicsDataRepository = AppDataSource.getRepository(GraphicData);
 
     let existingUnits: UnitData[] = [];
     let existingBibliography: BibliographyData[] = [];
+    let existingGraphics: GraphicData[] = [];
+
     if (config.compiler.redoTags) {
         consola.info('Deleting all existing units from the database.');
         try {
@@ -53,6 +57,9 @@ export async function runCompiler({compileAll, conservative, targetFile}: Compil
             existingBibliography = await bibliographyRepository.find({
                 select: { tag: true, key: true },
             });
+            existingGraphics = await graphicsDataRepository.find({
+                select: { path: true, hash: true },
+            });
         } catch (e) {
             consola.error('Failed to load existing units from the database.');
             console.error(e);
@@ -66,6 +73,8 @@ export async function runCompiler({compileAll, conservative, targetFile}: Compil
     const unitTagHash = new Map<number, string>(existingUnits.map((u) => [u.tag, u.hash]));
     const bibliographyLabelTags = new Map<string, number>(existingBibliography.map((u) => [u.key, u.tag]));
 
+    const graphicPathHash = new Map<string, string>(existingGraphics.map((g) => [g.path, g.hash]))
+
     const nextAvailableTag = 1 + Math.max(0,
         ...existingUnits.map((u) => u.tag),
         ...existingBibliography.map((u) => u.tag)
@@ -76,7 +85,8 @@ export async function runCompiler({compileAll, conservative, targetFile}: Compil
         unitLabelTags,
         bibliographyLabelTags,
         nextAvailableTag,
-        unitTagHash
+        unitTagHash,
+        graphicPathHash
     });
 
     const result = await parser.parseFile(targetFile ?? config.document);
@@ -114,6 +124,17 @@ export async function runCompiler({compileAll, conservative, targetFile}: Compil
         await AppDataSource.query(`
         INSERT INTO units_fts(units_fts) VALUES('rebuild');
         `);
+
+        consola.info(`Updating ${result.graphicsToUpdate} graphics entries.`);
+        await graphicsDataRepository.upsert(result.graphicsToUpdate, ['path']);
+        // Only delete old units outside of conservative mode.
+        if (!conservative) {
+            consola.info(`Deleting ${result.graphicsToDelete.length} graphics entries from the database.`);
+
+            await graphicsDataRepository.delete({
+                path: In(result.graphicsToDelete)
+            });
+        }
 
         consola.info('Updating the project preamble.');
         await AppDataSource.getRepository(AuxData).upsert({

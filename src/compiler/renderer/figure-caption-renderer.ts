@@ -11,23 +11,26 @@ export class FigureCaptionRenderer extends NodeRenderer {
         if (!match.macro(node, 'caption')) return;
 
         return htmlLike({
-            tag: 'span',
-            attributes: {
-                class: classes.figureCaption,
-            },
-            content: [
-                htmlLike({
-                    tag: 'a',
-                    attributes: {
-                        class: classes.figureCaption,
-                        href: node.meta?.tag ? `/t/${toTagString(node.meta?.tag)}` : '#'
-                    },
-                    content: [
-                        s(node.meta?.numbering ? `Figure ${node.meta.numbering.join('.')}: ` : ''),
-                        ...node.args ? node.args.flatMap((a) => a.content) : []
-                    ]
-                }),
-            ]
+            tag: 'div',
+            content: htmlLike({
+                tag: 'span',
+                attributes: {
+                    class: classes.figureCaption,
+                },
+                content: [
+                    htmlLike({
+                        tag: 'a',
+                        attributes: {
+                            class: classes.figureCaption,
+                            href: node.meta?.tag ? `/t/${toTagString(node.meta?.tag)}` : '#'
+                        },
+                        content: [
+                            s(node.meta?.numbering ? `Figure ${node.meta.numbering.join('.')}: ` : ''),
+                            ...node.args ? node.args.flatMap((a) => a.content) : []
+                        ]
+                    }),
+                ]
+            })
         });
     }
 }

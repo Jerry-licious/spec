@@ -25,7 +25,7 @@ export class GraphicsPathAssigner extends DocumentVisitor {
             path.resolve(path.join(path.dirname(node.meta.sourceFile), targetPath)));
 
         this.witnessedPaths.add(fullPath);
-        node.meta.sourceFile = fullPath;
+        node.meta.targetFile = fullPath;
     }
 }
 

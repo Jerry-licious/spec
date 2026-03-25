@@ -9,7 +9,7 @@ import {BibliographyLoader} from "./bib-loader";
 import {Loader} from "./loader";
 import {Node, Root} from "@unified-latex/unified-latex-types";
 import {CountManager} from "./counter";
-import {capitaliseFirstLetter} from "./util";
+import {capitaliseFirstLetter, graphicsRoot} from "./util";
 import {BibtexEntry} from "@orcid/bibtex-parse-js";
 import {
     BlockCollector,
@@ -47,7 +47,7 @@ import {
     RefRenderer,
     UnitTitleRenderer,
     FigureCaptionRenderer,
-    FigureRenderer
+    FigureRenderer, GraphicsRenderer
 } from "./renderer";
 import {unifiedLatexToHast} from "@unified-latex/unified-latex-to-hast";
 import rehypeStringify from "rehype-stringify";
@@ -65,9 +65,6 @@ import {AppDataSource} from "../db";
 
 
 const divisionMarkers = new Set<string>(documentDividers);
-
-// Root folder where all the graphics will be deposited.
-const graphicsRoot = "./public/g/";
 
 
 interface CompileResult {
@@ -319,7 +316,7 @@ export class Compiler {
 
             copySema.release();
             graphicsToUpdate.push(AppDataSource.manager.create(GraphicData, ({
-                path: graphicPath, hash
+                path: graphicPath, hash, lastCopied: new Date()
             })));
         }));
 
@@ -360,6 +357,7 @@ export class Compiler {
                 preambleDump: [...this.rawMacros.values()].join('\n')
             }).asPlugin())
             .use(new FigureCaptionRenderer({ logger: renderingLogger }).asPlugin())
+            .use(new GraphicsRenderer({ logger: renderingLogger }).asPlugin())
             .use(new FigureRenderer({ logger: renderingLogger }).asPlugin())
             .use(new UnitTitleRenderer({ logger: renderingLogger }).asPlugin())
             .use(new RefRenderer({ tagUnitMap: this.units, logger: renderingLogger }).asPlugin())

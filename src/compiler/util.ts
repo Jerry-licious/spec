@@ -3,6 +3,10 @@ import {NodeContext} from "./error";
 import {printRaw} from "@unified-latex/unified-latex-util-print-raw";
 
 
+// Root folder where all the graphics will be deposited.
+export const graphicsRoot = "./public/g/";
+export const graphicsURLRoot = '/public/g/';
+
 export function getContext(node: Node): NodeContext | undefined {
     if (node.meta && node.meta.sourceFile && node.position) {
         return {

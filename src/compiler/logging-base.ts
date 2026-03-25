@@ -4,10 +4,10 @@ import {ParsingMessage} from "./error";
 export class ParserLogger {
     readonly parent?: ParserLogger;
 
-    readonly errors: ParsingMessage[];
-    readonly warnings: ParsingMessage[];
-    readonly infos: ParsingMessage[];
-    readonly successes: ParsingMessage[];
+    errors: number;
+    warnings: number;
+    infos: number;
+    successes: number;
 
     readonly onError?: (message: ParsingMessage) => void;
     readonly onWarning?: (message: ParsingMessage) => void;
@@ -21,10 +21,10 @@ export class ParserLogger {
         onInfo?: (message: ParsingMessage) => void;
         onSuccess?: (message: ParsingMessage) => void;
     }) {
-        this.errors = [];
-        this.warnings = [];
-        this.infos = [];
-        this.successes = [];
+        this.errors = 0;
+        this.warnings = 0;
+        this.infos = 0;
+        this.successes = 0;
 
         this.parent = parent;
 
@@ -34,56 +34,66 @@ export class ParserLogger {
         this.onSuccess = onSuccess;
     }
 
-    error(msg: ParsingMessage | string) {
+    error(msg: ParsingMessage | string, increment: boolean = true) {
         const error = typeof msg === 'string' ? {message: msg } : msg;
 
-        this.errors.push(error);
+        if (increment) this.errors++;
         if (this.parent) {
-            this.parent.error(error);
+            this.parent.error(error, increment);
         }
         if (this.onError) {
             this.onError(error);
         }
     }
-    warn(msg: ParsingMessage | string) {
+    warn(msg: ParsingMessage | string, increment: boolean = true) {
         const warning = typeof msg === 'string' ? {message: msg } : msg;
 
-        this.warnings.push(warning);
+        if (increment) this.warnings++;
         if (this.parent) {
-            this.parent.warn(warning);
+            this.parent.warn(warning, increment);
         }
         if (this.onWarning) {
             this.onWarning(warning);
         }
     }
-    info(msg: ParsingMessage | string) {
+    info(msg: ParsingMessage | string, increment: boolean = true) {
         const info = typeof msg === 'string' ? {message: msg } : msg;
 
-        this.infos.push(info);
+        if (increment) this.infos++;
         if (this.parent) {
-            this.parent.info(info);
+            this.parent.info(info, increment);
         }
         if (this.onInfo) {
             this.onInfo(info);
         }
     }
-    success(msg: ParsingMessage | string) {
+    success(msg: ParsingMessage | string, increment: boolean = true) {
         const success = typeof msg === 'string' ? {message: msg } : msg;
 
-        this.successes.push(success);
+        if (increment) this.successes++;
         if (this.parent) {
-            this.parent.success(success);
+            this.parent.success(success, increment);
         }
         if (this.onSuccess) {
             this.onSuccess(success);
         }
     }
 
+    // Reports on the number of errors/warnings accumulated.
+    report(msg: string) {
+        const messageContent = `${msg} (${this.numErrors} errors and ${this.numWarnings} warnings)`;
+        if (this.numErrors > 0) {
+            this.error(messageContent, false);
+        } else {
+            this.success(messageContent, false);
+        }
+    }
+
     get numWarnings() {
-        return this.warnings.length;
+        return this.warnings
     }
     get numErrors() {
-        return this.errors.length;
+        return this.errors;
     }
 }
 

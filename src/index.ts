@@ -125,7 +125,7 @@ export async function runCompiler({compileAll, conservative, targetFile}: Compil
         INSERT INTO units_fts(units_fts) VALUES('rebuild');
         `);
 
-        consola.info(`Updating ${result.graphicsToUpdate} graphics entries.`);
+        consola.info(`Updating ${result.graphicsToUpdate.length} graphics entries.`);
         await graphicsDataRepository.upsert(result.graphicsToUpdate, ['path']);
         // Only delete old units outside of conservative mode.
         if (!conservative) {
@@ -151,6 +151,6 @@ export async function runCompiler({compileAll, conservative, targetFile}: Compil
     }
 }
 
-//runCompiler({compileAll: true}).catch(console.error);
+runCompiler({compileAll: true}).catch(console.error);
 
 

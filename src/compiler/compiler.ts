@@ -200,12 +200,7 @@ export class Compiler {
             preamble: [...this.rawMacros.values()].join('\n')
         };
 
-        const messageContent = `Finished compiling with ${this.logger.numErrors} errors and ${this.logger.numWarnings} warnings.`
-        if (this.logger.numErrors > 0) {
-            this.logger.error(messageContent);
-        } else {
-            this.logger.success(messageContent);
-        }
+        this.logger.report("Finished compiling the project.");
 
         return result;
     }
@@ -258,12 +253,7 @@ export class Compiler {
         });
         environmentLabelAssigner.process(this.documentRoot!);
 
-        const messageContent = `Finished assigning labels and numbers to divisions and blocks with ${numberLogger.numErrors} errors and ${numberLogger.numWarnings} warnings.`;
-        if (numberLogger.numErrors > 0) {
-            this.logger.error(messageContent);
-        } else {
-            this.logger.success(messageContent);
-        }
+        numberLogger.report("Finished assigning labels and numbers to divisions and blocks.");
     }
 
     async copyGraphics() {
@@ -330,12 +320,7 @@ export class Compiler {
             }
         }));
 
-        const messageContent = `Copied ${graphicsToUpdate.length} graphics files (skipped ${totalWitnessedPaths - graphicsToUpdate.length}) with ${graphicLogger.numErrors} errors and ${graphicLogger.numWarnings} warnings.`
-        if (graphicLogger.numErrors > 0) {
-            this.logger.error(messageContent);
-        } else {
-            this.logger.success(messageContent);
-        }
+        graphicLogger.report(`Copied ${graphicsToUpdate.length} graphics files (skipped ${totalWitnessedPaths - graphicsToUpdate.length}).`)
 
         return {
             graphicsToUpdate: graphicsToUpdate,
@@ -385,12 +370,7 @@ export class Compiler {
         const toUpdate = this.renderUnitData();
         const toDelete = [...this.unitTagHash.keys()].filter((t) => !this.units.has(t));
 
-        const messageContent = `Rendered ${toUpdate.length} units (skipped ${this.units.size - toUpdate.length}) with ${renderingLogger.numErrors} errors and ${renderingLogger.numWarnings} warnings.`
-        if (renderingLogger.numErrors > 0) {
-            this.logger.error(messageContent);
-        } else {
-            this.logger.success(messageContent);
-        }
+        renderingLogger.report(`Rendered ${toUpdate.length} units (skipped ${this.units.size - toUpdate.length}).`);
 
         return { unitsToUpdate: toUpdate, unitsToDelete: toDelete };
     }
@@ -518,12 +498,7 @@ export class Compiler {
 
         this.nextAvailableTag = bibliographyLoader.nextAvailableTag;
 
-        const messageContent = `File content and bibliography have been loaded with ${loadingLogger.numErrors} errors and ${loadingLogger.numWarnings} warnings.`;
-        if (loadingLogger.numErrors > 0) {
-            this.logger.error(messageContent);
-        } else {
-            this.logger.success(messageContent);
-        }
+        loadingLogger.report("File content and bibliography have been loaded");
     }
 
 
@@ -540,12 +515,7 @@ export class Compiler {
         macroCollector.process(this.documentRoot!);
         this.rawMacros = macroCollector.rawMacros;
 
-        const messageContent = `Collected ${this.blockTypes.size} custom environment types and ${macroCollector.rawMacros.size} custom macros with ${definitionLogger.numErrors} errors and ${definitionLogger.numWarnings} warnings.`;
-        if (definitionLogger.numErrors > 0) {
-            this.logger.error(messageContent);
-        } else {
-            this.logger.success(messageContent);
-        }
+        definitionLogger.report(`Collected ${this.blockTypes.size} custom environment types and ${macroCollector.rawMacros.size} custom macros.`);
     }
 
     assignTags() {
@@ -570,12 +540,7 @@ export class Compiler {
         const captionNumberer = new FigureCaptionNumberer({logger: tagLogger});
         captionNumberer.process(this.documentRoot!);
 
-        const messageContent = `Finished assigning ${this.unitTagNode.size} tags to divisions and blocks with ${tagLogger.numErrors} errors and ${tagLogger.numWarnings} warnings.`;
-        if (tagLogger.numErrors > 0) {
-            this.logger.error(messageContent);
-        } else {
-            this.logger.success(messageContent);
-        }
+        tagLogger.report("Finished assigning ${this.unitTagNode.size} tags to divisions and blocks.");
     }
 
     adjustEnumerates() {
@@ -588,12 +553,7 @@ export class Compiler {
         const breaker = new ItemParagraphBreaker({ logger: numberLogger });
         breaker.process(this.documentRoot!);
 
-        const messageContent = `Finished adjusting enumerate items with ${numberLogger.numErrors} errors and ${numberLogger.numWarnings} warnings.`;
-        if (numberLogger.numErrors > 0) {
-            this.logger.error(messageContent);
-        } else {
-            this.logger.success(messageContent);
-        }
+        numberLogger.report("Finished adjusting enumerate items.");
     }
 
     assignLinks() {
@@ -617,12 +577,7 @@ export class Compiler {
         });
         citeAssigner.process(this.documentRoot!);
 
-        const messageContent = `Finished assigning link metadata to \\ref and \\cite commands with ${linkLogger.numErrors} errors and ${linkLogger.numWarnings} warnings.`;
-        if (linkLogger.numErrors > 0) {
-            this.logger.error(messageContent);
-        } else {
-            this.logger.success(messageContent);
-        }
+        linkLogger.report("Finished assigning link metadata to \\ref and \\cite commands.");
     }
 
     assignBlockMetadata() {
@@ -641,12 +596,7 @@ export class Compiler {
         });
         proofAssigner.process(this.documentRoot!);
 
-        const messageContent = `Finished assigning metadata to block environments with ${blockLogger.numErrors} errors and ${blockLogger.numWarnings} warnings.`;
-        if (blockLogger.numErrors > 0) {
-            this.logger.error(messageContent);
-        } else {
-            this.logger.success(messageContent);
-        }
+        blockLogger.report("Finished assigning metadata to block environments.");
     }
 
     collectDivisions() {
@@ -698,12 +648,7 @@ export class Compiler {
         });
         mainCollector.process(this.documentRoot!);
 
-        const messageContent = `Collected ${this.divisions.size} divisions with ${divisionLogger.numErrors} errors and ${divisionLogger.numWarnings} warnings.`;
-        if (divisionLogger.numErrors > 0) {
-            this.logger.error(messageContent);
-        } else {
-            this.logger.success(messageContent);
-        }
+        divisionLogger.report(`Collected ${this.divisions.size} divisions.`);
     }
 
     collectBlocks() {
@@ -716,12 +661,7 @@ export class Compiler {
         blockCollector.process(this.documentRoot!);
         this.blocks = blockCollector.blocks;
 
-        const messageContent = `Collected ${this.blocks.size} block environments with ${blockLogger.numErrors} errors and ${blockLogger.numWarnings} warnings.`;
-        if (blockLogger.numErrors > 0) {
-            this.logger.error(messageContent);
-        } else {
-            this.logger.success(messageContent);
-        }
+        blockLogger.report(`Collected ${this.blocks.size} block environments.`);
     }
 
     collectParasiticEnvironments() {
@@ -736,12 +676,7 @@ export class Compiler {
         figureCollector.process(this.documentRoot!);
         this.figures = figureCollector.figures;
 
-        const messageContent = `Collected ${this.equations.size} parasitic environments with ${parasiticLogger.numErrors} errors and ${parasiticLogger.numWarnings} warnings.`;
-        if (parasiticLogger.numErrors > 0) {
-            this.logger.error(messageContent);
-        } else {
-            this.logger.success(messageContent);
-        }
+        parasiticLogger.report(`Collected ${this.equations.size} parasitic environments.`);
     }
 }
 

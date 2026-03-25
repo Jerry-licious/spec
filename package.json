@@ -1,6 +1,6 @@
 {
   "name": "spec",
-  "version": "0.1.6",
+  "version": "v0.2.0-pre",
   "main": "dist/index.js",
   "devDependencies": {
     "@types/async-lock": "^1.4.2",

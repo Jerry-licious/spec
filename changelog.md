@@ -1,3 +1,8 @@
+# v0.2.0
+
+- Added width and height attributes to custom graphics. 
+
+
 # v0.2.0-pre, 2026-03-25
 
 - Added support for equation referencing. 

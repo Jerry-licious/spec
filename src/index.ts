@@ -136,11 +136,13 @@ export async function runCompiler({compileAll, conservative, targetFile}: Compil
             });
         }
 
-        consola.info('Updating the project preamble.');
-        await AppDataSource.getRepository(AuxData).upsert({
-            key: 'preamble',
-            value: result.preamble,
-        }, ['key']);
+        if (!conservative) {
+            consola.info('Updating the project preamble.');
+            await AppDataSource.getRepository(AuxData).upsert({
+                key: 'preamble',
+                value: result.preamble,
+            }, ['key']);
+        }
 
         consola.success(`Successfully updated the database.`);
     } catch (error) {

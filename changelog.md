@@ -1,3 +1,8 @@
+# Unreleased
+
+- Conservative mode no longer collects the preamble. 
+
+
 # v0.2.0, 2026-03-25
 
 - Added support for equation referencing. 

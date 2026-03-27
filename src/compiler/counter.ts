@@ -51,6 +51,8 @@ export class CountManager {
 
             this.addCounter('equation', 'chapter');
             this.addCounter('figure', 'chapter');
+
+            this.addCounter('footnote');
         }
     }
 

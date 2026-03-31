@@ -9,13 +9,13 @@ import {BibliographyLoader} from "./bib-loader";
 import {Loader} from "./loader";
 import {Node, Root} from "@unified-latex/unified-latex-types";
 import {CountManager} from "./counter";
-import {capitaliseFirstLetter, graphicsRoot} from "./util";
+import {capitaliseFirstLetter, graphicsRoot, RendererBuilder, RenderPlugin} from "./util";
 import {BibtexEntry} from "@orcid/bibtex-parse-js";
 import {
     BlockCollector,
     BlockEnv,
     Division,
-    DivisionCollector, Figure, FigureCollector,
+    DivisionCollector, Figure, FigureCollector, FootnoteCollector,
     IRUnit,
     LabeledEquation,
     LabeledEquationCollector,
@@ -35,7 +35,7 @@ import {
     TheoremProofAssigner,
     TheoremTitleAssigner
 } from "./metadata";
-import {unified} from "unified";
+import {Processor, unified} from "unified";
 import {
     BlockRenderer,
     CiteRenderer,
@@ -47,7 +47,7 @@ import {
     RefRenderer,
     UnitTitleRenderer,
     FigureCaptionRenderer,
-    FigureRenderer, GraphicsRenderer
+    FigureRenderer, GraphicsRenderer, FootnoteRefRenderer
 } from "./renderer";
 import {unifiedLatexToHast} from "@unified-latex/unified-latex-to-hast";
 import rehypeStringify from "rehype-stringify";
@@ -121,7 +121,8 @@ export class Compiler {
     equations: Map<number, LabeledEquation>;
     figures: Map<number, Figure>;
 
-    renderToHTML: (node: Node) => string;
+    baseRenderer?: Processor;
+    rendererBuilder: RendererBuilder;
 
     constructor({config, unitLabelTags, bibliographyLabelTags, nextAvailableTag, unitTagHash, graphicPathHash}: {
         config: SpecConfig;
@@ -157,7 +158,7 @@ export class Compiler {
         this.equations = new Map<number, LabeledEquation>();
         this.figures = new Map<number, Figure>();
 
-        this.renderToHTML = () => { throw new Error('The renderer is not yet created.') };
+        this.rendererBuilder = () => { throw new Error('The renderer is not yet created.') };
 
         this.logger = new ParserLogger({
             onError: message => {
@@ -333,10 +334,11 @@ export class Compiler {
         const renderingLogger = new ParserLogger({ parent: this.logger });
         renderingLogger.info('Creating HTML renderer. ');
 
-        const renderer = unified()
+        this.baseRenderer = unified()
             .use(new OmitMacro({
                 toOmit: macrosToOmit
             }).asPlugin())
+            .use(new FootnoteRefRenderer({}).asPlugin())
             .use(new MathRenderer({
                 logger: renderingLogger,
                 preambleDump: [...this.rawMacros.values()].join('\n')
@@ -355,10 +357,14 @@ export class Compiler {
             .use(unifiedLatexToHast as any)
             .use(new EmptyParagraphFilter({ logger: renderingLogger }).asPlugin())
             .use(new TikzExtractor({ logger: renderingLogger }).asPlugin())
-            .use(rehypeStringify, { allowDangerousHtml: true });
+            .freeze();
+            //.use(rehypeStringify, { allowDangerousHtml: true });
 
-        this.renderToHTML = (node: Node) => {
-            return renderer.stringify(renderer.runSync(node) as any);
+        this.rendererBuilder = (plugins: RenderPlugin[]) => {
+            const renderer = this.baseRenderer!().use(plugins)
+                .use(rehypeStringify, { allowDangerousHtml: true });
+
+            return (node: Node) => renderer.stringify(renderer.runSync(node) as any);
         }
 
         renderingLogger.success('Renderer has been created.');
@@ -382,7 +388,7 @@ export class Compiler {
 
             if (!this.compileAll && this.unitTagHash.has(unit.tag) && unit.hash() === this.unitTagHash.get(unit.tag)) continue;
 
-            toUpdate.push(unit.renderToUnitData(this.units, this.renderToHTML));
+            toUpdate.push(unit.renderToUnitData(this.units, this.rendererBuilder));
         }
 
         return toUpdate;
@@ -390,7 +396,7 @@ export class Compiler {
 
     renderUnitLinkTargets() {
         for (const unit of this.units.values()) {
-            unit.renderLinkTarget(this.renderToHTML);
+            unit.renderLinkTarget(this.rendererBuilder);
         }
     }
 

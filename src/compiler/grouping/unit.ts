@@ -9,6 +9,8 @@ import {LinkTarget} from "../../db/link-target";
 import {macrosToOmit} from "../../unit-types";
 import {match} from "@unified-latex/unified-latex-util-match";
 import {visit} from "@unified-latex/unified-latex-util-visit";
+import {FootnoteCollector} from "./footnote-collector";
+import {RendererBuilder, RenderToHtml} from "../util";
 
 // IR units are intermediate representations that come with more structure than merely attaching nodes with metadata.
 // IR units are expected to have tags and numbers.
@@ -52,6 +54,8 @@ export abstract class IRUnit {
 
     parasitic: boolean;
     isDivision: boolean;
+
+    footnotes: Map<number, Node[]>;
 
     constructor({parent, mainContent, sourceNodeType, sourceNodeName, name, label, title, tag, numbering, parasitic, isDivision}: {
         parent?: IRUnit;
@@ -98,6 +102,23 @@ export abstract class IRUnit {
         for (const n of this.title) textCollector.process(n);
         for (const n of this.mainContent) textCollector.process(n);
         this.textContent = textCollector.getCollectedText();
+
+        this.footnotes = this.collectFootnotes();
+    }
+
+    collectFootnotes(): Map<number, Node[]> {
+        const footnoteCollector = new FootnoteCollector();
+
+        for (const n of this.title) footnoteCollector.process(n);
+        for (const n of this.mainContent) footnoteCollector.process(n);
+
+        return footnoteCollector.footnotes;
+    }
+
+    buildRenderer(builder: RendererBuilder): RenderToHtml {
+        return builder([
+            // Plugins here
+        ]);
     }
 
     hash(refresh: boolean = false): string {
@@ -135,7 +156,7 @@ export abstract class IRUnit {
         }
     }
 
-    renderLinkTarget(renderer: (node: Node) => string) {
+    renderLinkTarget(builder: RendererBuilder) {
         if (this.linkTarget) return;
 
         this.linkTarget = {
@@ -144,22 +165,22 @@ export abstract class IRUnit {
             unitType: this.sourceNodeName,
             unitName: this.name,
             // HTML title, if it exists.
-            titleHtml: this.title.length ? renderer({
+            titleHtml: this.title.length ? this.buildRenderer(builder)({
                 type: 'root',
                 content: this.title
             }) : undefined
         };
     }
 
-    renderBody(renderer: (node: Node) => string) {
-        return renderer({
+    renderBody(builder: RendererBuilder) {
+        return this.buildRenderer(builder)({
             type: 'root',
             content: wrapPars(this.mainContent),
         })
     }
 
     // Renders the IR unit as a unit data instance.
-    renderToUnitData(allUnits: Map<number, IRUnit>, renderer: (node: Node) => string): UnitData {
+    renderToUnitData(allUnits: Map<number, IRUnit>, builder: RendererBuilder): UnitData {
         return AppDataSource.manager.create(UnitData, {
             tag: this.tag,
             hash: this.hash(),
@@ -172,7 +193,7 @@ export abstract class IRUnit {
 
             titleText: this.titleText,
             titleHTML: this.linkTarget?.titleHtml,
-            contentHTML: this.renderBody(renderer),
+            contentHTML: this.renderBody(builder),
             contentText: this.textContent,
 
             lastRendered: new Date(),

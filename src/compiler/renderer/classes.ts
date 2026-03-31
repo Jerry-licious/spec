@@ -14,4 +14,5 @@ export const classes = {
     tikz: 'tikz-container',
     figure: 'figure',
     figureCaption: 'figure-caption link-foreground',
+    footnoteRef: 'footnote-ref link-primary',
 } as const;

@@ -3,6 +3,10 @@ import {NodeContext} from "./error";
 import {printRaw} from "@unified-latex/unified-latex-util-print-raw";
 
 
+export type RenderToHtml = (node: Node) => string;
+export type RenderPlugin = (root: Node) => void;
+export type RendererBuilder = (plugins: RenderPlugin[]) => RenderToHtml;
+
 // Root folder where all the graphics will be deposited.
 export const graphicsRoot = "./public/g/";
 export const graphicsURLRoot = '/public/g/';

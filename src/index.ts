@@ -96,7 +96,6 @@ export async function runCompiler({compileAll, conservative, targetFile}: Compil
         // On conflict, update all non-primary columns.
         const primaryColumns = unitRepository.metadata.columns
             .filter((c) => c.isPrimary).map((c) => c.databaseName);
-
         await unitRepository.upsert(result.unitsToUpdate, primaryColumns);
 
         // Only delete old units outside of conservative mode.
@@ -153,6 +152,6 @@ export async function runCompiler({compileAll, conservative, targetFile}: Compil
     }
 }
 
-//runCompiler({compileAll: true}).catch(console.error);
+runCompiler({compileAll: true}).catch(console.error);
 
 

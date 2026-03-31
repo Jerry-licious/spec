@@ -8,3 +8,5 @@ export { Figure } from "./figure"
 export { FigureCollector } from "./figure-collector"
 export { MainCollector } from "./main-collector"
 export { IRUnit } from "./unit"
+export { FootnoteCollector } from "./footnote-collector"
+

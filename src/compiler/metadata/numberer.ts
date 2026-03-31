@@ -32,10 +32,16 @@ export class Numberer extends DocumentVisitor {
             throw new Error('Not all referenced environment counters exist in the manager.')
         }
 
-        this.macroCounters = macroCounters ?? new Map<string, string>(
+        this.macroCounters = macroCounters ?? this.defaultMacroCounters();
+        this.environmentCounters = environmentCounters ?? new Map<string, string>();
+    }
+
+    defaultMacroCounters() {
+        const counters = new Map<string, string>(
             documentDividers.map((x) => [x, x])
         );
-        this.environmentCounters = environmentCounters ?? new Map<string, string>();
+        counters.set('footnote', 'footnote');
+        return counters;
     }
 
     visit(node: Node, visitInfo: VisitInfo): void {

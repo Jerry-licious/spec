@@ -1,6 +1,7 @@
 import {IRUnit} from "./unit";
 import {Node} from "@unified-latex/unified-latex-types";
 import {UnitData} from "../../db/unit-data";
+import {RendererBuilder} from "../util";
 
 
 // Divisions include parts chapters, sections, subsections.
@@ -53,7 +54,7 @@ export class Division extends IRUnit {
         };
     }
 
-    renderToUnitData(allUnits: Map<number, IRUnit>, renderer: (node: Node) => string): UnitData {
+    renderToUnitData(allUnits: Map<number, IRUnit>, renderer: RendererBuilder): UnitData {
         const data = super.renderToUnitData(allUnits, renderer);
 
         data.children = this.children.length ? this.children.map((c) => c.linkTarget!) : null;
@@ -61,7 +62,7 @@ export class Division extends IRUnit {
         return data;
     }
 
-    renderLinkTarget(renderer: (node: Node) => string) {
+    renderLinkTarget(renderer: RendererBuilder) {
         super.renderLinkTarget(renderer);
 
         for (const child of this.children) {

@@ -6,6 +6,7 @@ import './UnitPage.css'
 import {UnitLinkList} from "../components/UnitLinkList";
 import {createEffect, createMemo, JSX, Show} from "solid-js";
 import {UnitData} from "../db/unit-data";
+import {FootnoteSection} from "./FootnoteSection";
 
 
 export interface UnitPageProps {
@@ -84,6 +85,7 @@ export function UnitPage(props: UnitPageProps) {
                     <UnitLinkList title={props.unit.contentHTML.trim() ? 'Contents' : ''}
                                   items={props.unit.children} depth={config()?.website.tableOfContentsDepth ?? 0}/> : null
             }
+            <FootnoteSection footnotes={props.unit.footnotes ?? null}/>
         </Page>
     </Show>
 }

@@ -184,11 +184,11 @@ export abstract class IRUnit {
         })
     }
 
-    renderFootnotes(builder: RendererBuilder): string[] {
+    renderFootnotes(builder: RendererBuilder): Record<number, string> {
         const renderer = this.buildRenderer(builder);
 
-        return [...this.footnotes.entries()].sort(([a], [b]) => a - b)
-            .map(([, v]) => renderer({ type: 'root', content: v }));
+        return Object.fromEntries([...this.footnotes.entries()].sort(([a], [b]) => a - b)
+            .map(([k, v]) => [k, renderer({ type: 'root', content: v })]));
     }
 
     // Renders the IR unit as a unit data instance.

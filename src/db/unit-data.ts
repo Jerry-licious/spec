@@ -28,8 +28,8 @@ export class UnitData {
     // Used for searches.
     @Column('text')
     contentText!: string;
-    @Column('simple-array', { nullable: true })
-    footnotes!: string[] | null;
+    @Column('simple-json', { nullable: true })
+    footnotes!: Record<number, string> | null;
 
     @Index()
     @Column('datetime')

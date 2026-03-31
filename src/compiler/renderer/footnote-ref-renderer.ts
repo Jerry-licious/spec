@@ -21,6 +21,7 @@ export class FootnoteRefRenderer extends NodeRenderer {
                 tag: 'a',
                 attributes: {
                     href: `#footnote-${footnoteNumber}`,
+                    id: `footnote-${footnoteNumber}-ref`,
                     class: classes.footnoteRef,
                     footnoteNumber
                 },

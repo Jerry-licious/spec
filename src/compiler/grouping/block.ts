@@ -25,18 +25,10 @@ export class BlockEnv extends IRUnit {
             sourceNodeType: "environment",
             parasitic: false,
             isDivision: false,
+            additionalContent: args.proofs
         });
 
         this.proofs = args.proofs;
-
-        const referenceCollector = new ReferenceCollector();
-
-        for (const n of this.proofs) referenceCollector.process(n);
-        for (const t of referenceCollector.referencedTags) this.directReferences.add(t);
-
-        const collector = new FootnoteCollector(this.footnotes);
-        for (const t of this.proofs) collector.process(t);
-        this.footnotes = collector.footnotes;
     }
 
     hashData(): Record<string, string> {

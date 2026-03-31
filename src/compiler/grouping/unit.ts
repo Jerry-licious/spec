@@ -58,9 +58,14 @@ export abstract class IRUnit {
 
     footnotes: Map<number, Node[]>;
 
-    constructor({parent, mainContent, sourceNodeType, sourceNodeName, name, label, title, tag, numbering, parasitic, isDivision}: {
+    constructor({parent, mainContent, sourceNodeType, sourceNodeName, name, label, title, tag, numbering,
+                    parasitic, isDivision, additionalContent}: {
         parent?: IRUnit;
         mainContent?: Node[];
+
+        // Used to collect information/visit stuff. Not rendered.
+        additionalContent?: Node[];
+
         sourceNodeType: 'environment' | 'macro';
         sourceNodeName: string;
         name: string;
@@ -92,28 +97,21 @@ export abstract class IRUnit {
 
         this.titleText = this.title.map((n) => printRaw(n)).join('');
 
+        // Collect relevant information.
+        const allContent = [...this.title, ...this.mainContent, ...additionalContent ?? []];
+
         // Initialise the list of direct references here.
         const referenceCollector = new ReferenceCollector();
-
-        for (const n of this.title) referenceCollector.process(n);
-        for (const n of this.mainContent) referenceCollector.process(n);
+        for (const n of allContent) referenceCollector.process(n);
         this.directReferences = referenceCollector.referencedTags;
 
         const textCollector = new TextCollector({ macrosToOmit: macrosToOmit });
-        for (const n of this.title) textCollector.process(n);
-        for (const n of this.mainContent) textCollector.process(n);
+        for (const n of allContent) textCollector.process(n);
         this.textContent = textCollector.getCollectedText();
 
-        this.footnotes = this.collectFootnotes();
-    }
-
-    collectFootnotes(): Map<number, Node[]> {
         const footnoteCollector = new FootnoteCollector();
-
-        for (const n of this.title) footnoteCollector.process(n);
-        for (const n of this.mainContent) footnoteCollector.process(n);
-
-        return footnoteCollector.footnotes;
+        for (const n of allContent) footnoteCollector.process(n);
+        this.footnotes = footnoteCollector.footnotes;
     }
 
     buildRenderer(builder: RendererBuilder): RenderToHtml {

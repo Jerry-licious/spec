@@ -11,6 +11,7 @@ import {match} from "@unified-latex/unified-latex-util-match";
 import {visit} from "@unified-latex/unified-latex-util-visit";
 import {FootnoteCollector} from "./footnote-collector";
 import {RendererBuilder, RenderToHtml} from "../util";
+import {FootnoteRefSubstitute} from "../renderer";
 
 // IR units are intermediate representations that come with more structure than merely attaching nodes with metadata.
 // IR units are expected to have tags and numbers.
@@ -118,6 +119,7 @@ export abstract class IRUnit {
     buildRenderer(builder: RendererBuilder): RenderToHtml {
         return builder([
             // Plugins here
+            new FootnoteRefSubstitute(new Map<number, number>()).asPlugin()
         ]);
     }
 

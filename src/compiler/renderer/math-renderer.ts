@@ -26,12 +26,16 @@ export class MathRenderer extends NodeRenderer {
         this.preambleDump = preambleDump ?? '';
     }
 
+    isTikzEnvironment(node: Node): boolean {
+        return match.environment(node, "tikzcd") || match.environment(node, "tikzpicture");
+    }
+
     isTikzPicture(node: DisplayMath) {
-        return node.content.some((c) => match.environment(c, "tikzcd"));
+        return node.content.some((c) => this.isTikzEnvironment(c));
     }
 
     renderTikzPicture(node: DisplayMath) {
-        const tikzNode = node.content.find((c) => match.environment(c, "tikzcd"))!;
+        const tikzNode = node.content.find((c) => this.isTikzEnvironment(c))!;
 
         this.addInfo("Rendering tikz picture. Consider not using the compile all configuration if there is a large number of them.");
 

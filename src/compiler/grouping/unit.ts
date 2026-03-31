@@ -57,6 +57,8 @@ export abstract class IRUnit {
     isDivision: boolean;
 
     footnotes: Map<number, Node[]>;
+    // Mapping from global footnote numbering to local footnote numbering.
+    footnoteNumbers: Map<number, number>;
 
     constructor({parent, mainContent, sourceNodeType, sourceNodeName, name, label, title, tag, numbering,
                     parasitic, isDivision, additionalContent}: {
@@ -112,12 +114,15 @@ export abstract class IRUnit {
         const footnoteCollector = new FootnoteCollector();
         for (const n of allContent) footnoteCollector.process(n);
         this.footnotes = footnoteCollector.footnotes;
+
+        this.footnoteNumbers = new Map<number, number>([...this.footnotes.keys()]
+            .sort((a, b) => a - b).map((k, i) => [k, i + 1]));
     }
 
     buildRenderer(builder: RendererBuilder): RenderToHtml {
         return builder([
             // Plugins here
-            new FootnoteRefSubstitute(new Map<number, number>()).asPlugin()
+            new FootnoteRefSubstitute(this.footnoteNumbers).asPlugin()
         ]);
     }
 
@@ -172,11 +177,18 @@ export abstract class IRUnit {
         };
     }
 
-    renderBody(builder: RendererBuilder) {
+    renderBody(builder: RendererBuilder): string {
         return this.buildRenderer(builder)({
             type: 'root',
             content: wrapPars(this.mainContent),
         })
+    }
+
+    renderFootnotes(builder: RendererBuilder): string[] {
+        const renderer = this.buildRenderer(builder);
+
+        return [...this.footnotes.entries()].sort(([a], [b]) => a - b)
+            .map(([, v]) => renderer({ type: 'root', content: v }));
     }
 
     // Renders the IR unit as a unit data instance.
@@ -195,6 +207,7 @@ export abstract class IRUnit {
             titleHTML: this.linkTarget?.titleHtml,
             contentHTML: this.renderBody(builder),
             contentText: this.textContent,
+            footnotes: this.renderFootnotes(builder),
 
             lastRendered: new Date(),
 

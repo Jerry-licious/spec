@@ -38,8 +38,8 @@ export class BlockEnv extends IRUnit {
         };
     }
 
-    renderBody(renderer: RendererBuilder): string {
-        return renderer([])({
+    renderBody(builder: RendererBuilder): string {
+        return this.buildRenderer(builder)({
             type: 'root',
             content: [
                 ...this.mainContent,

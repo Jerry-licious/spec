@@ -1,5 +1,8 @@
 # Spec
 
+![Pack](https://github.com/Jerry-licious/spec/actions/workflows/pack.yml/badge.svg)
+
+
 Spec is a limited latex to website compiler heavily, heavily by [Gerby](https://gerby-project.github.io/), 
 offering an online tag-based view for a LaTeX document. Each part/chapter/section/theorem is assigned a unique _tag_ 
 associated to its label, and each tag gets its own webpage. 

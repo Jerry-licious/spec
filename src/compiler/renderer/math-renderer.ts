@@ -12,6 +12,7 @@ import {m, s} from "@unified-latex/unified-latex-builder";
 import {createSyncFn} from "synckit";
 import {resolve} from 'path';
 import {toTagString} from "../../tag";
+import {RefRenderer} from "./ref-renderer";
 
 const tikz2Svg = createSyncFn(
     resolve(__dirname, './tikz-worker')
@@ -19,11 +20,13 @@ const tikz2Svg = createSyncFn(
 
 export class MathRenderer extends NodeRenderer {
     preambleDump: string;
+    refRenderer: RefRenderer;
 
-    constructor({ logger, preambleDump }: { logger?: ParserLogger, preambleDump?: string }) {
+    constructor({ logger, preambleDump, refRenderer }: { logger?: ParserLogger, preambleDump?: string, refRenderer: RefRenderer }) {
         super({ logger });
 
         this.preambleDump = preambleDump ?? '';
+        this.refRenderer = refRenderer;
     }
 
     isTikzEnvironment(node: Node): boolean {
@@ -71,6 +74,8 @@ export class MathRenderer extends NodeRenderer {
                 return this.renderTikzPicture(node);
             }
 
+            // Render the refs in math mode.
+            this.refRenderer.process(node);
 
             // Here it would have to be display math. In which case the content will be wrapped inside a div.
             return htmlLike({
@@ -92,6 +97,9 @@ export class MathRenderer extends NodeRenderer {
                 node.content.push(m('tag', s(node.meta.numbering?.join('.') ?? '?')));
                 node.meta.numberingInjected = true;
             }
+
+            // Render the refs in math mode.
+            this.refRenderer.process(node);
 
             return htmlLike({
                 tag: 'div',

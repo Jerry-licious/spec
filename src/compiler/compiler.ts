@@ -341,7 +341,8 @@ export class Compiler {
             .use(new FootnoteRefRenderer({}).asPlugin())
             .use(new MathRenderer({
                 logger: renderingLogger,
-                preambleDump: [...this.rawMacros.values()].join('\n')
+                preambleDump: [...this.rawMacros.values()].join('\n'),
+                refRenderer: new RefRenderer({ tagUnitMap: this.units, logger: renderingLogger, inMathMode: true })
             }).asPlugin())
             .use(new FigureCaptionRenderer({ logger: renderingLogger }).asPlugin())
             .use(new GraphicsRenderer({ logger: renderingLogger }).asPlugin())

@@ -3,6 +3,7 @@
 - Conservative mode no longer collects the preamble. 
 - Added footnote support. 
 - Enabled support for tikz pictures. 
+- Allowed referencing inside math environments. 
 
 
 # v0.2.0, 2026-03-25

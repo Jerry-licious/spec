@@ -6,25 +6,54 @@ import {classes} from "./classes";
 import {toTagString} from "../../tag";
 import {IRUnit} from "../grouping";
 import {ParserLogger} from "../logging-base";
+import {m, s} from "@unified-latex/unified-latex-builder";
 
 
 const refCommands = new Set<string>(['ref', 'autoref', 'hyperref']);
 
 
 export class RefRenderer extends NodeRenderer {
+    inMathMode: boolean;
     tagUnitMap: Map<number, IRUnit>;
-    constructor({ tagUnitMap, logger }: {
+    constructor({ tagUnitMap, logger, inMathMode }: {
         tagUnitMap: Map<number, IRUnit>;
         logger: ParserLogger;
+        inMathMode?: boolean;
     }) {
         super({logger});
 
+        this.inMathMode = inMathMode ?? false;
         this.tagUnitMap = tagUnitMap;
+    }
+
+    getHrefContent(node: Macro) {
+        return typeof node.refMeta?.text === 'string' ? [
+            this.inMathMode ? m('text', s(node.refMeta.text)) : s(node.refMeta.text)
+        ] : node.refMeta?.text ?? [];
     }
 
     renderParasitic(node: Macro, target: IRUnit) {
         const targetTagString = toTagString(target.tag);
         const href = `/t/${toTagString(target.parent?.tag ?? 0)}#${targetTagString}`;
+        const hrefContent = this.getHrefContent(node);
+
+        // In math mode use MathJax rules for hrefs.
+        if (this.inMathMode) {
+            const onClick = `(function() { if (document.getElementById("${targetTagString}")) {
+                location.hash = "${targetTagString}";
+            } else { 
+                window.location.assign("${href}");
+            }})()`
+
+            return m('href', [
+                s(`javascript:${onClick}`),
+                {
+                    type: 'argument',
+                    openMark: '{', closeMark: '}',
+                    content: hrefContent ?? [s('Unknown')],
+                }
+            ])
+        }
 
         // Essentially, if the ID is already present in the current page, there's no need to navigate to the parent page.
         // Instead, I should just go to the tag immediately.
@@ -56,6 +85,8 @@ export class RefRenderer extends NodeRenderer {
             return;
         }
 
+        const content = this.getHrefContent(node);
+
         if (node.refMeta.targetTag >= 0) {
             // If the tag refers to a parasitic unit, there will be a special handler.
             const targetNode = node.refMeta.targetTag ? this.tagUnitMap.get(node.refMeta.targetTag) : undefined;
@@ -64,17 +95,38 @@ export class RefRenderer extends NodeRenderer {
                 return this.renderParasitic(node, targetNode);
             }
 
+            const href = `/t/${toTagString(node.refMeta.targetTag)}`;
+
+            if (this.inMathMode) {
+                return m('href', [
+                    s(`${href}`),
+                    {
+                        type: 'argument',
+                        openMark: '{', closeMark: '}',
+                        content,
+                    }
+                ]);
+            }
+
             return htmlLike({
                 tag: 'a',
                 attributes: {
-                    href: `/t/${toTagString(node.refMeta.targetTag)}`,
+                    href,
                     class: classes.ref
                 },
-                content: typeof node.refMeta.text === 'string' ? {
-                    type: "string",
-                    content: node.refMeta.text
-                } : node.refMeta.text
+                content
             });
+        }
+
+        if (this.inMathMode) {
+            return m('href', [
+                s(`/404`),
+                {
+                    type: 'argument',
+                    openMark: '{', closeMark: '}',
+                    content,
+                }
+            ]);
         }
 
         return htmlLike({
@@ -83,12 +135,8 @@ export class RefRenderer extends NodeRenderer {
                 href: `/404`,
                 class: classes.refInvalid
             },
-            content: typeof node.refMeta.text === 'string' ? {
-                type: "string",
-                content: node.refMeta.text
-            } : node.refMeta.text
+            content
         });
-
     }
 }
 

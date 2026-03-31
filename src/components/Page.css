@@ -27,6 +27,13 @@
     color: var(--primary-500);
 }
 
+.dark .display-equation a {
+    color: var(--primary-400);
+}
+.light .display-equation a {
+    color: var(--primary-500);
+}
+
 .link-invalid {
     opacity: 0.8;
 }
@@ -159,3 +166,5 @@
     gap: 1rem;
     padding: 1rem;
 }
+
+

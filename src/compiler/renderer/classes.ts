@@ -1,7 +1,7 @@
 export const classes = {
     ref: 'link-primary',
     refInvalid: 'link-primary link-invalid',
-    displayEquation: '',
+    displayEquation: 'display-equation',
     blockEnvironment: 'block-container',
     blockTitle: 'link-foreground',
     proof: 'proof',

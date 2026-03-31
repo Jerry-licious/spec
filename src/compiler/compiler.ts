@@ -15,7 +15,9 @@ import {
     BlockCollector,
     BlockEnv,
     Division,
-    DivisionCollector, Figure, FigureCollector, FootnoteCollector,
+    DivisionCollector,
+    Figure,
+    FigureCollector,
     IRUnit,
     LabeledEquation,
     LabeledEquationCollector,
@@ -27,7 +29,9 @@ import {
     CiteAssigner,
     CustomMacroCollector,
     EnvironmentLabelAssigner,
-    EquationLabelAssigner, FigureCaptionNumberer, GraphicsPathAssigner,
+    EquationLabelAssigner,
+    FigureCaptionNumberer,
+    GraphicsPathAssigner,
     MacroLabelAssigner,
     Numberer,
     RefAssigner,
@@ -40,14 +44,16 @@ import {
     BlockRenderer,
     CiteRenderer,
     EmptyParagraphFilter,
+    FigureCaptionRenderer,
+    FigureRenderer,
+    FootnoteRefRenderer,
+    GraphicsRenderer,
     ItemNumberer,
     MathRenderer,
     OmitMacro,
     ProofRenderer,
     RefRenderer,
-    UnitTitleRenderer,
-    FigureCaptionRenderer,
-    FigureRenderer, GraphicsRenderer, FootnoteRefRenderer
+    UnitTitleRenderer
 } from "./renderer";
 import {unifiedLatexToHast} from "@unified-latex/unified-latex-to-hast";
 import rehypeStringify from "rehype-stringify";
@@ -58,7 +64,6 @@ import {TikzExtractor} from "./renderer/tikz-extractor";
 import {TaggableNode} from "./metadata/util";
 import {ItemParagraphBreaker} from "./renderer/item-paragraph-breaker";
 import path from "node:path";
-import AsyncLock from "async-lock";
 import {Sema} from "async-sema";
 import {GraphicData} from "../db/graphic-data";
 import {AppDataSource} from "../db";

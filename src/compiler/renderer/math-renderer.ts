@@ -29,6 +29,10 @@ export class MathRenderer extends NodeRenderer {
         this.refRenderer = refRenderer;
     }
 
+    addParbreak(node: Node): Node[] {
+        return [node, { type: "parbreak" }];
+    }
+
     isTikzEnvironment(node: Node): boolean {
         return match.environment(node, "tikzcd") || match.environment(node, "tikzpicture");
     }
@@ -46,7 +50,7 @@ export class MathRenderer extends NodeRenderer {
 
         this.addInfo("Finished rendering tikz picture.");
 
-        return htmlLike({
+        return this.addParbreak(htmlLike({
             tag: 'tikz-svg',
             attributes: {
                 class: classes.tikz,
@@ -55,10 +59,10 @@ export class MathRenderer extends NodeRenderer {
                 type: 'string',
                 content: svg
             }
-        });
+        }));
     }
 
-    render(node: Node): Node | void {
+    render(node: Node): Node | Node[] | void {
         if (match.math(node)) {
             if (node.type === 'inlinemath') {
                 // Inline math gets printed out directly.
@@ -78,7 +82,7 @@ export class MathRenderer extends NodeRenderer {
             this.refRenderer.process(node);
 
             // Here it would have to be display math. In which case the content will be wrapped inside a div.
-            return htmlLike({
+            return this.addParbreak(htmlLike({
                 tag: 'div',
                 attributes: {
                     class: classes.displayEquation,
@@ -87,7 +91,7 @@ export class MathRenderer extends NodeRenderer {
                     type: 'string',
                     content: printRaw(node)
                 }
-            });
+            }));
         }
 
         // Here it would be an align environment or something of this kind.
@@ -101,7 +105,7 @@ export class MathRenderer extends NodeRenderer {
             // Render the refs in math mode.
             this.refRenderer.process(node);
 
-            return htmlLike({
+            return this.addParbreak(htmlLike({
                 tag: 'div',
                 attributes: {
                     class: classes.displayEquation,
@@ -111,7 +115,7 @@ export class MathRenderer extends NodeRenderer {
                     type: 'string',
                     content: printRaw(node)
                 }
-            })
+            }))
         }
     }
 }

@@ -1,3 +1,7 @@
+# Unreleased
+
+- Fixed MathJax paragraph rendering problem. 
+
 # v0.2.1-pre, 2026-03-31
 
 - Conservative mode no longer collects the preamble. 

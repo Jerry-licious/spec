@@ -1,6 +1,6 @@
 import './Page.css'
 import {ParentChainDisplay} from "./ParentChainDisplay";
-import {createEffect, createMemo, JSX} from "solid-js";
+import {createEffect, createMemo, createSignal, JSX, onMount} from "solid-js";
 import {Meta, Title} from "@solidjs/meta";
 import {Sidebar} from "./Sidebar";
 import {createAsync} from "@solidjs/router";
@@ -10,6 +10,8 @@ import {useDarkTheme} from "../theme";
 import {Topbar} from "./Topbar";
 import {githubLink} from "../about";
 import {InvalidateListener} from "./InvalidateListener";
+import {fromTagString} from "../tag";
+import {UnitPreview, UnitPreviewProps} from "./UnitPreview";
 
 
 export interface PageProps {
@@ -37,12 +39,81 @@ export function Page(props: PageProps) {
     const lineWidth = createMemo(() => config()?.website.lineWidth ?? 45);
     const alignment = createMemo(() => config()?.website.textAlign ?? 'left');
 
+    const [overLink, setOverLink] = createSignal(false);
+    const [overPreview, setOverPreview] = createSignal(false);
+    const [preview, setPreview] = createSignal<Omit<UnitPreviewProps, "setOverPreview"> | null>(null);
+    const showPreview = () => (overLink() || overPreview()) && preview() !== null;
+
+    let bodyRef!: HTMLDivElement;
+
     createEffect(() => {
         (window as any).MathJax?.startup?.promise
             ?.then(() => (window as any).MathJax.typesetPromise());
     });
 
-    return <div class={`main-container ${darkTheme() ? 'dark' : 'light'} ${primaryColourClass()} ${neutralColourClass()}`}>
+    let showTimeout: ReturnType<typeof setTimeout>;
+    let hideTimeout: ReturnType<typeof setTimeout>;
+    onMount(() => {
+        void props;
+
+        if (!bodyRef) return;
+
+        function computeBoxPosition(mouseX: number, mouseY: number): { x: number; y: number } {
+            const remPx = config()?.website.fontSize ?? 16;
+            const lineWidthRem = config()?.website.lineWidth ?? 45; // e.g. 45 from "45rem"
+
+            const boxW = 0.75 * lineWidthRem * remPx;
+            const boxH = 0.5 * window.innerHeight;
+            const gap = 12;
+
+            let x = mouseX + gap;
+            // Attempt to move the box left if necessary and there is room.
+            if (mouseX + gap + boxW > window.innerWidth && mouseX - gap - boxW >= 0) {
+                x = mouseX - gap - boxW;
+            }
+
+            // Attempt to move the box up if necessary and there is room.
+            let y = mouseY + gap;
+            if (mouseY + gap + boxH > window.innerHeight && mouseY - gap - boxH >= 0) {
+                y = mouseY - gap - boxH;
+            }
+
+            return { x, y };
+        };
+
+        for (const link of bodyRef.querySelectorAll('a[href]')) {
+            const href = link.getAttribute('href');
+            if (!href || !href.startsWith('/t')) continue;
+
+            // Links are of the form /t/TAG#ID
+            const tagString = (href.split('/').pop()?.trim() ?? '').split('#')[0];
+
+            const controller = new AbortController();
+
+            link.addEventListener('mouseenter', (e: Event) => {
+                clearTimeout(hideTimeout);
+                if (overLink()) return;
+                showTimeout = setTimeout(() => {
+                    setPreview({
+                        tag: tagString,
+                        ...computeBoxPosition((e as MouseEvent).clientX, (e as MouseEvent).clientY)
+                    });
+                    setOverLink(true);
+                }, 300);
+            }, { signal: controller.signal });
+
+            link.addEventListener('mouseleave', () => {
+                clearTimeout(showTimeout);
+                hideTimeout = setTimeout(() => {
+                    setOverLink(false);
+                }, 300);
+            }, { signal: controller.signal });
+        }
+    })
+
+    return <div class={`main-container ${darkTheme() ? 'dark' : 'light'} ${primaryColourClass()} ${neutralColourClass()}`}
+                style={{"--line-width": `${lineWidth()}rem`}}
+    >
         <Meta property="og:title" content={props.titleText} />
         {
             props.description ? <Meta property="og:description" content={props.description} /> : null
@@ -56,14 +127,13 @@ export function Page(props: PageProps) {
                  "font-size": `${fontSize()}px`,
                  "line-height": `${lineHeight()}`,
                  "text-align": `${alignment()}`,
-                 "--line-width": `${lineWidth()}rem`,
              }}>
             <Topbar/>
             {
                 props.parentChain && props.parentChain.length ?
                     <ParentChainDisplay parentChain={props.parentChain ?? []}/> : null
             }
-            <main class={'page-body'}>
+            <main class={'page-body'} ref={bodyRef}>
                 <article class={'page-content-container'}>
                     {
                         props.displayTitle ? <h1 class={'page-title'}>
@@ -87,5 +157,6 @@ export function Page(props: PageProps) {
                 </Sidebar>
             </main>
         </div>
+        { showPreview() ? <UnitPreview {...preview()!} setOverPreview={setOverPreview}/> : null }
     </div>
 }

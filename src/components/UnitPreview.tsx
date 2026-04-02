@@ -1,9 +1,7 @@
 import "./UnitPreview.css"
 import {createAsync} from "@solidjs/router";
 import {getUnit} from "../app-data-cache";
-import {createEffect, ErrorBoundary, onMount, Show} from "solid-js";
-import {Page} from "./Page";
-import {UnitLinkList} from "./UnitLinkList";
+import {createEffect, createSignal, ErrorBoundary, on, onMount, Show} from "solid-js";
 import {FootnoteSection} from "./FootnoteSection";
 
 export interface UnitPreviewProps {
@@ -15,14 +13,19 @@ export interface UnitPreviewProps {
 }
 
 export function UnitPreview(props: UnitPreviewProps) {
-    const unit = createAsync(() => getUnit(props.tag));
+    const [unit, setUnit] = createSignal<Awaited<ReturnType<typeof getUnit>> | undefined>();
+
+    createEffect(on(() => props.tag, async (tag) => {
+        if (!tag) return;
+        const data = await getUnit(tag);
+        setUnit(() => data);
+        queueMicrotask(() => {
+            (window as any).MathJax?.startup?.promise
+                ?.then(() => (window as any).MathJax.typesetPromise([previewRef]));
+        });
+    }));
 
     let previewRef!: HTMLDivElement;
-
-    createEffect(() => {
-        (window as any).MathJax?.startup?.promise
-            ?.then(() => (window as any).MathJax.typesetPromise([previewRef]));
-    });
 
     return <div class={'unit-preview'} ref={previewRef} style={{
         left: `${(props.x ?? 0) + 10}px`,

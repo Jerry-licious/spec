@@ -31,6 +31,7 @@ export const SpecConfigSchema = z.object({
         tableOfContentsDepth: z.int().min(0).max(4).default(2),
 
         hoverPreview: z.boolean().default(true),
+        copyLabelButton: z.boolean().default(false),
 
         advertiseSpec: z.boolean().default(true),
     }).prefault({})

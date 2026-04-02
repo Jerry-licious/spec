@@ -4,6 +4,7 @@
 - Added support for hover preview for units. 
 - Fixed a bug where large documents crash on upsert. 
 - Conservative mode no longer overwrites the main page.
+- Added a button next to theorems to copy their label.
 
 # v0.2.1-pre, 2026-03-31
 

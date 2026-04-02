@@ -173,6 +173,7 @@ to. May slow down the compiler significantly when there is a large number of tag
 - `tableOfContentsDepth`: How many additional layers to display in the table of contents. For example, setting it to `1` will display all chapters on the main page, setting it to `2` will display all sections on the main page, and so on.
 
 - `hoverPreview`: When hovering links, preview the target. 
+- `copyLabelButton`: Add a button next to theorems to copy their label. 
 
 - `advertiseSpec`: Attribute spec in the sidebar. 
 

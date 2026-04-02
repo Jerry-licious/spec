@@ -148,7 +148,7 @@ export function Page(props: PageProps) {
         <InvalidateListener/>
 
         <Title>{props.titleText}</Title>
-        <div class={`page-container ${config()?.website.font}`}
+        <div class={`page-container ${config()?.website.font} ${config()?.website.copyLabelButton ? '' : 'hide-copy-label'}`}
              style={{
                  "font-size": `${fontSize()}px`,
                  "line-height": `${lineHeight()}`,

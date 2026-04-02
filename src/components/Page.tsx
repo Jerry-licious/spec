@@ -79,14 +79,15 @@ export function Page(props: PageProps) {
             }
 
             return { x, y };
-        };
+        }
 
         for (const link of bodyRef.querySelectorAll('a[href]')) {
             const href = link.getAttribute('href');
-            if (!href || !href.startsWith('/t')) continue;
+
+            if (!link.getAttribute('targetTag') && (!href || !href.startsWith('/t'))) continue;
 
             // Links are of the form /t/TAG#ID
-            const tagString = (href.split('/').pop()?.trim() ?? '').split('#')[0];
+            const tagString = link.getAttribute('targetTag') ?? (href!.split('/').pop()?.trim() ?? '').split('#')[0];
 
             const controller = new AbortController();
 

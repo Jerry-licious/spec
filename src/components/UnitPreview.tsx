@@ -17,12 +17,14 @@ export interface UnitPreviewProps {
 export function UnitPreview(props: UnitPreviewProps) {
     const unit = createAsync(() => getUnit(props.tag));
 
+    let previewRef!: HTMLDivElement;
+
     createEffect(() => {
         (window as any).MathJax?.startup?.promise
-            ?.then(() => (window as any).MathJax.typesetPromise());
-    })
+            ?.then(() => (window as any).MathJax.typesetPromise([previewRef]));
+    });
 
-    return <div class={'unit-preview'} style={{
+    return <div class={'unit-preview'} ref={previewRef} style={{
         left: `${(props.x ?? 0) + 10}px`,
         top: `${(props.y ?? 0) + 10}px`,
     }} onmouseenter={() => props.setOverPreview(true)} onmouseleave={() => props.setOverPreview(false)} >

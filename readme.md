@@ -321,4 +321,5 @@ due to reasons ranging from being occupied to being incompetent.
 - Left side bar as index?
 - Comments
 - Copy label buttons
+- Better parasitic links in MathJax. 
 

@@ -10,7 +10,6 @@ import {useDarkTheme} from "../theme";
 import {Topbar} from "./Topbar";
 import {githubLink} from "../about";
 import {InvalidateListener} from "./InvalidateListener";
-import {fromTagString} from "../tag";
 import {UnitPreview, UnitPreviewProps} from "./UnitPreview";
 
 
@@ -42,7 +41,7 @@ export function Page(props: PageProps) {
     const [overLink, setOverLink] = createSignal(false);
     const [overPreview, setOverPreview] = createSignal(false);
     const [preview, setPreview] = createSignal<Omit<UnitPreviewProps, "setOverPreview"> | null>(null);
-    const showPreview = () => (overLink() || overPreview()) && preview() !== null;
+    const showPreview = () => (overLink() || overPreview()) && preview() !== null && !!config()?.website.hoverPreview;
 
     let bodyRef!: HTMLDivElement;
 
@@ -58,7 +57,7 @@ export function Page(props: PageProps) {
 
         if (!bodyRef) return;
 
-        function computeBoxPosition(mouseX: number, mouseY: number): { x: number; y: number } {
+        function computeBoxPosition(mouseX: number, mouseY: number): { x: number; y: number, positionFromBottom: boolean } {
             const remPx = config()?.website.fontSize ?? 16;
             const lineWidthRem = config()?.website.lineWidth ?? 45; // e.g. 45 from "45rem"
 
@@ -68,17 +67,19 @@ export function Page(props: PageProps) {
 
             let x = mouseX + gap;
             // Attempt to move the box left if necessary and there is room.
-            if (mouseX + gap + boxW > window.innerWidth && mouseX - gap - boxW >= 0) {
-                x = mouseX - gap - boxW;
+            if (mouseX + gap + boxW > window.innerWidth) {
+                x = Math.max(gap, window.innerWidth - 2 * gap - boxW);
             }
 
+            let bottom = false;
             // Attempt to move the box up if necessary and there is room.
             let y = mouseY + gap;
-            if (mouseY + gap + boxH > window.innerHeight && mouseY - gap - boxH >= 0) {
-                y = mouseY - gap - boxH;
+            if (mouseY + gap + boxH > window.innerHeight) {
+                y = window.innerHeight - (mouseY - gap);
+                bottom = true;
             }
 
-            return { x, y };
+            return { x, y, positionFromBottom: bottom };
         }
 
         for (const link of bodyRef.querySelectorAll('a[href]')) {

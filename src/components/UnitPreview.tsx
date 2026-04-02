@@ -9,6 +9,8 @@ export interface UnitPreviewProps {
     x: number;
     y: number;
 
+    positionFromBottom: boolean;
+
     setOverPreview: (over: boolean) => void;
 }
 
@@ -25,11 +27,23 @@ export function UnitPreview(props: UnitPreviewProps) {
         });
     }));
 
+    let contentRef!: HTMLDivElement;
+    createEffect(on(unit, (u) => {
+        if (!u || !contentRef) return;
+        for (const e of contentRef.querySelectorAll('[id]')) {
+            e.removeAttribute('id');
+        }
+    }));
+
     let previewRef!: HTMLDivElement;
 
     return <div class={'unit-preview'} ref={previewRef} style={{
-        left: `${(props.x ?? 0) + 10}px`,
-        top: `${(props.y ?? 0) + 10}px`,
+        left: `${(props.x ?? 0)}px`,
+        ...props.positionFromBottom ? {
+            bottom: `${(props.y ?? 0)}px`
+        } : {
+            top: `${(props.y ?? 0)}px`
+        }
     }} onmouseenter={() => props.setOverPreview(true)} onmouseleave={() => props.setOverPreview(false)} >
         <ErrorBoundary fallback={
             () => {
@@ -39,7 +53,7 @@ export function UnitPreview(props: UnitPreviewProps) {
             <Show when={unit()}>
                 {
                     unit()!.contentHTML.trim() ?
-                        <div class={'unit-content-container'} innerHTML={unit()!.contentHTML}/> : null
+                        <div class={'unit-content-container'} innerHTML={unit()!.contentHTML} ref={contentRef}/> : null
                 }
                 <FootnoteSection footnotes={unit()!.footnotes ?? null}/>
             </Show>

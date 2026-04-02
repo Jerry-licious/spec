@@ -1,6 +1,7 @@
 # Unreleased
 
 - Fixed MathJax paragraph rendering problem. 
+- Added support for hover preview for units. 
 
 # v0.2.1-pre, 2026-03-31
 

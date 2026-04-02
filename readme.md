@@ -124,6 +124,8 @@ maxSearchPages = 48
 recentChanges = 10
 tableOfContentsDepth = 2
 
+hoverPreview = true
+
 advertiseSpec = true
 ```
 
@@ -170,6 +172,8 @@ to. May slow down the compiler significantly when there is a large number of tag
 
 - `recentChanges`: The number of recent changes to show on the sidebar of the main page. If set to `0`, the recent changes section will never show up. 
 - `tableOfContentsDepth`: How many additional layers to display in the table of contents. For example, setting it to `1` will display all chapters on the main page, setting it to `2` will display all sections on the main page, and so on.
+
+- `hoverPreview`: When hovering links, preview the target. 
 
 - `advertiseSpec`: Attribute spec in the sidebar. 
 
@@ -316,7 +320,6 @@ due to reasons ranging from being occupied to being incompetent.
 
 - Server side MathJax rendering option.
 - Left side bar as index?
-- Hover blocks
 - Comments
 - Copy label buttons
 

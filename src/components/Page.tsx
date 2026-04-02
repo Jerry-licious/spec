@@ -1,9 +1,9 @@
 import './Page.css'
 import {ParentChainDisplay} from "./ParentChainDisplay";
-import {createEffect, createMemo, createSignal, JSX, onMount} from "solid-js";
+import {createEffect, createMemo, createSignal, JSX, onCleanup, onMount} from "solid-js";
 import {Meta, Title} from "@solidjs/meta";
 import {Sidebar} from "./Sidebar";
-import {createAsync} from "@solidjs/router";
+import {createAsync, useLocation} from "@solidjs/router";
 import {getConfig} from "../app-data";
 import {LinkTarget} from "../db/link-target";
 import {useDarkTheme} from "../theme";
@@ -82,36 +82,60 @@ export function Page(props: PageProps) {
             return { x, y, positionFromBottom: bottom };
         }
 
-        for (const link of bodyRef.querySelectorAll('a[href]')) {
-            const href = link.getAttribute('href');
+        const controllers: AbortController[] = [];
 
-            if (!link.getAttribute('targetTag') && (!href || !href.startsWith('/t'))) continue;
+        function attachHandlers() {
+            for (const link of bodyRef.querySelectorAll('a[href]')) {
+                const href = link.getAttribute('href');
 
-            // Links are of the form /t/TAG#ID
-            const tagString = link.getAttribute('targetTag') ?? (href!.split('/').pop()?.trim() ?? '').split('#')[0];
+                if (!link.getAttribute('targetTag') && (!href || !href.startsWith('/t'))) continue;
 
-            const controller = new AbortController();
+                // Links are of the form /t/TAG#ID
+                const tagString = link.getAttribute('targetTag') ?? (href!.split('/').pop()?.trim() ?? '').split('#')[0];
 
-            link.addEventListener('mouseenter', (e: Event) => {
-                clearTimeout(hideTimeout);
-                if (overLink()) return;
-                showTimeout = setTimeout(() => {
-                    setPreview({
-                        tag: tagString,
-                        ...computeBoxPosition((e as MouseEvent).clientX, (e as MouseEvent).clientY)
-                    });
-                    setOverLink(true);
-                }, 300);
-            }, { signal: controller.signal });
+                const controller = new AbortController();
 
-            link.addEventListener('mouseleave', () => {
-                clearTimeout(showTimeout);
-                hideTimeout = setTimeout(() => {
-                    setOverLink(false);
-                }, 300);
-            }, { signal: controller.signal });
+                link.addEventListener('mouseenter', (e: Event) => {
+                    clearTimeout(hideTimeout);
+                    if (overLink()) return;
+                    showTimeout = setTimeout(() => {
+                        setPreview({
+                            tag: tagString,
+                            ...computeBoxPosition((e as MouseEvent).clientX, (e as MouseEvent).clientY)
+                        });
+                        setOverLink(true);
+                    }, 300);
+                }, { signal: controller.signal });
+
+                link.addEventListener('mouseleave', () => {
+                    clearTimeout(showTimeout);
+                    hideTimeout = setTimeout(() => {
+                        setOverLink(false);
+                    }, 300);
+                }, { signal: controller.signal });
+            }
         }
-    })
+
+        const observer = new MutationObserver(attachHandlers);
+        observer.observe(bodyRef, { childList: true, subtree: true });
+        attachHandlers();
+
+        onCleanup(() => {
+            observer.disconnect();
+            for (const controller of controllers) controller.abort();
+        })
+    });
+
+    // Clean up the hover system when navigation happens.
+    const location = useLocation();
+    createEffect(() => {
+        location.pathname; // track navigation
+        setOverLink(false);
+        setOverPreview(false);
+        setPreview(null);
+        clearTimeout(showTimeout);
+        clearTimeout(hideTimeout);
+    });
 
     return <div class={`main-container ${darkTheme() ? 'dark' : 'light'} ${primaryColourClass()} ${neutralColourClass()}`}
                 style={{"--line-width": `${lineWidth()}rem`}}

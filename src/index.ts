@@ -86,7 +86,8 @@ export async function runCompiler({compileAll, conservative, targetFile}: Compil
         bibliographyLabelTags,
         nextAvailableTag,
         unitTagHash,
-        graphicPathHash
+        graphicPathHash,
+        conservative
     });
 
     const result = await parser.parseFile(targetFile ?? config.document);

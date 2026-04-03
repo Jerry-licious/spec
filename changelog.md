@@ -1,3 +1,8 @@
+# Unreleased
+
+- Configs are no longer loaded multiple times in a row.
+
+
 # v0.2.1, 2026-04-02
 
 - Fixed MathJax paragraph rendering problem. 

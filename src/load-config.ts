@@ -5,8 +5,19 @@ import {access, readFile, writeFile} from "node:fs/promises";
 import {config, defaultConfig, defaultConfigPath, setConfig, SpecConfig, SpecConfigSchema} from "./config";
 import {parse, stringify, TomlTable} from "smol-toml";
 
+let loadConfigPromise: Promise<SpecConfig | void> | null = null;
+
 
 export async function loadConfig(configPath?: string): Promise<SpecConfig | void> {
+    if (config) return config;
+    if (loadConfigPromise) return loadConfigPromise;
+
+    loadConfigPromise = actuallyLoadConfig(configPath);
+
+    return loadConfigPromise;
+}
+
+async function actuallyLoadConfig(configPath?: string): Promise<SpecConfig | void> {
     configPath = configPath ?? defaultConfigPath;
 
     consola.start(`Loading configs from ${configPath}.`);

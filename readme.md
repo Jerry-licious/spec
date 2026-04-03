@@ -321,6 +321,5 @@ due to reasons ranging from being occupied to being incompetent.
 - Server side MathJax rendering option.
 - Left side bar as index?
 - Comments
-- Copy label buttons
 - Better parasitic links in MathJax. 
 

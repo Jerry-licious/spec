@@ -9,7 +9,7 @@ import {BibliographyLoader} from "./bib-loader";
 import {Loader} from "./loader";
 import {Node, Root} from "@unified-latex/unified-latex-types";
 import {CountManager} from "./counter";
-import {capitaliseFirstLetter, graphicsRoot, RendererBuilder, RenderPlugin} from "./util";
+import {capitaliseFirstLetter, graphicsRoot, RendererBuilder, RenderPlugin, TaggableNode} from "./util";
 import {BibtexEntry} from "@orcid/bibtex-parse-js";
 import {
     BlockCollector,
@@ -61,7 +61,6 @@ import {documentDividers, macrosToOmit} from "../unit-types";
 import {UnitData} from "../db/unit-data";
 import {BibliographyData} from "../db/bib-data";
 import {TikzExtractor} from "./renderer/tikz-extractor";
-import {TaggableNode} from "./metadata/util";
 import {ItemParagraphBreaker} from "./renderer/item-paragraph-breaker";
 import path from "node:path";
 import {Sema} from "async-sema";
@@ -206,7 +205,7 @@ export class Compiler {
 
         const result = {
             ...await this.copyGraphics(),
-            ...this.renderUnits(),
+            ...await this.renderUnits(),
             bibliography: this.bibliographyData,
             preamble: [...this.rawMacros.values()].join('\n')
         };
@@ -340,7 +339,7 @@ export class Compiler {
     }
 
 
-    renderUnits() {
+    async renderUnits() {
         const renderingLogger = new ParserLogger({ parent: this.logger });
         renderingLogger.info('Creating HTML renderer. ');
 
@@ -375,16 +374,16 @@ export class Compiler {
             const renderer = this.baseRenderer!().use(plugins)
                 .use(rehypeStringify, { allowDangerousHtml: true });
 
-            return (node: Node) => renderer.stringify(renderer.runSync(node) as any);
+            return async (node: Node) => renderer.stringify(await renderer.run(node) as any);
         }
 
         renderingLogger.success('Renderer has been created.');
 
         renderingLogger.info('Rendering units.');
 
-        this.renderUnitLinkTargets();
+        await this.renderUnitLinkTargets();
 
-        const toUpdate = this.renderUnitData();
+        const toUpdate = await this.renderUnitData();
         const toDelete = [...this.unitTagHash.keys()].filter((t) => !this.units.has(t));
 
         renderingLogger.report(`Rendered ${toUpdate.length} units (skipped ${this.units.size - toUpdate.length}).`);
@@ -392,22 +391,22 @@ export class Compiler {
         return { unitsToUpdate: toUpdate, unitsToDelete: toDelete };
     }
 
-    renderUnitData() {
+    async renderUnitData() {
         const toUpdate: UnitData[] = [];
         for (const unit of this.units.values()) {
             // Skip any node with the same hash as the stored.
 
             if (!this.compileAll && this.unitTagHash.has(unit.tag) && unit.hash() === this.unitTagHash.get(unit.tag)) continue;
 
-            toUpdate.push(unit.renderToUnitData(this.units, this.rendererBuilder));
+            toUpdate.push(await unit.renderToUnitData(this.units, this.rendererBuilder));
         }
 
         return toUpdate;
     }
 
-    renderUnitLinkTargets() {
+    async renderUnitLinkTargets() {
         for (const unit of this.units.values()) {
-            unit.renderLinkTarget(this.rendererBuilder);
+            await unit.renderLinkTarget(this.rendererBuilder);
         }
     }
 

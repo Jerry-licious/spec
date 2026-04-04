@@ -2,7 +2,7 @@ import {Node} from "@unified-latex/unified-latex-types";
 import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {match} from "@unified-latex/unified-latex-util-match";
 import {LabelAssigner} from "./label-assigner";
-import {isLabelableDisplayMath} from "./util";
+import {isLabelableDisplayMath} from "../util";
 
 
 // Equations are not considered to be environments, so they require an additional layer.

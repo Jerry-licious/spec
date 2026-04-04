@@ -15,3 +15,4 @@ export { FigureCaptionRenderer } from './figure-caption-renderer'
 export { GraphicsRenderer } from './graphics-renderer'
 export { FootnoteRefRenderer } from './footnote-ref-renderer'
 export { FootnoteRefSubstitute } from './footnote-ref-substitute'
+export { AsyncNodeRenderer } from "./async-renderer"

@@ -1,6 +1,5 @@
 // For now, I will settle with converting the mathjax environments into barebone text nodes.
 // In the future, mathjax may be rendered entirely online.
-import {NodeRenderer} from "./renderer";
 import {DisplayMath, Node} from "@unified-latex/unified-latex-types";
 import {match} from "@unified-latex/unified-latex-util-match";
 import {printRaw} from "@unified-latex/unified-latex-util-print-raw";
@@ -8,17 +7,13 @@ import {htmlLike} from "@unified-latex/unified-latex-util-html-like";
 import {classes} from "./classes";
 import {ParserLogger} from "../logging-base";
 import {m, s} from "@unified-latex/unified-latex-builder";
-
-import {createSyncFn} from "synckit";
-import {resolve} from 'path';
 import {toTagString} from "../../tag";
 import {RefRenderer} from "./ref-renderer";
+import {AsyncNodeRenderer, Log} from "./async-renderer";
+import {tikz2Svg} from "./tikz";
 
-const tikz2Svg = createSyncFn(
-    resolve(__dirname, './tikz-worker')
-);
 
-export class MathRenderer extends NodeRenderer {
+export class MathRenderer extends AsyncNodeRenderer {
     preambleDump: string;
     refRenderer: RefRenderer;
 
@@ -41,14 +36,14 @@ export class MathRenderer extends NodeRenderer {
         return node.content.some((c) => this.isTikzEnvironment(c));
     }
 
-    renderTikzPicture(node: DisplayMath) {
+    async renderTikzPicture(node: DisplayMath, addInfo: Log) {
         const tikzNode = node.content.find((c) => this.isTikzEnvironment(c))!;
 
-        this.addInfo("Rendering tikz picture. Consider not using the compile all configuration if there is a large number of them.");
+        addInfo("Rendering tikz picture. Consider not using the compile all configuration if there is a large number of them.");
 
-        const svg = tikz2Svg(printRaw(tikzNode), this.preambleDump);
+        const svg = await tikz2Svg(printRaw(tikzNode), this.preambleDump);
 
-        this.addInfo("Finished rendering tikz picture.");
+        addInfo("Finished rendering tikz picture.");
 
         return this.addParbreak(htmlLike({
             tag: 'tikz-svg',
@@ -62,7 +57,7 @@ export class MathRenderer extends NodeRenderer {
         }));
     }
 
-    render(node: Node): Node | Node[] | void {
+    async render(node: Node, addError: Log, addInfo: Log, addWarning: Log): Promise<Node | Node[] | void> {
         if (match.math(node)) {
             if (node.type === 'inlinemath') {
                 // Inline math gets printed out directly.
@@ -75,7 +70,7 @@ export class MathRenderer extends NodeRenderer {
             // Here I check for a special case: a tikz picture.
             // I identify an equation with at least one tikz environment to be a tikz picture.
             if (this.isTikzPicture(node)) {
-                return this.renderTikzPicture(node);
+                return await this.renderTikzPicture(node, addInfo);
             }
 
             // Render the refs in math mode.

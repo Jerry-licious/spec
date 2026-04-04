@@ -2,8 +2,8 @@ import {DocumentVisitor} from "../visitor";
 import {Node} from "@unified-latex/unified-latex-types";
 import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {ParserLogger} from "../logging-base";
-import {isLabelableDisplayMath} from "../metadata/util";
 import {LabeledEquation} from "./labeled-equation";
+import {isLabelableDisplayMath} from "../util";
 
 
 export class LabeledEquationCollector extends DocumentVisitor {

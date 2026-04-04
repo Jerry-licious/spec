@@ -54,19 +54,19 @@ export class Division extends IRUnit {
         };
     }
 
-    renderToUnitData(allUnits: Map<number, IRUnit>, renderer: RendererBuilder): UnitData {
-        const data = super.renderToUnitData(allUnits, renderer);
+    async renderToUnitData(allUnits: Map<number, IRUnit>, renderer: RendererBuilder): Promise<UnitData> {
+        const data = await super.renderToUnitData(allUnits, renderer);
 
         data.children = this.children.length ? this.children.map((c) => c.linkTarget!) : null;
 
         return data;
     }
 
-    renderLinkTarget(renderer: RendererBuilder) {
-        super.renderLinkTarget(renderer);
+    async renderLinkTarget(renderer: RendererBuilder) {
+        await super.renderLinkTarget(renderer);
 
         for (const child of this.children) {
-            if (!child.linkTarget) child.renderLinkTarget(renderer);
+            if (!child.linkTarget) await child.renderLinkTarget(renderer);
         }
 
         this.linkTarget!.children = this.children.map((c) => c.linkTarget!);

@@ -36,8 +36,8 @@ export class BlockEnv extends IRUnit {
         };
     }
 
-    renderBody(builder: RendererBuilder): string {
-        return this.buildRenderer(builder)({
+    async renderBody(builder: RendererBuilder): Promise<string> {
+        return await this.buildRenderer(builder)({
             type: 'root',
             content: [
                 ...this.mainContent,

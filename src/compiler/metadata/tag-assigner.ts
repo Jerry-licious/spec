@@ -4,7 +4,7 @@ import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {match} from "@unified-latex/unified-latex-util-match";
 import {nextSafeTag} from "../../tag";
 import {ParserLogger} from "../logging-base";
-import {isLabelableDisplayMath, TaggableNode} from "./util";
+import {isLabelableDisplayMath, TaggableNode} from "../util";
 
 
 // In the present system, each unit, such as a chapter, section, or a theorem, will be assigned a unique ID known as a

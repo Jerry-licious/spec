@@ -161,7 +161,7 @@ export abstract class IRUnit {
         }
     }
 
-    renderLinkTarget(builder: RendererBuilder) {
+    async renderLinkTarget(builder: RendererBuilder) {
         if (this.linkTarget) return;
 
         this.linkTarget = {
@@ -170,29 +170,29 @@ export abstract class IRUnit {
             unitType: this.sourceNodeName,
             unitName: this.name,
             // HTML title, if it exists.
-            titleHtml: this.title.length ? this.buildRenderer(builder)({
+            titleHtml: this.title.length ? await this.buildRenderer(builder)({
                 type: 'root',
                 content: this.title
             }) : undefined
         };
     }
 
-    renderBody(builder: RendererBuilder): string {
-        return this.buildRenderer(builder)({
+    async renderBody(builder: RendererBuilder): Promise<string> {
+        return await this.buildRenderer(builder)({
             type: 'root',
             content: wrapPars(this.mainContent),
         })
     }
 
-    renderFootnotes(builder: RendererBuilder): Record<number, string> {
+    async renderFootnotes(builder: RendererBuilder): Promise<Record<number, string>> {
         const renderer = this.buildRenderer(builder);
 
-        return Object.fromEntries([...this.footnotes.entries()].sort(([a], [b]) => a - b)
-            .map(([k, v]) => [k, renderer({ type: 'root', content: v })]));
+        return Object.fromEntries(await Promise.all([...this.footnotes.entries()].sort(([a], [b]) => a - b)
+            .map(async ([k, v]): Promise<[number, string]> => [k, await renderer({ type: 'root', content: v })])));
     }
 
     // Renders the IR unit as a unit data instance.
-    renderToUnitData(allUnits: Map<number, IRUnit>, builder: RendererBuilder): UnitData {
+    async renderToUnitData(allUnits: Map<number, IRUnit>, builder: RendererBuilder): Promise<UnitData> {
         return AppDataSource.manager.create(UnitData, {
             tag: this.tag,
             hash: this.hash(),
@@ -205,9 +205,9 @@ export abstract class IRUnit {
 
             titleText: this.titleText,
             titleHTML: this.linkTarget?.titleHtml,
-            contentHTML: this.renderBody(builder),
+            contentHTML: await this.renderBody(builder),
             contentText: this.textContent,
-            footnotes: this.renderFootnotes(builder),
+            footnotes: await this.renderFootnotes(builder),
 
             lastRendered: new Date(),
 

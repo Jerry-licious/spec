@@ -1,9 +1,10 @@
-import {Argument, Macro, Node} from "@unified-latex/unified-latex-types";
+import {DisplayMath, Environment, Macro, Node, Argument} from "@unified-latex/unified-latex-types";
+import {match} from "@unified-latex/unified-latex-util-match";
 import {NodeContext} from "./error";
 import {printRaw} from "@unified-latex/unified-latex-util-print-raw";
 
 
-export type RenderToHtml = (node: Node) => string;
+export type RenderToHtml = (node: Node) => Promise<string>;
 export type RenderPlugin = (root: Node) => void;
 export type RendererBuilder = (plugins: RenderPlugin[]) => RenderToHtml;
 
@@ -33,4 +34,21 @@ export function getArgumentTexts(macro: Macro): string[] {
 
 export function capitaliseFirstLetter(text: string): string {
     return text.length === 0 ? text : text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+
+export type TaggableNode = Macro | Environment | DisplayMath;
+
+export function isLabelableDisplayMath(node: Node): node is Environment {
+    return match.anyEnvironment(node) && node.type === 'mathenv';
+}
+
+export const reservedLabelStart = "auto:";
+
+// The type annotations here lie.
+export function getEnvironmentName(node: Environment) {
+    if (typeof node.env === 'string') return node.env;
+
+    // @ts-ignore
+    return node.env.map((n) => n.type === 'string' ? n.content : '').join('');
 }

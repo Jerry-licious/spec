@@ -4,7 +4,7 @@ import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {match} from "@unified-latex/unified-latex-util-match";
 import {capitaliseFirstLetter, getArgumentText} from "../util";
 import {ParserLogger} from "../logging-base";
-import {TaggableNode} from "./util";
+import {TaggableNode} from "../util";
 
 
 // Injects necessary metadata for ref, autoref, and hyperref.

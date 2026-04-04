@@ -5,6 +5,8 @@ import {IRUnit} from "../compiler/grouping";
 
 export interface ElementMetadata {
     sourceFile?: string;
+    // Used by async renderers.
+    asyncRenderResult?: Node | Node[] | null | void;
 }
 export interface LabeledElementMetadata extends ElementMetadata {
     label?: string;

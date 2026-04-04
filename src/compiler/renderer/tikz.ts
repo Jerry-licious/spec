@@ -1,4 +1,4 @@
-import {runAsWorker} from "synckit";
+import {Mutex} from "async-mutex";
 
 
 const importEverything = `
@@ -46,24 +46,21 @@ const quiverSource = `
 \\tikzset{2tail reversed/.code={\\pgfsetarrowsstart{Implies}}}
 % TikZ arrow styles.
 \\tikzset{no body/.style={/tikz/dash pattern=on 0 off 1mm}}
-`
+`;
 
-process.stderr.write = (chunk: any) => {
-    process.stdout.write(chunk);
-    return true;
-};
 
-runAsWorker(async (tikzCode: string, preamble: string) => {
+const tikzLock: Mutex = new Mutex();
+
+export async function tikz2Svg(tikzCode: string, preamble: string): Promise<string> {
     const mod = await import('node-tikzjax');
     const tex2svg = (mod as any).default?.default ?? mod.default;
 
     const source = `
-            \\begin{document}
-            ${tikzCode}
-            \\end{document}
-            `;
+    \\begin{document}
+    ${tikzCode}
+    \\end{document}`;
 
-    return await tex2svg(source, {
+    return await tikzLock.runExclusive(async () => await tex2svg(source, {
         tikzLibraries: tikzLibraries,
         addToPreamble: `
                         ${importEverything}
@@ -72,5 +69,5 @@ runAsWorker(async (tikzCode: string, preamble: string) => {
                         ${preamble}
                     `,
         embedFontCss: true,
-    });
-})
+    }));
+}

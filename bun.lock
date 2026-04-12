@@ -17,7 +17,6 @@
         "@solidjs/meta": "^0.29.4",
         "@solidjs/router": "^0.15.0",
         "@solidjs/start": "^1.1.0",
-        "@types/deasync": "^0.1.5",
         "@types/hast": "^3.0.4",
         "@types/unist": "^3.0.3",
         "@unified-latex/unified-latex-to-hast": "^1.8.3",
@@ -36,7 +35,7 @@
         "node-tikzjax": "^1.0.5",
         "obscenity": "^0.4.6",
         "rehype-stringify": "^10.0.1",
-        "smol-toml": "^1.6.0",
+        "smol-toml": "1.6.1",
         "solid-cached-resource": "^0.7.0",
         "solid-js": "^1.9.5",
         "synckit": "^0.11.12",
@@ -443,8 +442,6 @@
     "@types/better-sqlite3": ["@types/better-sqlite3@7.6.13", "", { "dependencies": { "@types/node": "*" } }, "sha512-NMv9ASNARoKksWtsq/SHakpYAYnhBrQgGD8zkLYk/jaK8jUGn08CfEdTRgYhMypUQAfzSP8W6gNLe0q19/t4VA=="],
 
     "@types/braces": ["@types/braces@3.0.5", "", {}, "sha512-SQFof9H+LXeWNz8wDe7oN5zu7ket0qwMu5vZubW4GCJ8Kkeh6nBWUz87+KTz/G3Kqsrp0j/W253XJb3KMEeg3w=="],
-
-    "@types/deasync": ["@types/deasync@0.1.5", "", {}, "sha512-mLov/tw+fOX4ZsrT9xuHOJv8xToOpNsp6W4gp8VDHy2qniJ58izyOzHlisnz5r8HdZ+WItDHtANWZy/W0JEJwg=="],
 
     "@types/estree": ["@types/estree@1.0.8", "", {}, "sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w=="],
 
@@ -1330,7 +1327,7 @@
 
     "smob": ["smob@1.6.1", "", {}, "sha512-KAkBqZl3c2GvNgNhcoyJae1aKldDW0LO279wF9bk1PnluRTETKBq0WyzRXxEhoQLk56yHaOY4JCBEKDuJIET5g=="],
 
-    "smol-toml": ["smol-toml@1.6.0", "", {}, "sha512-4zemZi0HvTnYwLfrpk/CF9LOd9Lt87kAt50GnqhMpyF9U3poDAP2+iukq2bZsO/ufegbYehBkqINbsWxj4l4cw=="],
+    "smol-toml": ["smol-toml@1.6.1", "", {}, "sha512-dWUG8F5sIIARXih1DTaQAX4SsiTXhInKf1buxdY9DIg4ZYPZK5nGM1VRIYmEbDbsHt7USo99xSLFu5Q1IqTmsg=="],
 
     "solid-cached-resource": ["solid-cached-resource@0.7.0", "", {}, "sha512-ySDl0rMvmZclGapXWIhN07TkEVPY5SSC0mrkLpKiqc/41NneU60jrBrEhyc+UuZupSmCuGyaUHUrzqd6xui9/Q=="],
 

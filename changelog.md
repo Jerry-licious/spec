@@ -1,7 +1,8 @@
-# Unreleased
+# v0.2.2, 2026-04-12
 
 - Configs are no longer loaded multiple times in a row.
-
+- Fixed a bug where theorem titles do not show up when it consists exclusively of macros. 
+- Adjusted the npm index task. 
 
 # v0.2.1, 2026-04-02
 

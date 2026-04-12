@@ -1,7 +1,8 @@
-import {DisplayMath, Environment, Macro, Node, Argument} from "@unified-latex/unified-latex-types";
+import {Argument, DisplayMath, Environment, Macro, Node} from "@unified-latex/unified-latex-types";
 import {match} from "@unified-latex/unified-latex-util-match";
 import {NodeContext} from "./error";
 import {printRaw} from "@unified-latex/unified-latex-util-print-raw";
+import {EXIT, visit} from "@unified-latex/unified-latex-util-visit";
 
 
 export type RenderToHtml = (node: Node) => Promise<string>;
@@ -26,6 +27,18 @@ export function getContext(node: Node): NodeContext | undefined {
 
 export function getArgumentText(node: Argument): string {
     return node.content.map((n) => n.type === 'string' ? n.content : '').join('');
+}
+
+export function argumentIsNonEmpty(node: Argument): boolean {
+    let nonEmptyFound: boolean = false;
+    visit(node, (c: Node | Argument) => {
+        if (match.anyMacro(c) || c.type === 'string') {
+            nonEmptyFound = true;
+            return EXIT;
+        }
+    })
+
+    return nonEmptyFound;
 }
 
 export function getArgumentTexts(macro: Macro): string[] {

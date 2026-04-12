@@ -2,7 +2,7 @@ import {DocumentVisitor} from "../visitor";
 import {Node} from "@unified-latex/unified-latex-types";
 import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {match} from "@unified-latex/unified-latex-util-match";
-import {getArgumentText} from "../util";
+import {argumentIsNonEmpty, getArgumentText} from "../util";
 import {ParserLogger} from "../logging-base";
 
 
@@ -20,8 +20,7 @@ export class TheoremTitleAssigner extends DocumentVisitor {
         if (!node.args) return;
         if (!node.args[0]) return;
 
-        const title = getArgumentText(node.args[0]);
-        if (!title) return;
+        if (!argumentIsNonEmpty(node.args[0])) return;
 
         node.meta = {
             ...node.meta,

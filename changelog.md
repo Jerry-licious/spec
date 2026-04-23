@@ -1,3 +1,9 @@
+# Unreleased
+
+- Fixed styling for itemize.
+- Watch mode now refreshes pages after compile. 
+
+
 # v0.2.3, 2026-04-23
 
 - Added limited support for tables. 

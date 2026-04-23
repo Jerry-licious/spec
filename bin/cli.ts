@@ -44,8 +44,8 @@ program.command('version')
 
 const compileLock = new AsyncLock({maxPending: 2});
 function compile(options: CompilerOptionOverride, port: number) {
-    compileLock.acquire('compile', () => runCompiler(options)).catch(() => {});
-    fetch(`http://localhost:${port}/invalidate`, { method: 'POST' }).catch(() => {})
+    compileLock.acquire('compile', () => runCompiler(options))
+        .then(() => fetch(`http://localhost:${port}/invalidate`, { method: 'POST' })).catch(() => {});
 }
 
 program.command('watch')

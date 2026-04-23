@@ -266,6 +266,16 @@ Thanks to [Manh Tien Nguyen](https://darknmt.github.io/html/index.html), there i
 [visual editor](https://darknmt.github.io/res/xypic-editor/) for XY-pic, which may come in handy.
 
 
+## Enumerate
+
+Enumerate environments support custom labels and starting indices via their optional argument
+```tex
+\begin{enumerate}[start=3, label=\alph*\Alph*\roman*]
+\item ...
+\end{enumerate}
+```
+
+
 ## Packages
 
 While specific features of specific packages are occasionally supported by the compiler (which will be stated in this 

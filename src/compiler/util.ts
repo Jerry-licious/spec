@@ -26,7 +26,12 @@ export function getContext(node: Node): NodeContext | undefined {
 }
 
 export function getArgumentText(node: Argument): string {
-    return node.content.map((n) => n.type === 'string' ? n.content : '').join('');
+    return getTextShallow(node.content)
+}
+
+export function getTextShallow(nodes: Node[]): string {
+    if (!nodes) return '';
+    return nodes.map((n) => n.type === 'string' ? n.content : '').join('');
 }
 
 export function argumentIsNonEmpty(node: Argument): boolean {

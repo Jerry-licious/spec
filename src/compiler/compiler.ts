@@ -47,7 +47,7 @@ import {
     FigureCaptionRenderer,
     FigureRenderer,
     FootnoteRefRenderer,
-    GraphicsRenderer,
+    GraphicsRenderer, HLineRenderer,
     ItemNumberer,
     MathRenderer,
     OmitMacro,
@@ -367,6 +367,7 @@ export class Compiler {
             .use(unifiedLatexToHast as any)
             .use(new EmptyParagraphFilter({ logger: renderingLogger }).asPlugin())
             .use(new TikzExtractor({ logger: renderingLogger }).asPlugin())
+            .use(new HLineRenderer({ logger: renderingLogger }).asPlugin())
             .freeze();
             //.use(rehypeStringify, { allowDangerousHtml: true });
 

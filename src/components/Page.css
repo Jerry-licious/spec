@@ -189,3 +189,26 @@
 .hide-copy-label .copy-label {
     display: none;
 }
+
+
+/*
+On tables:
+
+*/
+
+.tabular {
+    border-collapse: collapse;
+}
+
+.light .tabular tr.hline {
+    border-bottom: 1px solid black;
+}
+
+.dark .tabular tr.hline {
+    border-bottom: 1px solid var(--neutral-50);
+}
+
+.tabular tr, .tabular td {
+    padding: 0;
+}
+

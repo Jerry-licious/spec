@@ -1,3 +1,8 @@
+# Unreleased
+
+- Added limited support for tables. 
+
+
 # v0.2.2, 2026-04-12
 
 - Configs are no longer loaded multiple times in a row.

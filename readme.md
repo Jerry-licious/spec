@@ -333,5 +333,3 @@ due to reasons ranging from being occupied to being incompetent.
 - Comments
 - Better parasitic links in MathJax. 
 - Better SVG colour scaling. 
-- Better enumerates. 
-- Tables.

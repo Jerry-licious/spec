@@ -1,4 +1,4 @@
-# Unreleased
+# v0.2.3, 2026-04-23
 
 - Added limited support for tables. 
 - Added support for custom labels and start indices for enumerate environments. 

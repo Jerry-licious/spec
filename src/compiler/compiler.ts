@@ -557,7 +557,7 @@ export class Compiler {
         const captionNumberer = new FigureCaptionNumberer({logger: tagLogger});
         captionNumberer.process(this.documentRoot!);
 
-        tagLogger.report("Finished assigning ${this.unitTagNode.size} tags to divisions and blocks.");
+        tagLogger.report(`Finished assigning ${this.unitTagNode.size} tags to divisions and blocks.`);
     }
 
     adjustEnumerates() {

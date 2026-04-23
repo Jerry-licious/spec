@@ -26,15 +26,31 @@
 .enumerate {
     margin-top: 0;
     margin-bottom: 0;
-    margin-left: 1.5rem;
+    margin-left: 0;
+    padding-left: 0;
 
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+    display: grid;
+    grid-template-columns: minmax(4rem, min-content) 1fr;
+
+    row-gap: 0.5rem;
+    column-gap: 0.5rem;
+
+    list-style: none;
 }
 
 .enumerate li > * {
     margin-bottom: 0.5rem;
+}
+
+.enumerate li {
+    display: contents;
+}
+
+.enumerate .enumerate-marker {
+    white-space: nowrap;
+
+    text-align: right;
+    user-select: none;
 }
 
 

@@ -43,7 +43,7 @@ import {Processor, unified} from "unified";
 import {
     BlockRenderer,
     CiteRenderer,
-    EmptyParagraphFilter,
+    EmptyParagraphFilter, EnumerateRenderer,
     FigureCaptionRenderer,
     FigureRenderer,
     FootnoteRefRenderer,
@@ -344,6 +344,8 @@ export class Compiler {
         renderingLogger.info('Creating HTML renderer. ');
 
         this.baseRenderer = unified()
+            // The enumerate renderer may expose nodes in labels, which is why it should come first.
+            .use(new EnumerateRenderer({}).asPlugin())
             .use(new OmitMacro({
                 toOmit: macrosToOmit
             }).asPlugin())

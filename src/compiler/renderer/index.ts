@@ -17,3 +17,4 @@ export { FootnoteRefRenderer } from './footnote-ref-renderer'
 export { FootnoteRefSubstitute } from './footnote-ref-substitute'
 export { AsyncNodeRenderer } from "./async-renderer"
 export { HLineRenderer} from "./hline-renderer"
+export { EnumerateRenderer } from "./enumerate-renderer"

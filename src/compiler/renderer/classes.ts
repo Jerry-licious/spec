@@ -17,4 +17,7 @@ export const classes = {
     footnoteRef: 'footnote-ref link-primary',
     textAction: 'text-action',
     copyLabel: 'text-action copy-label',
+    enumerate: 'enumerate',
+    enumerateMarker: 'enumerate-marker',
+    enumerateContent: 'enumerate-content'
 } as const;

@@ -1,5 +1,6 @@
 import {HastVisitor} from "./transformer";
 import {Element} from "hast";
+import {getTextShallow} from "../util";
 
 /*
 * As of now, the compiler will leech off of the given implementation of *tabular* given by
@@ -14,8 +15,8 @@ export class HLineRenderer extends HastVisitor {
 
         // The former case is distinguished by the presence of a <td> element with just a space inside.
         if (node.children.length === 1) {
-            if (node.children[0].type !== 'text') return;
-            if (node.children[0].value !== ' ') return;
+            if (node.children.filter(c => c.type === 'text')
+                .map(c => c.data).join('').trim().length > 0) return;
         }
 
         // Remove all the node's children.

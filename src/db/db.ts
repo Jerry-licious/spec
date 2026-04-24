@@ -4,9 +4,10 @@ import {BibliographyData} from "./bib-data";
 import consola from "consola";
 import {loadConfig} from "../load-config";
 import {config} from "../config";
-import {AuxData} from "../db/aux-data";
+import {AuxData} from "./aux-data";
 import {resolve} from "node:path";
 import {GraphicData} from "./graphic-data";
+import {CommentData} from "./comment";
 
 export let AppDataSource: DataSource;
 let dataSourcePromise: Promise<DataSource> | null = null;
@@ -33,7 +34,7 @@ export async function initialiseDatabase(dbPath: string): Promise<DataSource> {
         AppDataSource = new DataSource({
             type: 'better-sqlite3',
             database: dbPath,
-            entities: [UnitData, BibliographyData, AuxData, GraphicData],
+            entities: [UnitData, BibliographyData, AuxData, GraphicData, CommentData],
             synchronize: true,
         });
         const result = await AppDataSource.initialize();

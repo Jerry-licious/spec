@@ -1,5 +1,6 @@
 import {LinkTarget} from "./link-target";
-import {Column, Entity, Index, PrimaryColumn} from "typeorm";
+import {Column, Entity, Index, OneToMany, PrimaryColumn} from "typeorm";
+import {CommentData} from "./comment";
 
 
 @Entity('units')
@@ -54,6 +55,9 @@ export class UnitData {
     parasitic!: boolean | null;
     @Column('boolean', { nullable: true, default: false })
     isDivision!: boolean | null;
+
+    @OneToMany(() => CommentData, (comment) => comment.unit)
+    comments!: CommentData[];
 }
 
 

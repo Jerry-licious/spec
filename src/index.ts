@@ -107,7 +107,7 @@ export async function runCompiler({compileAll, conservative, targetFile}: Compil
     const bibliographyRepository = AppDataSource.getRepository(BibliographyData);
     const graphicsDataRepository = AppDataSource.getRepository(GraphicData);
 
-    const result = await compiler.parseFile(targetFile ?? config.document);
+    const result = await compiler.compileFile(targetFile ?? config.document);
 
     try {
         const upsertBatchSize = 500;

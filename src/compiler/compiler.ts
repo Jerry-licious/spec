@@ -39,7 +39,7 @@ import {
     TheoremProofAssigner,
     TheoremTitleAssigner
 } from "./metadata";
-import {Processor, unified} from "unified";
+import {Pluggable, Processor, unified} from "unified";
 import {
     BlockRenderer,
     CiteRenderer,
@@ -66,6 +66,8 @@ import path from "node:path";
 import {Sema} from "async-sema";
 import {GraphicData} from "../db/graphic-data";
 import {AppDataSource} from "../db";
+import {parse} from "@unified-latex/unified-latex-util-parse";
+import rehypeSanitize from "rehype-sanitize";
 
 
 const divisionMarkers = new Set<string>(documentDividers);
@@ -185,11 +187,7 @@ export class Compiler {
         });
     }
 
-    async parseFile(file: string): Promise<CompileResult> {
-        consola.start(`Starting the compiler on ${file}.`);
-
-        await this.collectContent(file);
-
+    processTree() {
         this.collectDefinitions();
 
         this.assignLabelsAndNumbers();
@@ -203,6 +201,16 @@ export class Compiler {
         this.collectUnits();
         this.computeUnitReferences();
 
+        this.createRenderer();
+    }
+
+    async compileFile(file: string): Promise<CompileResult> {
+        consola.start(`Starting the compiler on ${file}.`);
+
+        await this.collectContent(file);
+
+        this.processTree();
+
         const result = {
             ...await this.copyGraphics(),
             ...await this.renderUnits(),
@@ -213,6 +221,14 @@ export class Compiler {
         this.logger.report("Finished compiling the project.");
 
         return result;
+    }
+
+    async compileText(text: string): Promise<string> {
+        this.documentRoot = parse(text);
+
+        this.processTree();
+
+        return await this.rendererBuilder([rehypeSanitize])(this.documentRoot);
     }
 
 
@@ -338,8 +354,7 @@ export class Compiler {
         };
     }
 
-
-    async renderUnits() {
+    createRenderer() {
         const renderingLogger = new ParserLogger({ parent: this.logger });
         renderingLogger.info('Creating HTML renderer. ');
 
@@ -371,17 +386,21 @@ export class Compiler {
             .use(new TikzExtractor({ logger: renderingLogger }).asPlugin())
             .use(new HLineRenderer({ logger: renderingLogger }).asPlugin())
             .freeze();
-            //.use(rehypeStringify, { allowDangerousHtml: true });
+        //.use(rehypeStringify, { allowDangerousHtml: true });
 
-        this.rendererBuilder = (plugins: RenderPlugin[]) => {
+        this.rendererBuilder = (plugins: Pluggable[]) => {
             const renderer = this.baseRenderer!().use(plugins)
                 .use(rehypeStringify, { allowDangerousHtml: true });
 
             return async (node: Node) => renderer.stringify(await renderer.run(node) as any);
         }
 
-        renderingLogger.success('Renderer has been created.');
+        renderingLogger.report('Renderer has been created.');
+    }
 
+
+    async renderUnits() {
+        const renderingLogger = new ParserLogger({ parent: this.logger });
         renderingLogger.info('Rendering units.');
 
         await this.renderUnitLinkTargets();

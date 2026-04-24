@@ -3,11 +3,12 @@ import {match} from "@unified-latex/unified-latex-util-match";
 import {NodeContext} from "./error";
 import {printRaw} from "@unified-latex/unified-latex-util-print-raw";
 import {EXIT, visit} from "@unified-latex/unified-latex-util-visit";
+import {Pluggable} from "unified";
 
 
 export type RenderToHtml = (node: Node) => Promise<string>;
 export type RenderPlugin = (root: Node) => void;
-export type RendererBuilder = (plugins: RenderPlugin[]) => RenderToHtml;
+export type RendererBuilder = (plugins: Pluggable[]) => RenderToHtml;
 
 // Root folder where all the graphics will be deposited.
 export const graphicsRoot = "./public/g/";

@@ -2,7 +2,7 @@ import {DocumentVisitor} from "../visitor";
 import {Node} from "@unified-latex/unified-latex-types";
 import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {match} from "@unified-latex/unified-latex-util-match";
-import {argumentIsNonEmpty, getArgumentText} from "../util";
+import {argumentIsNonEmpty} from "../util";
 import {ParserLogger} from "../logging-base";
 
 

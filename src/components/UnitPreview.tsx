@@ -1,7 +1,6 @@
 import "./UnitPreview.css"
-import {createAsync} from "@solidjs/router";
 import {getUnit} from "../app-data-cache";
-import {createEffect, createSignal, ErrorBoundary, on, onMount, Show} from "solid-js";
+import {createEffect, createSignal, ErrorBoundary, on, Show} from "solid-js";
 import {FootnoteSection} from "./FootnoteSection";
 
 export interface UnitPreviewProps {

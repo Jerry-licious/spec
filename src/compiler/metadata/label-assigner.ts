@@ -1,9 +1,8 @@
 import {DocumentVisitor} from "../visitor";
 import {Macro, Node} from "@unified-latex/unified-latex-types";
-import {getArgumentText, getContext} from "../util";
+import {getArgumentText, getContext, getEnvironmentName, isLabelableDisplayMath, reservedLabelStart} from "../util";
 import {ParserLogger} from "../logging-base";
 import {match} from "@unified-latex/unified-latex-util-match";
-import {getEnvironmentName, isLabelableDisplayMath, reservedLabelStart} from "../util";
 import {createHash} from "crypto";
 
 

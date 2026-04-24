@@ -1,6 +1,5 @@
 import {HastVisitor} from "./transformer";
 import {Element} from "hast";
-import {getTextShallow} from "../util";
 
 /*
 * As of now, the compiler will leech off of the given implementation of *tabular* given by

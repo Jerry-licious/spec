@@ -9,7 +9,7 @@ import {BibliographyLoader} from "./bib-loader";
 import {Loader} from "./loader";
 import {Node, Root} from "@unified-latex/unified-latex-types";
 import {CountManager} from "./counter";
-import {capitaliseFirstLetter, graphicsRoot, RendererBuilder, RenderPlugin, TaggableNode} from "./util";
+import {capitaliseFirstLetter, graphicsRoot, RendererBuilder, TaggableNode} from "./util";
 import {BibtexEntry} from "@orcid/bibtex-parse-js";
 import {
     BlockCollector,
@@ -43,11 +43,13 @@ import {Pluggable, Processor, unified} from "unified";
 import {
     BlockRenderer,
     CiteRenderer,
-    EmptyParagraphFilter, EnumerateRenderer,
+    EmptyParagraphFilter,
+    EnumerateRenderer,
     FigureCaptionRenderer,
     FigureRenderer,
     FootnoteRefRenderer,
-    GraphicsRenderer, HLineRenderer,
+    GraphicsRenderer,
+    HLineRenderer,
     ItemNumberer,
     MathRenderer,
     OmitMacro,

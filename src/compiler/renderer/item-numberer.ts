@@ -4,7 +4,7 @@ import {SKIP, VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {match} from "@unified-latex/unified-latex-util-match";
 import {m, s} from "@unified-latex/unified-latex-builder";
 import {pgfkeysArgToObject} from "@unified-latex/unified-latex-util-pgfkeys";
-import {getArgumentText, getContext, getTextShallow} from "../util";
+import {getTextShallow} from "../util";
 import {replaceNode} from "@unified-latex/unified-latex-util-replace";
 
 

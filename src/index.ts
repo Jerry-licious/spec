@@ -8,6 +8,7 @@ import {UnitData} from "./db/unit-data";
 import {BibliographyData} from "./db/bib-data";
 import {AuxData} from "./db/aux-data";
 import {GraphicData} from "./db/graphic-data";
+import {defaultConfigPath} from "./config";
 
 
 export interface CompilerOptionOverride {
@@ -17,16 +18,18 @@ export interface CompilerOptionOverride {
 }
 
 
-export async function runCompiler({compileAll, conservative, targetFile}: CompilerOptionOverride ) {
-    const config = await loadConfig();
+
+export async function getCompiler({compileAll, conservative, targetFile}: CompilerOptionOverride, log: boolean, fillDefaultConfig: boolean) {
+    let config = await loadConfig(defaultConfigPath, fillDefaultConfig);
     if (!config) {
         process.exit(0);
     }
 
+
     config.compiler.compileAll = config.compiler.compileAll || compileAll;
     // Compile all will disable conservative mode.
     conservative = conservative && !compileAll;
-    
+
     await initialiseDatabase(config.database);
 
     const unitRepository = AppDataSource.getRepository(UnitData);
@@ -80,7 +83,7 @@ export async function runCompiler({compileAll, conservative, targetFile}: Compil
         ...existingBibliography.map((u) => u.tag)
     );
 
-    const parser = new Compiler({
+    return new Compiler({
         config,
         unitLabelTags,
         bibliographyLabelTags,
@@ -89,8 +92,22 @@ export async function runCompiler({compileAll, conservative, targetFile}: Compil
         graphicPathHash,
         conservative
     });
+}
 
-    const result = await parser.parseFile(targetFile ?? config.document);
+export async function runCompiler({compileAll, conservative, targetFile}: CompilerOptionOverride ) {
+    const compiler = await getCompiler({compileAll, conservative, targetFile}, true, false);
+    const config = await loadConfig(defaultConfigPath);
+    if (!config) {
+        process.exit(0);
+    }
+
+    conservative = conservative && !compileAll;
+
+    const unitRepository = AppDataSource.getRepository(UnitData);
+    const bibliographyRepository = AppDataSource.getRepository(BibliographyData);
+    const graphicsDataRepository = AppDataSource.getRepository(GraphicData);
+
+    const result = await compiler.parseFile(targetFile ?? config.document);
 
     try {
         const upsertBatchSize = 500;

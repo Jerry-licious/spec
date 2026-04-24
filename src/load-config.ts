@@ -8,16 +8,16 @@ import {parse, stringify, TomlTable} from "smol-toml";
 let loadConfigPromise: Promise<SpecConfig | void> | null = null;
 
 
-export async function loadConfig(configPath?: string): Promise<SpecConfig | void> {
+export async function loadConfig(configPath?: string, fillDefault?: boolean): Promise<SpecConfig | void> {
     if (config) return config;
     if (loadConfigPromise) return loadConfigPromise;
 
-    loadConfigPromise = actuallyLoadConfig(configPath);
+    loadConfigPromise = actuallyLoadConfig(configPath, fillDefault);
 
     return loadConfigPromise;
 }
 
-async function actuallyLoadConfig(configPath?: string): Promise<SpecConfig | void> {
+async function actuallyLoadConfig(configPath?: string, fillDefault?: boolean): Promise<SpecConfig | void> {
     configPath = configPath ?? defaultConfigPath;
 
     consola.start(`Loading configs from ${configPath}.`);
@@ -38,6 +38,8 @@ async function actuallyLoadConfig(configPath?: string): Promise<SpecConfig | voi
     } catch (error) {
         consola.error(`Failed to parse config.`);
         consola.error(error);
+
+        if (fillDefault) return defaultConfig;
 
         if (!await consola.prompt('Continue with default configs?', {
             type: 'confirm',

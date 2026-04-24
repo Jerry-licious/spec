@@ -333,3 +333,4 @@ due to reasons ranging from being occupied to being incompetent.
 - Comments
 - Better parasitic links in MathJax. 
 - Better SVG colour scaling. 
+- Leaf entries can expand in the table of contents. 

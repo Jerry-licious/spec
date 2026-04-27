@@ -3,10 +3,11 @@ import {createSignal, Suspense} from "solid-js";
 import {createForm, SubmitHandler, zodForm} from "@modular-forms/solid";
 import {fromTagString, toTagString} from "../tag";
 import {commentFormSchema, compileCommentAction, submitCommentAction} from "../comment";
-import {useAction} from "@solidjs/router";
+import {createAsync, useAction} from "@solidjs/router";
 import {z} from "zod";
 import { reset } from "@modular-forms/solid";
 import {CommentData} from "../db/comment";
+import {getConfig} from "../app-data";
 
 interface CommentSectionProps {
     tag: number;
@@ -46,7 +47,8 @@ function formatDate(date: Date) {
 export function CommentSection(props: CommentSectionProps) {
     const schema = commentFormSchema.refine(
         (data) => fromTagString(data.tag) === props.tag,
-        { message: `Tag should be ${toTagString(props.tag)}.`, path: ['tag'] })
+        { message: `Tag should be ${toTagString(props.tag)}.`, path: ['tag'] });
+    const config = createAsync(() => getConfig());
 
     const [form, {Form, Field}] = createForm({
         validate: zodForm(schema),
@@ -101,7 +103,7 @@ export function CommentSection(props: CommentSectionProps) {
 
     return <div class={'comment-section'}>
         {
-            props.comments.length && <div class={'comment-list'}>
+            (props.comments.length && config()?.website.displayComments) && <div class={'comment-list'}>
                 <h4>Comments</h4>
                 {
                     props.comments.map((comment) => <div class={'comment-container'}>
@@ -116,57 +118,59 @@ export function CommentSection(props: CommentSectionProps) {
                 }
             </div>
         }
-        <div class={'post-comment'}>
-            <h4>Post a Comment</h4>
-            <Form onSubmit={handleSubmit} class={'post-comment-form'}>
-                <div class={'info-fields'}>
-                    <InfoField name={'name'} label={'Name'} placeholder={'John Smith'}/>
-                    <InfoField name={'email'} label={'Email'} placeholder={'info@example.me'}/>
-                </div>
-                <Field name={"content"} type={'string'}>{
-                    (field, props) => {
-                        return (<>
-                            <div class={'comment-editor-container'}>
-                                <div class={'tab-bar'}>
-                                    <button type={'button'} class={tab() == 'content' ? 'selected' : ''}
-                                            onClick={() => setTab('content')}>Edit
-                                    </button>
-                                    <button type={'button'} class={tab() == 'preview' ? 'selected' : ''}
-                                            onClick={() => {
-                                                setTab('preview');
-                                                updatePreview(field.value as string)
-                                            }}>Preview
-                                    </button>
+        {
+            config()?.website.allowComments && <div class={'post-comment'}>
+                <h4>Post a Comment</h4>
+                <Form onSubmit={handleSubmit} class={'post-comment-form'}>
+                    <div class={'info-fields'}>
+                        <InfoField name={'name'} label={'Name'} placeholder={'John Smith'}/>
+                        <InfoField name={'email'} label={'Email'} placeholder={'info@example.me'}/>
+                    </div>
+                    <Field name={"content"} type={'string'}>{
+                        (field, props) => {
+                            return (<>
+                                <div class={'comment-editor-container'}>
+                                    <div class={'tab-bar'}>
+                                        <button type={'button'} class={tab() == 'content' ? 'selected' : ''}
+                                                onClick={() => setTab('content')}>Edit
+                                        </button>
+                                        <button type={'button'} class={tab() == 'preview' ? 'selected' : ''}
+                                                onClick={() => {
+                                                    setTab('preview');
+                                                    updatePreview(field.value as string)
+                                                }}>Preview
+                                        </button>
+                                    </div>
+                                    <textarea {...props} class={'comment-textarea'} value={field.value || ''}
+                                              style={{display: tab() == 'content' ? '' : 'none'}}
+                                              placeholder={'Comment'}/>
+                                    <div class={'comment-preview'} innerHTML={preview()}
+                                         style={{display: tab() == 'preview' ? '' : 'none'}}/>
                                 </div>
-                                <textarea {...props} class={'comment-textarea'} value={field.value || ''}
-                                          style={{display: tab() == 'content' ? '' : 'none'}}
-                                          placeholder={'Comment'}/>
-                                <div class={'comment-preview'} innerHTML={preview()}
-                                     style={{display: tab() == 'preview' ? '' : 'none'}}/>
-                            </div>
-                            {field.error && <span class={'post-comment-form-error'}>{field.error}</span>}
-                        </>)
-                    }
-                }</Field>
-                <div>Please enter the tag of the current page ({toTagString(props.tag)}) to post the
-                    comment.
-                </div>
-                <div class={'comment-actions'}>
-                    <span>Tag: </span>
-                    <Field name={'tag'} type={'string'}>{
-                        (field, innerProps) => (
-                            <>
-                                <input {...innerProps} value={field.value || ''}
-                                       placeholder={toTagString(props.tag)}/>
-                                <span class={'post-comment-form-error'}
-                                      style={{"flex-grow": 1}}>{field.error}</span>
-                            </>
-                        )
+                                {field.error && <span class={'post-comment-form-error'}>{field.error}</span>}
+                            </>)
+                        }
                     }</Field>
-                    <button type={"submit"} class={submitFired() ? 'comment-submit-disabled' : ''}>Post</button>
-                </div>
-            </Form>
-        </div>
+                    <div>Please enter the tag of the current page ({toTagString(props.tag)}) to post the
+                        comment.
+                    </div>
+                    <div class={'comment-actions'}>
+                        <span>Tag: </span>
+                        <Field name={'tag'} type={'string'}>{
+                            (field, innerProps) => (
+                                <>
+                                    <input {...innerProps} value={field.value || ''}
+                                           placeholder={toTagString(props.tag)}/>
+                                    <span class={'post-comment-form-error'}
+                                          style={{"flex-grow": 1}}>{field.error}</span>
+                                </>
+                            )
+                        }</Field>
+                        <button type={"submit"} class={submitFired() ? 'comment-submit-disabled' : ''}>Post</button>
+                    </div>
+                </Form>
+            </div>
+        }
     </div>
 }
 

@@ -32,6 +32,9 @@ export const SpecConfigSchema = z.object({
         hoverPreview: z.boolean().default(true),
         copyLabelButton: z.boolean().default(false),
 
+        displayComments: z.boolean().default(false),
+        allowComments: z.boolean().default(false),
+
         advertiseSpec: z.boolean().default(true),
     }).default({}),
 });

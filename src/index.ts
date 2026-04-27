@@ -124,6 +124,7 @@ export async function runCompiler({compileAll, conservative, targetFile}: Compil
 
         // Only delete old units outside of conservative mode.
         if (!conservative) {
+            // TODO: Also delete linked comments.
             consola.info(`Deleting ${result.unitsToDelete.length} units from the database.`);
 
             await unitRepository.delete({
@@ -156,6 +157,7 @@ export async function runCompiler({compileAll, conservative, targetFile}: Compil
         }
         // Only delete old units outside of conservative mode.
         if (!conservative) {
+            // TODO: Also delete linked comments.
             consola.info(`Deleting ${result.graphicsToDelete.length} graphics entries from the database.`);
 
             await graphicsDataRepository.delete({

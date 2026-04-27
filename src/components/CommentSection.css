@@ -46,7 +46,7 @@
     border: 1px solid var(--neutral-700);
 }
 .light .comment-editor-container {
-    border: 1px solid var(--neutral-300);
+    border: 1px solid var(--neutral-400);
 }
 
 .tab-bar {
@@ -157,11 +157,16 @@
     flex-direction: row;
     align-items: center;
 }
-.dark .post-comment-form-error {
-    color: var(--error-400);
+.post-comment-form-error {
     display: flex;
     flex-direction: row;
     align-items: center;
+}
+.dark .post-comment-form-error {
+    color: var(--error-400);
+}
+.light .post-comment-form-error {
+    color: var(--error-700);
 }
 
 .comment-actions {
@@ -211,8 +216,11 @@
 }
 
 /* Also account for the "Comments" */
-.comment-container:nth-child(n+3) {
+.dark .comment-container:nth-child(n+3) {
     border-top: 1px solid var(--neutral-800);
+}
+.light .comment-container:nth-child(n+3) {
+    border-top: 1px solid var(--neutral-300);
 }
 
 .comment-header {

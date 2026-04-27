@@ -175,6 +175,9 @@ to. May slow down the compiler significantly when there is a large number of tag
 - `hoverPreview`: When hovering links, preview the target. 
 - `copyLabelButton`: Add a button next to theorems to copy their label. 
 
+- `displayComments`: Display comments under each unit.
+- `allowComments`: Allow visitors to put down comments. 
+
 - `advertiseSpec`: Attribute spec in the sidebar. 
 
 The colour scheme is taken from [Tailwind](https://tailwindcss.com/docs/colors), thanks 

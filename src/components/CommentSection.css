@@ -14,7 +14,9 @@
 }
 
 .comment-list {
-
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
 .post-comment {
@@ -32,7 +34,7 @@
     gap: 1rem;
 }
 
-.comment-content-container {
+.comment-editor-container {
     display: flex;
     flex-direction: column;
     height: 12rem;
@@ -40,10 +42,10 @@
     border-radius: 0.5rem;
 }
 
-.dark .comment-content-container {
+.dark .comment-editor-container {
     border: 1px solid var(--neutral-700);
 }
-.light .comment-content-container {
+.light .comment-editor-container {
     border: 1px solid var(--neutral-300);
 }
 
@@ -94,7 +96,7 @@
     border-bottom: 1px solid var(--neutral-300);
 }
 
-.comment-content {
+.comment-textarea {
     resize: none;
 
     outline: none;
@@ -110,12 +112,12 @@
     border: none;
 }
 
-.dark .comment-content {
+.dark .comment-textarea {
     background-color: var(--neutral-900);
     color: var(--neutral-50);
 }
 
-.light .comment-content {
+.light .comment-textarea {
     background-color: var(--neutral-200);
     color: black;
 }
@@ -200,3 +202,28 @@
     cursor: not-allowed;
     opacity: 0.5;
 }
+
+.comment-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+}
+
+/* Also account for the "Comments" */
+.comment-container:nth-child(n+3) {
+    border-top: 1px solid var(--neutral-800);
+}
+
+.comment-header {
+    display: flex;
+    flex-direction: row;
+}
+
+.dark .comment-time {
+    color: var(--neutral-400);
+}
+.light .comment-time {
+    color: var(--neutral-600);
+}
+

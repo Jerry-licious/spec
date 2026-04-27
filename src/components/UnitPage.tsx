@@ -87,7 +87,7 @@ export function UnitPage(props: UnitPageProps) {
                                   items={props.unit.children} depth={config()?.website.tableOfContentsDepth ?? 0}/> : null
             }
             <FootnoteSection footnotes={props.unit.footnotes ?? null}/>
-            <CommentSection tag={props.unit.tag}/>
+            <CommentSection tag={props.unit.tag} comments={props.unit.comments}/>
         </Page>
     </Show>
 }

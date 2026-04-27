@@ -6,12 +6,42 @@ import {commentFormSchema, compileCommentAction, submitCommentAction} from "../c
 import {useAction} from "@solidjs/router";
 import {z} from "zod";
 import { reset } from "@modular-forms/solid";
+import {CommentData} from "../db/comment";
 
 interface CommentSectionProps {
     tag: number;
+    comments: CommentData[]
 }
 
 type Tab = 'content' | 'preview';
+
+function formatDate(date: Date) {
+    const now = new Date();
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const startOfYesterday = new Date(startOfToday.getTime() - 86400000);
+    const startOfDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+    const time = date.toLocaleString("en-US", {
+        hour: "2-digit", minute: "2-digit", hour12: false
+    });
+
+    let datePart;
+    if (startOfDate.getTime() === startOfToday.getTime()) {
+        datePart = "Today";
+    } else if (startOfDate.getTime() === startOfYesterday.getTime()) {
+        datePart = "Yesterday";
+    } else {
+        const day = date.getDate();
+        const suffix = ["th","st","nd","rd"][
+            day % 100 > 10 && day % 100 < 14 ? 0 : Math.min(day % 10, 4) > 3 ? 0 : day % 10
+            ];
+        const month = date.toLocaleString("en-US", { month: "long" });
+        const year = date.getFullYear() !== now.getFullYear() ? `${date.getFullYear()} ` : "";
+        datePart = `${year}${month} ${day}${suffix}`;
+    }
+
+    return `${datePart} at ${time}`;
+}
 
 export function CommentSection(props: CommentSectionProps) {
     const schema = commentFormSchema.refine(
@@ -70,9 +100,22 @@ export function CommentSection(props: CommentSectionProps) {
     };
 
     return <div class={'comment-section'}>
-        <div class={'comment-list'}>
-            <h4>Comments</h4>
-        </div>
+        {
+            props.comments.length && <div class={'comment-list'}>
+                <h4>Comments</h4>
+                {
+                    props.comments.map((comment) => <div class={'comment-container'}>
+                        <div class={'comment-header'}>
+                            <a class={'link-primary'} href={`mailto:${comment.authorEmail}`}>
+                                <b>{comment.author}</b></a>
+                            <div style={{"flex-grow": 1}}/>
+                            <span class={'comment-time'}>{formatDate(comment.posted)}</span>
+                        </div>
+                        <div class={'comment-content'} innerHTML={comment.html}/>
+                    </div>)
+                }
+            </div>
+        }
         <div class={'post-comment'}>
             <h4>Post a Comment</h4>
             <Form onSubmit={handleSubmit} class={'post-comment-form'}>
@@ -83,7 +126,7 @@ export function CommentSection(props: CommentSectionProps) {
                 <Field name={"content"} type={'string'}>{
                     (field, props) => {
                         return (<>
-                            <div class={'comment-content-container'}>
+                            <div class={'comment-editor-container'}>
                                 <div class={'tab-bar'}>
                                     <button type={'button'} class={tab() == 'content' ? 'selected' : ''}
                                             onClick={() => setTab('content')}>Edit
@@ -95,7 +138,7 @@ export function CommentSection(props: CommentSectionProps) {
                                             }}>Preview
                                     </button>
                                 </div>
-                                <textarea {...props} class={'comment-content'} value={field.value || ''}
+                                <textarea {...props} class={'comment-textarea'} value={field.value || ''}
                                           style={{display: tab() == 'content' ? '' : 'none'}}
                                           placeholder={'Comment'}/>
                                 <div class={'comment-preview'} innerHTML={preview()}

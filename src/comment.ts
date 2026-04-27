@@ -1,13 +1,17 @@
 import * as z from "zod";
 import {getCompiler} from "./index";
 import {action} from "@solidjs/router";
-import {AppDataSource} from "./db";
-import {UnitData} from "./db/unit-data";
 import {CommentData} from "./db/comment";
 import {FormError} from "@modular-forms/solid";
 import {fromTagString} from "./tag";
 import {getDataSource} from "./db/db";
+import {englishDataset, englishRecommendedTransformers, RegExpMatcher, TextCensor} from 'obscenity'
 
+const censor = new TextCensor();
+const matcher = new RegExpMatcher({
+    ...englishDataset.build(),
+    ...englishRecommendedTransformers,
+});
 
 export const commentFormSchema = z.object({
     name: z.string().min(2).max(50),
@@ -25,10 +29,18 @@ async function compileComment(raw: string) {
     return await compiler.compileText(raw);
 }
 
+
+function censorString(raw: string) {
+    const matches = matcher.getAllMatches(raw, true);
+
+    return censor.applyTo(raw, matches);
+}
+
+
 export const compileCommentAction = action(async (raw: string) => {
     'use server';
 
-    return await compileComment(raw);
+    return await compileComment(censorString(raw));
 });
 
 
@@ -48,7 +60,7 @@ export const submitCommentAction = action(async (formData: CommentFormInput, tag
     const dataSource = await getDataSource();
     const commentRepository = dataSource.getRepository(CommentData);
     const comment = commentRepository.create({
-        author: formData.name, authorEmail: formData.email, raw: formData.content,
+        author: censorString(formData.name), authorEmail: censorString(formData.email), raw: censorString(formData.content),
         posted: new Date(), html: await compileComment(formData.content), unit: { tag: tag }
     });
 

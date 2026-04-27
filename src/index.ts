@@ -12,7 +12,7 @@ import {defaultConfigPath} from "./config";
 
 
 export interface CompilerOptionOverride {
-    compileAll: boolean;
+    compileAll?: boolean;
     conservative?: boolean;
     targetFile?: string;
 }
@@ -25,6 +25,7 @@ export async function getCompiler({compileAll, conservative, targetFile}: Compil
         process.exit(0);
     }
 
+    compileAll = !!compileAll;
 
     config.compiler.compileAll = config.compiler.compileAll || compileAll;
     // Compile all will disable conservative mode.

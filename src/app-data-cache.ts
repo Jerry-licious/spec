@@ -123,12 +123,19 @@ export const getUnit = query(async (tag: string | number) => {
     }
 
     const dataSource = await getDataSource();
-    const unit = await dataSource.getRepository(UnitData).findOneBy({ tag: tag });
+    const unit = await dataSource.getRepository(UnitData)
+        .findOne({
+            where: { tag: tag },
+            relations: { comments: true }
+        });
 
     if (!unit) throw new Error('Unit not found.');
 
     // Strip the unit of all non-serialisable data.
-    return {...unit};
+    return {
+        ...unit,
+        comments: unit.comments.map(c => ({...c}))
+    };
 }, 'unit');
 
 

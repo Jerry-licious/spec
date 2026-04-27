@@ -5,11 +5,11 @@
 }
 
 .dark .footnote-section {
-    border-top: var(--neutral-800) solid 1px;
+    border-top: var(--neutral-700) solid 1px;
 }
 
 .light .footnote-section {
-    border-top: var(--neutral-200) solid 1px;
+    border-top: var(--neutral-300) solid 1px;
 }
 
 .footnote-entry {

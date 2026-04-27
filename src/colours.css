@@ -17,6 +17,20 @@ Colours taken from: https://htmlcolorcodes.com/color-chart/
     --primary-950: #460809;
 }
 
+body {
+    --error-50: #FEF2F2;
+    --error-100: #FFE2E2;
+    --error-200: #FFC9C9;
+    --error-300: #FFA2A2;
+    --error-400: #FF6467;
+    --error-500: #FB2C36;
+    --error-600: #E7180B;
+    --error-700: #C11007;
+    --error-800: #9F0712;
+    --error-900: #82181A;
+    --error-950: #460809;
+}
+
 .primary-pink {
     --primary-50: #FDF2F8;
     --primary-100: #FCE7F3;

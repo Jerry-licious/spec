@@ -6,10 +6,19 @@
 }
 
 /* Also account for the "Comments" */
-.dark .comment-container:nth-child(n+3) {
+.dark .comment-section .comment-container:nth-child(n+3) {
     border-top: 1px solid var(--neutral-800);
 }
-.light .comment-container:nth-child(n+3) {
+.light .comment-section .comment-container:nth-child(n+3) {
+    border-top: 1px solid var(--neutral-300);
+}
+
+
+/* Also account for the "Comments" */
+.dark .all-comment-list .comment-container:nth-child(n+2) {
+    border-top: 1px solid var(--neutral-800);
+}
+.light .all-comment-list .comment-container:nth-child(n+2) {
     border-top: 1px solid var(--neutral-300);
 }
 

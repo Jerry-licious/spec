@@ -58,7 +58,7 @@ export function CommentBlock(props: CommentBlockProps) {
                     deleteComment(props.comment.id);
                 }}>delete</a> : null
             }
-            <a class={'comment-time'} href={`/c/${comment.id}`}>#2</a>
+            <a class={'comment-time'} href={`/c/${comment.id}`}>#{props.comment.id}</a>
         </div>
     </div>
 }

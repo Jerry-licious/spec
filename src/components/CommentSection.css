@@ -19,6 +19,12 @@
     gap: 1rem;
 }
 
+.all-comment-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
 .post-comment {
     display: flex;
     flex-direction: column;

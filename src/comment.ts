@@ -117,5 +117,18 @@ export const getComment = query(async (id: number) => {
         ...comment,
         unit: {...comment.unit}
     };
-}, 'unit');
+}, 'comment');
+
+
+export const getAllComments = query(async () => {
+    'use server';
+
+    const dataSource = await getDataSource();
+    const comments = await dataSource.getRepository(CommentData).find({
+        order: { posted: "DESC" }
+    });
+
+    // Strip non-serialisable data.
+    return comments.map((comment) => ({...comment}));
+}, 'getAllComments')
 

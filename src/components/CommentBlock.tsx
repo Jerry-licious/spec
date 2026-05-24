@@ -46,16 +46,19 @@ export function CommentBlock(props: CommentBlockProps) {
         <div class={'comment-header'}>
             <a class={'link-primary'} href={`mailto:${comment.authorEmail}`}>
                 <b>{comment.author}</b></a>
-            {
-                props.allowDelete ?? <a class={'delete-button'} href={'#'} onClick={(e) => {
-                    e.preventDefault();
-
-                    deleteComment(props.comment.id);
-                }}>delete</a>
-            }
             <div style={{"flex-grow": 1}}/>
             <span class={'comment-time'}>{formatDate(comment.posted)}</span>
         </div>
         <div class={'comment-content'} innerHTML={comment.html}/>
+        <div class={'comment-bottom'}>
+            {
+                props.allowDelete ? <a class={'delete-button'} href={'#'} onClick={(e) => {
+                    e.preventDefault();
+
+                    deleteComment(props.comment.id);
+                }}>delete</a> : null
+            }
+            <a class={'comment-time'} href={`/c/${comment.id}`}>#2</a>
+        </div>
     </div>
 }

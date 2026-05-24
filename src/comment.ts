@@ -7,6 +7,7 @@ import {fromTagString} from "./tag";
 import {getDataSource} from "./db/db";
 import {englishDataset, englishRecommendedTransformers, RegExpMatcher, TextCensor} from 'obscenity'
 import {getRequestEvent} from "solid-js/web";
+import {UnitData} from "./db/unit-data";
 
 const censor = new TextCensor();
 const matcher = new RegExpMatcher({
@@ -68,19 +69,23 @@ export const submitCommentAction = action(async (formData: CommentFormInput, tag
     await commentRepository.save(comment);
 });
 
+
 function isLocalHost(): boolean {
     "use server";
 
     const event = getRequestEvent();
     const host = event?.request.headers.get("host") ?? "";
+
     return host.startsWith("localhost") || host.startsWith("127.0.0.1");
 }
+
 
 export const isLocalhostQuery = query(async () => {
     "use server";
 
     return isLocalHost();
 }, "isLocalhost");
+
 
 export const deleteCommentAction = action(async (id: number) => {
     "use server";
@@ -93,4 +98,24 @@ export const deleteCommentAction = action(async (id: number) => {
         await commentRepository.delete({id})
     } catch (e) {}
 })
+
+
+export const getComment = query(async (id: number) => {
+    'use server';
+
+    const dataSource = await getDataSource();
+    const comment = await dataSource.getRepository(CommentData)
+        .findOne({
+            where: { id },
+            relations: { unit: true }
+        });
+
+    if (!comment) throw new Error('Unit not found.');
+
+    // Strip non-serialisable data.
+    return {
+        ...comment,
+        unit: {...comment.unit}
+    };
+}, 'unit');
 

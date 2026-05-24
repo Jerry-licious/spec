@@ -28,7 +28,7 @@
 .delete-button {
     font-family: "Material Icons", "Comic Sans MS", serif;
     text-decoration: none;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
 }
 
 .dark .delete-button {
@@ -37,3 +37,11 @@
 .light .delete-button {
     color: var(--error-700);
 }
+
+.comment-bottom {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+

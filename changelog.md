@@ -5,7 +5,8 @@
 - The `documentclass` macro is now hidden from the main page.
 - Added the comments feature. 
 - Reorganised the usage documentation to not remain on one page. 
-- Fixed a bug where enumerates require an additional line break after. 
+- Fixed a bug where enumerates require an additional line break after.
+- Fixed a bug where Firefox would not load XyPic properly due to not trusting a non-npm jsdelivr link. 
 
 
 # v0.2.3, 2026-04-23

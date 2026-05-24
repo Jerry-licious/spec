@@ -6,7 +6,7 @@ const mathJaxInit = `
 window.MathJax = {
     loader: {
         load: ['[custom]/xypic.js'],
-        paths: { custom: 'https://cdn.jsdelivr.net/gh/sonoisa/XyJax-v3@3.0.1/build/' }
+        paths: { custom: '/assets' }
     },
     tex: {
         packages: { '[+]': ['xypic'] },

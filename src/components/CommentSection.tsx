@@ -103,7 +103,7 @@ export function CommentSection(props: CommentSectionProps) {
 
     return <div class={'comment-section'}>
         {
-            (props.comments.length && config()?.website.displayComments) && <div class={'comment-list'}>
+            (!!(props.comments.length) && config()?.website.displayComments) && <div class={'comment-list'}>
                 <h4>Comments</h4>
                 {
                     props.comments.map((comment) => <div class={'comment-container'}>

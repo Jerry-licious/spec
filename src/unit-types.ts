@@ -7,7 +7,7 @@ export const documentDividersSet = new Set<string>(documentDividers);
 // Macros to not render.
 export const macrosToOmit = new Set([
     'label', 'newcommand', 'renewcommand', 'newtheorem', 'bibliographystyle', 'bibliography',
-    'NeedsTeXFormat', 'ProvidesPackage', 'centering'
+    'NeedsTeXFormat', 'ProvidesPackage', 'centering', 'documentclass'
 ]);
 
 export function shouldDisplayTitle(unitType: string) {

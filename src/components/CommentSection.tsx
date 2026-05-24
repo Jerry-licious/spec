@@ -2,7 +2,7 @@ import './CommentSection.css'
 import {createSignal, Ref, Suspense} from "solid-js";
 import {createForm, SubmitHandler, zodForm} from "@modular-forms/solid";
 import {fromTagString, toTagString} from "../tag";
-import {commentFormSchema, compileCommentAction, submitCommentAction} from "../comment";
+import {commentFormSchema, compileCommentQuery, submitCommentAction} from "../comment";
 import {createAsync, useAction} from "@solidjs/router";
 import {z} from "zod";
 import { reset } from "@modular-forms/solid";
@@ -62,7 +62,6 @@ export function CommentSection(props: CommentSectionProps) {
 
     const [tab, setTab] = createSignal<Tab>('content');
 
-    const compileComment = useAction(compileCommentAction);
     const submitComment = useAction(submitCommentAction);
 
     async function updatePreview(raw: string) {
@@ -71,8 +70,7 @@ export function CommentSection(props: CommentSectionProps) {
 
         setPreview("Compiling the comment...");
 
-        console.log(await compileComment(raw))
-        setPreview(await compileComment(raw));
+        setPreview(await compileCommentQuery(raw));
 
         setPreviewFired(false);
 

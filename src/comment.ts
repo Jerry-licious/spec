@@ -1,6 +1,6 @@
 import * as z from "zod";
 import {getCompiler} from "./index";
-import {action} from "@solidjs/router";
+import {action, query} from "@solidjs/router";
 import {CommentData} from "./db/comment";
 import {FormError} from "@modular-forms/solid";
 import {fromTagString} from "./tag";
@@ -37,11 +37,11 @@ function censorString(raw: string) {
 }
 
 
-export const compileCommentAction = action(async (raw: string) => {
+export const compileCommentQuery = query(async (raw: string) => {
     'use server';
 
     return await compileComment(censorString(raw));
-});
+}, 'compileComment');
 
 
 export const submitCommentAction = action(async (formData: CommentFormInput, tag: number) => {

@@ -12,15 +12,15 @@ export const refCommands = new Set<string>(['ref', 'autoref', 'hyperref']);
 
 
 export class RefAssigner extends DocumentVisitor {
-    labelLinkMap: Map<string, LinkInfo>;
+    unitLabelLink: Map<string, LinkInfo>;
 
-    constructor({ labelLinkMap, logger }: {
-        labelLinkMap: Map<string, LinkInfo>;
+    constructor({ unitLabelLink, logger }: {
+        unitLabelLink: Map<string, LinkInfo>;
         logger?: ParserLogger
     }) {
         super({ logger });
 
-        this.labelLinkMap = labelLinkMap;
+        this.unitLabelLink = unitLabelLink;
     }
 
     visit(node: Node, visitInfo: VisitInfo): void {
@@ -38,7 +38,7 @@ export class RefAssigner extends DocumentVisitor {
 
         // With surprising luck, the label actually appears in position 1 for all three commands.
         const referenceLabel: string = getArgumentText(node.args[1]);
-        if (!this.labelLinkMap.has(referenceLabel)) {
+        if (!this.unitLabelLink.has(referenceLabel)) {
             this.addError(`Label ${referenceLabel} does not exist.`);
             node.refMeta = {
                 targetTag: -1,
@@ -47,7 +47,7 @@ export class RefAssigner extends DocumentVisitor {
             return;
         }
 
-        const target = this.labelLinkMap.get(referenceLabel)!;
+        const target = this.unitLabelLink.get(referenceLabel)!;
 
 
         if (node.content === 'ref') {

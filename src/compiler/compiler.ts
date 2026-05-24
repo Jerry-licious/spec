@@ -70,6 +70,7 @@ import {GraphicData} from "../db/graphic-data";
 import {AppDataSource} from "../db";
 import {parse} from "@unified-latex/unified-latex-util-parse";
 import rehypeSanitize from "rehype-sanitize";
+import {LinkInfo} from "../db/link-target";
 
 
 const divisionMarkers = new Set<string>(documentDividers);
@@ -104,6 +105,7 @@ export class Compiler {
     unitTagHash: Map<number, string>;
     // Mapping from unit tags to their nodes.
     unitTagNode: Map<number, TaggableNode>;
+    unitLabelLink?: Map<string, LinkInfo>;
 
     // Hash of the existing figures.
     graphicPathHash: Map<string, string>;
@@ -134,7 +136,8 @@ export class Compiler {
 
     conservative: boolean;
 
-    constructor({config, unitLabelTags, bibliographyLabelTags, nextAvailableTag, unitTagHash, graphicPathHash, conservative}: {
+    constructor({config, unitLabelTags, bibliographyLabelTags, nextAvailableTag, unitTagHash, graphicPathHash,
+                    conservative, unitLabelLink}: {
         config: SpecConfig;
         unitLabelTags: Map<string, number>;
         bibliographyLabelTags: Map<string, number>;
@@ -142,6 +145,7 @@ export class Compiler {
         unitTagHash: Map<number, string>;
         graphicPathHash: Map<string, string>;
         conservative?: boolean;
+        unitLabelLink?: Map<string, LinkInfo>;
     }) {
         this.entry = config.document;
         this.compileAll = config.compiler.compileAll;
@@ -151,6 +155,7 @@ export class Compiler {
         this.unitLabelTags = unitLabelTags;
         this.unitTagHash = unitTagHash;
         this.graphicPathHash = graphicPathHash;
+        this.unitLabelLink = unitLabelLink;
         this.unitTagNode = new Map<number, TaggableNode>();
 
         this.bibliographyKeyTags = bibliographyLabelTags;
@@ -605,17 +610,22 @@ export class Compiler {
 
         const macroNames = new Map<string, string>([...documentDividers].map((d) => [d, capitaliseFirstLetter(d)]));
 
-        const linkCollector = new LinkInfoCollector({
-            logger: linkLogger,
-            macroNames,
-            environmentNames,
-        });
+        // If label -> link info map is provided, then use that as the source.
+        // Otherwise, collect it manually.
+        if (!this.unitLabelLink) {
+            const linkCollector = new LinkInfoCollector({
+                logger: linkLogger,
+                macroNames,
+                environmentNames,
+            });
+            linkCollector.process(this.documentRoot!);
+            this.unitLabelLink = linkCollector.unitLabelLink;
+        }
 
-        linkCollector.process(this.documentRoot!);
 
         const refAssigner = new RefAssigner({
             logger: linkLogger,
-            labelLinkMap: linkCollector.labelLinkMap
+            unitLabelLink: this.unitLabelLink
         });
         refAssigner.process(this.documentRoot!);
 

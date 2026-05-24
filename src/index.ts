@@ -4,22 +4,25 @@ import {AppDataSource, initialiseDatabase} from "./db";
 import consola from "consola";
 import {In} from "typeorm";
 import {loadConfig} from "./load-config";
-import {UnitData} from "./db/unit-data";
+import {toLinkTarget, UnitData} from "./db/unit-data";
 import {BibliographyData} from "./db/bib-data";
 import {AuxData} from "./db/aux-data";
 import {GraphicData} from "./db/graphic-data";
 import {defaultConfigPath} from "./config";
+import {LinkInfo} from "./db/link-target";
 
 
 export interface CompilerOptionOverride {
     compileAll?: boolean;
     conservative?: boolean;
     targetFile?: string;
+    // Whether to load link data from the database to supplement link-related information.
+    loadExistingUnits?: boolean;
 }
 
 
 
-export async function getCompiler({compileAll, conservative, targetFile}: CompilerOptionOverride, log: boolean, fillDefaultConfig: boolean) {
+export async function getCompiler({compileAll, conservative, targetFile, loadExistingUnits}: CompilerOptionOverride, log: boolean, fillDefaultConfig: boolean) {
     let config = await loadConfig(defaultConfigPath, fillDefaultConfig);
     if (!config) {
         process.exit(0);
@@ -55,9 +58,7 @@ export async function getCompiler({compileAll, conservative, targetFile}: Compil
     } else {
         consola.info('Loading units from the database.');
         try {
-            existingUnits = await unitRepository.find({
-                select: { tag: true, label: true, hash: true },
-            });
+            existingUnits = await unitRepository.find();
             existingBibliography = await bibliographyRepository.find({
                 select: { tag: true, key: true },
             });
@@ -75,6 +76,9 @@ export async function getCompiler({compileAll, conservative, targetFile}: Compil
     const unitLabelTags = new Map<string, number>(existingUnits.filter((u) => u.label)
         .map((u) => [u.label!, u.tag]));
     const unitTagHash = new Map<number, string>(existingUnits.map((u) => [u.tag, u.hash]));
+    const unitLabelLink = new Map<string, LinkInfo>(existingUnits.filter((u) => u.label)
+        .map((u) => [u.label!, toLinkTarget(u)]))
+
     const bibliographyLabelTags = new Map<string, number>(existingBibliography.map((u) => [u.key, u.tag]));
 
     const graphicPathHash = new Map<string, string>(existingGraphics.map((g) => [g.path, g.hash]))
@@ -91,7 +95,8 @@ export async function getCompiler({compileAll, conservative, targetFile}: Compil
         nextAvailableTag,
         unitTagHash,
         graphicPathHash,
-        conservative
+        conservative,
+        unitLabelLink: loadExistingUnits ? unitLabelLink : undefined,
     });
 }
 

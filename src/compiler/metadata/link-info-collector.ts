@@ -11,7 +11,7 @@ import {ParserLogger} from "../logging-base";
 // loading from the database should arrive at the same starting point: a map of labels to link targets.
 // This is the compiler's part of the job.
 export class LinkInfoCollector extends DocumentVisitor {
-    labelLinkMap: Map<string, LinkInfo> = new Map();
+    unitLabelLink: Map<string, LinkInfo> = new Map();
     macroNames: Map<string, string>;
     environmentNames: Map<string, string>;
 
@@ -75,7 +75,7 @@ export class LinkInfoCollector extends DocumentVisitor {
         if (node.meta.tag === undefined) return;
         if (!node.meta.label) return;
 
-        this.labelLinkMap.set(node.meta.label, {
+        this.unitLabelLink.set(node.meta.label, {
             tag: node.meta.tag,
             numberingText: node.meta.numbering ? node.meta.numbering.join('.') : '',
             unitType: this.getNodeType(node),

@@ -3,6 +3,8 @@
 - Fixed styling for itemize.
 - Watch mode now refreshes pages after compile. 
 - The `documentclass` macro is now hidden from the main page.
+- Added the comments feature. 
+- Reorganised the usage documentation to not remain on one page. 
 
 
 # v0.2.3, 2026-04-23

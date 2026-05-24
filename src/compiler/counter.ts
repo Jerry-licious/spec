@@ -1,10 +1,12 @@
 
 export class Counter {
+    key: string;
     count: number;
     parent?: Counter;
     readonly children: Counter[];
 
-    constructor(parent: Counter | undefined = undefined) {
+    constructor(key: string, parent: Counter | undefined = undefined) {
+        this.key = key;
         this.count = 0;
         this.parent = parent;
         if (parent) {
@@ -69,7 +71,7 @@ export class CountManager {
         }
         const parentCounter = parentKey ? this.counters.get(parentKey) : undefined;
 
-        this.counters.set(key, new Counter(parentCounter));
+        this.counters.set(key, new Counter(key, parentCounter));
     }
 
     // Returns the current count of the given counter.
@@ -79,6 +81,18 @@ export class CountManager {
         }
 
         return this.counters.get(key)!!.increment();
+    }
+
+    equals(other: CountManager) {
+        if (this.counters.size !== other.counters.size) return false;
+        if (!this.counters.keys().every(key => other.counters.has(key))) return false;
+
+        return this.counters.keys().every(key => {
+            const thisCounter = this.counters.get(key)!;
+            const otherCounter = other.counters.get(key)!;
+
+            return thisCounter.key === otherCounter.key && thisCounter.parent?.key === otherCounter.parent?.key;
+        });
     }
 }
 

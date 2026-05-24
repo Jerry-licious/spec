@@ -3,6 +3,3 @@ export interface BlockType {
     readonly associatedCounter: string;
     readonly name: string; // Used to reference the names, say "see Lemma 2.3"
 }
-
-
-

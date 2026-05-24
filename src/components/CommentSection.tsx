@@ -1,5 +1,5 @@
 import './CommentSection.css'
-import {createSignal, Suspense} from "solid-js";
+import {createSignal, Ref, Suspense} from "solid-js";
 import {createForm, SubmitHandler, zodForm} from "@modular-forms/solid";
 import {fromTagString, toTagString} from "../tag";
 import {commentFormSchema, compileCommentAction, submitCommentAction} from "../comment";
@@ -58,6 +58,7 @@ export function CommentSection(props: CommentSectionProps) {
     const [previewFired, setPreviewFired] = createSignal(false);
     const [submitFired, setSubmitFired] = createSignal(false);
     const [preview, setPreview] = createSignal("Press the \"preview\" button to render the comment. ");
+    let previewRef!: Ref<HTMLDivElement>;
 
     const [tab, setTab] = createSignal<Tab>('content');
 
@@ -68,9 +69,17 @@ export function CommentSection(props: CommentSectionProps) {
         if (previewFired()) return;
         setPreviewFired(true);
 
+        setPreview("Compiling the comment...");
+
+        console.log(await compileComment(raw))
         setPreview(await compileComment(raw));
 
         setPreviewFired(false);
+
+        queueMicrotask(() => {
+            (window as any).MathJax?.startup?.promise
+                ?.then(() => (window as any).MathJax.typesetPromise([previewRef]));
+        });
     }
 
     function InfoField(props: { name: string, label: string, placeholder: string }) {
@@ -144,7 +153,7 @@ export function CommentSection(props: CommentSectionProps) {
                                     <textarea {...props} class={'comment-textarea'} value={field.value || ''}
                                               style={{display: tab() == 'content' ? '' : 'none'}}
                                               placeholder={'Comment'}/>
-                                    <div class={'comment-preview'} innerHTML={preview()}
+                                    <div class={'comment-preview'} innerHTML={preview()} ref={previewRef}
                                          style={{display: tab() == 'preview' ? '' : 'none'}}/>
                                 </div>
                                 {field.error && <span class={'post-comment-form-error'}>{field.error}</span>}

@@ -235,3 +235,6 @@
     color: var(--neutral-600);
 }
 
+.comment-preview {
+    padding: 0.5rem;
+}

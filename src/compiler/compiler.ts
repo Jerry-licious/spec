@@ -69,11 +69,27 @@ import {Sema} from "async-sema";
 import {GraphicData} from "../db/graphic-data";
 import {AppDataSource} from "../db";
 import {parse} from "@unified-latex/unified-latex-util-parse";
-import rehypeSanitize from "rehype-sanitize";
+import rehypeSanitize, { defaultSchema } from 'rehype-sanitize'
 import {LinkInfo} from "../db/link-target";
 
 
 const divisionMarkers = new Set<string>(documentDividers);
+
+// Apparently, simply allowing * to have className isn't enough.
+// Certain element types whitelist style classes, which must be overwritten.
+const sanetiseSchema = {
+    ...defaultSchema,
+    attributes: {
+        ...Object.fromEntries(Object.entries(defaultSchema.attributes ?? {})
+            .map(([tag, defs]) => [
+                tag, defs.map(def =>
+                    Array.isArray(def) && def[0] === 'className' ? 'className' : def
+                ),
+            ])
+        ),
+        '*': [...(defaultSchema.attributes?.['*'] ?? []), 'className'],
+    },
+};
 
 
 interface CompileResult {
@@ -235,7 +251,7 @@ export class Compiler {
 
         this.processTree();
 
-        return await this.rendererBuilder([rehypeSanitize])(this.documentRoot);
+        return await this.rendererBuilder([[rehypeSanitize, sanetiseSchema]])(this.documentRoot);
     }
 
 

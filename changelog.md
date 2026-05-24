@@ -7,6 +7,7 @@
 - Reorganised the usage documentation to not remain on one page. 
 - Fixed a bug where enumerates require an additional line break after.
 - Fixed a bug where Firefox would not load XyPic properly due to not trusting a non-npm jsdelivr link. 
+- Fixed a bug where using hythens in the search bar crashes the website.
 
 
 # v0.2.3, 2026-04-23

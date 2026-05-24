@@ -90,7 +90,7 @@ export const searchUnits = query(async (term: string, index: number): Promise<Se
     WHERE units_fts MATCH ?
     ORDER BY units_fts.rank
     LIMIT ?
-    `, [term, config.website.searchLimit * config.website.maxSearchPages]))
+    `, [`"${term.replace(/"/g, '""')}"`, config.website.searchLimit * config.website.maxSearchPages]))
         .map((u) => toLinkTarget(u));
 
     return {

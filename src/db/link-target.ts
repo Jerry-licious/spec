@@ -1,9 +1,11 @@
-export interface LinkTarget {
+export interface LinkInfo {
     tag: number;
     numberingText: string;
     unitType: string; // i.e. "thm"
     unitName: string; // i.e. "Theorem"
+}
 
+export interface LinkTarget extends LinkInfo{
     // HTML title, if it exists.
     titleHtml?: string;
 

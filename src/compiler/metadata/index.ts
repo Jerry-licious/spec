@@ -15,3 +15,4 @@ export { ReferenceCollector } from "./reference-collector";
 export { TextCollector } from "./text-collector";
 export { FigureCaptionNumberer } from "./figure-caption-numberer"
 export { GraphicsPathAssigner } from './graphics'
+export { LinkInfoCollector } from './link-info-collector'

@@ -31,7 +31,7 @@ import {
     EnvironmentLabelAssigner,
     EquationLabelAssigner,
     FigureCaptionNumberer,
-    GraphicsPathAssigner,
+    GraphicsPathAssigner, LinkInfoCollector,
     MacroLabelAssigner,
     Numberer,
     RefAssigner,
@@ -603,11 +603,19 @@ export class Compiler {
         const environmentNames = new Map<string, string>([...this.blockTypes.entries()].map(([k, v]) => [k, v.name]));
         environmentNames.set('figure', 'Figure');
 
+        const macroNames = new Map<string, string>([...documentDividers].map((d) => [d, capitaliseFirstLetter(d)]));
+
+        const linkCollector = new LinkInfoCollector({
+            logger: linkLogger,
+            macroNames,
+            environmentNames,
+        });
+
+        linkCollector.process(this.documentRoot!);
+
         const refAssigner = new RefAssigner({
-            tagNodeMap: this.unitTagNode,
-            labelTagMap: this.unitLabelTags,
-            macroNames: new Map<string, string>([...documentDividers].map((d) => [d, capitaliseFirstLetter(d)])),
-            environmentNames, logger: linkLogger
+            logger: linkLogger,
+            labelLinkMap: linkCollector.labelLinkMap
         });
         refAssigner.process(this.documentRoot!);
 

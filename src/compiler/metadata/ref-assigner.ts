@@ -4,6 +4,7 @@ import {VisitInfo} from "@unified-latex/unified-latex-util-visit";
 import {match} from "@unified-latex/unified-latex-util-match";
 import {capitaliseFirstLetter, getArgumentText, TaggableNode} from "../util";
 import {ParserLogger} from "../logging-base";
+import {LinkInfo} from "../../db/link-target";
 
 
 // Injects necessary metadata for ref, autoref, and hyperref.
@@ -11,49 +12,15 @@ export const refCommands = new Set<string>(['ref', 'autoref', 'hyperref']);
 
 
 export class RefAssigner extends DocumentVisitor {
-    tagNodeMap: Map<number, TaggableNode>;
-    labelTagMap: Map<string, number>;
-    macroNames: Map<string, string>;
-    environmentNames: Map<string, string>;
+    labelLinkMap: Map<string, LinkInfo>;
 
-    constructor({ tagNodeMap, labelTagMap, macroNames, environmentNames, logger }: {
-        tagNodeMap?: Map<number, TaggableNode>;
-        labelTagMap?: Map<string, number>;
-        macroNames?: Map<string, string>;
-        environmentNames?: Map<string, string>;
+    constructor({ labelLinkMap, logger }: {
+        labelLinkMap: Map<string, LinkInfo>;
         logger?: ParserLogger
     }) {
         super({ logger });
 
-        this.tagNodeMap = tagNodeMap ?? new Map<number, TaggableNode>();
-        this.labelTagMap = labelTagMap ?? new Map<string, number>();
-        this.macroNames = macroNames ?? new Map<string, string>();
-        this.environmentNames = environmentNames ?? new Map<string, string>();
-    }
-
-
-    getNodeName(node: TaggableNode): string {
-        if (match.math(node) || (match.anyEnvironment(node) && node.type === 'mathenv')) {
-            return "Equation";
-        }
-
-        if (match.anyMacro(node)) {
-            const macro = node.content;
-            if (this.macroNames.has(macro)) {
-                return this.macroNames.get(macro)!!;
-            }
-
-            this.addWarning(`Missing name for the macro ${macro}. Capitalising its first letter to fill in.`);
-            return capitaliseFirstLetter(macro);
-        } else {
-            const env = node.env;
-            if (this.environmentNames.has(env)) {
-                return this.environmentNames.get(env)!!;
-            }
-
-            this.addWarning(`Missing name for the environment ${env}. Capitalising its first letter to fill in.`);
-            return capitaliseFirstLetter(env);
-        }
+        this.labelLinkMap = labelLinkMap;
     }
 
     visit(node: Node, visitInfo: VisitInfo): void {
@@ -71,7 +38,7 @@ export class RefAssigner extends DocumentVisitor {
 
         // With surprising luck, the label actually appears in position 1 for all three commands.
         const referenceLabel: string = getArgumentText(node.args[1]);
-        if (!this.labelTagMap.has(referenceLabel)) {
+        if (!this.labelLinkMap.has(referenceLabel)) {
             this.addError(`Label ${referenceLabel} does not exist.`);
             node.refMeta = {
                 targetTag: -1,
@@ -80,30 +47,13 @@ export class RefAssigner extends DocumentVisitor {
             return;
         }
 
-        const targetTag = this.labelTagMap.get(referenceLabel)!!;
-        if (!this.tagNodeMap.has(targetTag)) {
-            this.addError(`Tag ${targetTag} does not exist.`);
-            node.refMeta = {
-                targetTag: -1,
-                text: `Unknown (${referenceLabel})`,
-            };
-            return;
-        }
+        const target = this.labelLinkMap.get(referenceLabel)!;
 
-        const targetNode = this.tagNodeMap.get(targetTag)!!;
-        if (!targetNode.meta) {
-            this.addError(`Node ${referenceLabel} is missing metadata, and cannot be referenced.`);
-            node.refMeta = {
-                targetTag: -1,
-                text: `Unknown (${referenceLabel})`,
-            };
-            return;
-        }
 
         if (node.content === 'ref') {
             node.refMeta = {
-                targetTag,
-                text: targetNode.meta.numbering ? targetNode.meta.numbering.join('.') : '',
+                targetTag: target.tag,
+                text: target.numberingText,
             };
             return;
         }
@@ -111,8 +61,8 @@ export class RefAssigner extends DocumentVisitor {
         if (node.content === 'autoref') {
             // In the case of autoref, the name of the node is required to generate the text of the ref.
             node.refMeta = {
-                targetTag,
-                text: `${this.getNodeName(targetNode)} ${targetNode.meta.numbering ? targetNode.meta.numbering.join('.') : ''}`
+                targetTag: target.tag,
+                text: `${target.unitName} ${target.numberingText}`.trim()
             };
             return;
         }
@@ -121,7 +71,7 @@ export class RefAssigner extends DocumentVisitor {
         // Note that while hyperref does not require looking up the target node to function, I believe that catching an
         // ill-defined reference is still beneficial.
         node.refMeta = {
-            targetTag, text: node.args[0].content
+            targetTag: target.tag, text: node.args[0].content
         };
     }
 }

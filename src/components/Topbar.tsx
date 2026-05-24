@@ -16,6 +16,9 @@ export function Topbar() {
         </div>
         <div class={'page-topbar-row'}>
             <a href={'/b'} class={'link-primary'}>Bibliography</a>
+            {
+                config()?.website.allowComments ? <a href={'/c'} class={'link-primary'}>Comments</a> : null
+            }
             <div class={'fill'}/>
             <SearchBar/>
         </div>

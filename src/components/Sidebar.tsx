@@ -17,6 +17,9 @@ export function Sidebar(props: SidebarProps) {
     return <div class={'page-sidebar'}>
         <h2><a class={'link-foreground'} href={'/'}>{config()?.siteTitle}</a></h2>
         <a href={'/b'} class={'link-primary'}>Bibliography</a>
+        {
+            config()?.website.allowComments ? <a href={'/c'} class={'link-primary'}>Comments</a> : null
+        }
         <ThemeToggle/>
         <SearchBar/>
         <div class={'sidebar-content'}>

@@ -2,12 +2,13 @@ import './CommentSection.css'
 import {createSignal, Ref, Suspense} from "solid-js";
 import {createForm, SubmitHandler, zodForm} from "@modular-forms/solid";
 import {fromTagString, toTagString} from "../tag";
-import {commentFormSchema, compileCommentQuery, submitCommentAction} from "../comment";
+import {commentFormSchema, compileCommentQuery, isLocalhostQuery, submitCommentAction} from "../comment";
 import {createAsync, useAction} from "@solidjs/router";
 import {z} from "zod";
 import { reset } from "@modular-forms/solid";
 import {CommentData} from "../db/comment";
 import {getConfig} from "../app-data";
+import {CommentBlock} from "./CommentBlock";
 
 interface CommentSectionProps {
     tag: number;
@@ -16,39 +17,13 @@ interface CommentSectionProps {
 
 type Tab = 'content' | 'preview';
 
-function formatDate(date: Date) {
-    const now = new Date();
-    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const startOfYesterday = new Date(startOfToday.getTime() - 86400000);
-    const startOfDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-
-    const time = date.toLocaleString("en-US", {
-        hour: "2-digit", minute: "2-digit", hour12: false
-    });
-
-    let datePart;
-    if (startOfDate.getTime() === startOfToday.getTime()) {
-        datePart = "Today";
-    } else if (startOfDate.getTime() === startOfYesterday.getTime()) {
-        datePart = "Yesterday";
-    } else {
-        const day = date.getDate();
-        const suffix = ["th","st","nd","rd"][
-            day % 100 > 10 && day % 100 < 14 ? 0 : Math.min(day % 10, 4) > 3 ? 0 : day % 10
-            ];
-        const month = date.toLocaleString("en-US", { month: "long" });
-        const year = date.getFullYear() !== now.getFullYear() ? `${date.getFullYear()} ` : "";
-        datePart = `${year}${month} ${day}${suffix}`;
-    }
-
-    return `${datePart} at ${time}`;
-}
-
 export function CommentSection(props: CommentSectionProps) {
     const schema = commentFormSchema.refine(
         (data) => fromTagString(data.tag) === props.tag,
         { message: `Tag should be ${toTagString(props.tag)}.`, path: ['tag'] });
     const config = createAsync(() => getConfig());
+
+    const local = createAsync(() => isLocalhostQuery());
 
     const [form, {Form, Field}] = createForm({
         validate: zodForm(schema),
@@ -113,15 +88,8 @@ export function CommentSection(props: CommentSectionProps) {
             (!!(props.comments.length) && config()?.website.displayComments) && <div class={'comment-list'}>
                 <h4>Comments</h4>
                 {
-                    props.comments.map((comment) => <div class={'comment-container'}>
-                        <div class={'comment-header'}>
-                            <a class={'link-primary'} href={`mailto:${comment.authorEmail}`}>
-                                <b>{comment.author}</b></a>
-                            <div style={{"flex-grow": 1}}/>
-                            <span class={'comment-time'}>{formatDate(comment.posted)}</span>
-                        </div>
-                        <div class={'comment-content'} innerHTML={comment.html}/>
-                    </div>)
+                    props.comments.map((comment) =>
+                        <CommentBlock comment={comment} allowDelete={!!local()}/>)
                 }
             </div>
         }

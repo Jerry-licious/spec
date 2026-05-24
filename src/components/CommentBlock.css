@@ -1,0 +1,39 @@
+.comment-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+}
+
+/* Also account for the "Comments" */
+.dark .comment-container:nth-child(n+3) {
+    border-top: 1px solid var(--neutral-800);
+}
+.light .comment-container:nth-child(n+3) {
+    border-top: 1px solid var(--neutral-300);
+}
+
+.comment-header {
+    display: flex;
+    flex-direction: row;
+}
+
+.dark .comment-time {
+    color: var(--neutral-400);
+}
+.light .comment-time {
+    color: var(--neutral-600);
+}
+
+.delete-button {
+    font-family: "Material Icons", "Comic Sans MS", serif;
+    text-decoration: none;
+    font-size: 1.2rem;
+}
+
+.dark .delete-button {
+    color: var(--error-400);
+}
+.light .delete-button {
+    color: var(--error-700);
+}

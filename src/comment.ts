@@ -1,11 +1,12 @@
 import * as z from "zod";
 import {getCompiler} from "./index";
-import {action, query} from "@solidjs/router";
+import {action, cache, query} from "@solidjs/router";
 import {CommentData} from "./db/comment";
 import {FormError} from "@modular-forms/solid";
 import {fromTagString} from "./tag";
 import {getDataSource} from "./db/db";
 import {englishDataset, englishRecommendedTransformers, RegExpMatcher, TextCensor} from 'obscenity'
+import {getRequestEvent} from "solid-js/web";
 
 const censor = new TextCensor();
 const matcher = new RegExpMatcher({
@@ -65,6 +66,31 @@ export const submitCommentAction = action(async (formData: CommentFormInput, tag
     });
 
     await commentRepository.save(comment);
-})
+});
 
+function isLocalHost(): boolean {
+    "use server";
+
+    const event = getRequestEvent();
+    const host = event?.request.headers.get("host") ?? "";
+    return host.startsWith("localhost") || host.startsWith("127.0.0.1");
+}
+
+export const isLocalhostQuery = query(async () => {
+    "use server";
+
+    return isLocalHost();
+}, "isLocalhost");
+
+export const deleteCommentAction = action(async (id: number) => {
+    "use server";
+
+    if (!isLocalHost()) return;
+
+    const dataSource = await getDataSource();
+    const commentRepository = dataSource.getRepository(CommentData);
+    try {
+        await commentRepository.delete({id})
+    } catch (e) {}
+})
 

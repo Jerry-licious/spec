@@ -18,6 +18,6 @@ export class CommentData {
     @Column('text')
     html!: string;
 
-    @ManyToOne(() => UnitData, (unit) => unit.comments)
+    @ManyToOne(() => UnitData, (unit) => unit.comments, { onDelete: 'CASCADE' })
     unit!: UnitData;
 }

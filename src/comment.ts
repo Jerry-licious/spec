@@ -25,7 +25,7 @@ type CommentFormInput = z.infer<typeof commentFormSchema>;
 
 async function compileComment(raw: string) {
     // TODO: Surely I don't have to pull my entire database every time I try to compile something.
-    const compiler = await getCompiler({loadExistingUnits: true}, false, true);
+    const compiler = await getCompiler({ loadExistingUnits: true, conservative: true }, false, true);
 
     return await compiler.compileText(raw);
 }

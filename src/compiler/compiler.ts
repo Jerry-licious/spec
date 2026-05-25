@@ -251,9 +251,14 @@ export class Compiler {
 
     // Returns false if the parsing process needs to restart.
     processTree(): boolean {
-        if (!this.collectDefinitions()) {
-            return false;
+        // Only collect definitions in non-conservative modes.
+        // Ugly nested ifs here to emphasise that collectDefinitions is an action.
+        if (!this.conservative) {
+            if (!this.collectDefinitions()) {
+                return false;
+            }
         }
+
 
         this.assignLabelsAndNumbers();
         this.assignTags();

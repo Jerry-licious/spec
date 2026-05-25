@@ -17,7 +17,7 @@ export interface LinkTarget extends LinkInfo {
 
 
 export function linkHTML(target: LinkTarget, short?: boolean) {
-    const prefix = short ? `${target.unitName} ${target.numberingText}` : target.numberingText;
+    const prefix = short ? target.numberingText : `${target.unitName} ${target.numberingText}`;
 
     return target.titleHtml ? `${prefix}: ${target.titleHtml}` : prefix;
 }

@@ -31,6 +31,17 @@ body {
     --error-950: #460809;
 }
 
+body .light {
+    --background: var(--neutral-50);
+    --text-color: black;
+}
+
+body .dark {
+    --background: var(--neutral-900);
+    --text-color: var(--neutral-50);
+}
+
+
 .primary-pink {
     --primary-50: #FDF2F8;
     --primary-100: #FCE7F3;

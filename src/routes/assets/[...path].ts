@@ -15,8 +15,6 @@ const files: Record<string, string> = {
 export async function GET({ params }: APIEvent) {
     const rel = (Array.isArray(params.path) ? params.path.join("/") : params.path) ?? "";
 
-    console.log(rel);
-
     const content = files[rel];
     if (!content) return new Response("Not Found", { status: 404 });
 

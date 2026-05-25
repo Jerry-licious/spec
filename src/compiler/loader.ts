@@ -6,6 +6,7 @@ import {readFile} from "node:fs/promises";
 import {parse} from "@unified-latex/unified-latex-util-parse";
 import {visit} from "@unified-latex/unified-latex-util-visit";
 import {printRaw} from "@unified-latex/unified-latex-util-print-raw";
+import {Parser} from "./util";
 
 const packageCommands = ['usepackage', 'RequirePackage']
 const inputCommands = ['input', 'include'];
@@ -13,11 +14,14 @@ const inputCommands = ['input', 'include'];
 export class Loader {
     readonly visitedFiles: Set<string> = new Set();
     logger: ParserLogger;
+    parser: Parser;
     
-    constructor({ logger }: {
+    constructor({ logger, parser }: {
         logger?: ParserLogger;
+        parser: Parser;
     }) {
         this.logger = logger ?? new ParserLogger({});
+        this.parser = parser;
     }
 
     async processNodes(content: Node[], currentFile: string): Promise<Node[]> {
@@ -147,7 +151,7 @@ export class Loader {
                 }
             }
 
-            const root = parse(fileContent);
+            const root = this.parser.parse(fileContent);
 
             return await this.processNodes(root.content, targetFile)
         }))).flat();
@@ -167,7 +171,7 @@ export class Loader {
         this.visitedFiles.add(path.normalize(file));
 
 
-        const root = parse(fileContent);
+        const root = this.parser.parse(fileContent);
 
         return {
             ...root,

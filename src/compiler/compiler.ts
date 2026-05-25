@@ -9,7 +9,7 @@ import {BibliographyLoader} from "./bib-loader";
 import {Loader} from "./loader";
 import {Node, Root} from "@unified-latex/unified-latex-types";
 import {CountManager} from "./counter";
-import {capitaliseFirstLetter, graphicsRoot, RendererBuilder, TaggableNode} from "./util";
+import {capitaliseFirstLetter, graphicsRoot, Parser, RendererBuilder, TaggableNode} from "./util";
 import {BibtexEntry} from "@orcid/bibtex-parse-js";
 import {
     BlockCollector,
@@ -68,9 +68,10 @@ import path from "node:path";
 import {Sema} from "async-sema";
 import {GraphicData} from "../db/graphic-data";
 import {AppDataSource} from "../db";
-import {parse} from "@unified-latex/unified-latex-util-parse";
+import {getParser, parse} from "@unified-latex/unified-latex-util-parse";
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize'
 import {LinkInfo} from "../db/link-target";
+import { environmentInfo } from "@unified-latex/unified-latex-ctan";
 
 
 const divisionMarkers = new Set<string>(documentDividers);
@@ -106,6 +107,9 @@ interface CompileResult {
 
     // Preamble string for mathjax.
     preamble: string;
+
+    // Raw dump of all \newtheorem macros used to define environments.
+    rawEnvironments: string;
 }
 
 
@@ -140,6 +144,8 @@ export class Compiler {
     countManager: CountManager;
     blockTypes: Map<string, BlockType>;
     rawMacros: Map<string, string>;
+    // Raw dump of all \newtheorem macros used to define environments.
+    rawEnvironments: string;
 
     units: Map<number, IRUnit>;
     divisions: Map<number, Division>;
@@ -153,7 +159,7 @@ export class Compiler {
     conservative: boolean;
 
     constructor({config, unitLabelTags, bibliographyLabelTags, nextAvailableTag, unitTagHash, graphicPathHash,
-                    conservative, unitLabelLink}: {
+                    conservative, unitLabelLink, rawEnvironments}: {
         config: SpecConfig;
         unitLabelTags: Map<string, number>;
         bibliographyLabelTags: Map<string, number>;
@@ -162,6 +168,7 @@ export class Compiler {
         graphicPathHash: Map<string, string>;
         conservative?: boolean;
         unitLabelLink?: Map<string, LinkInfo>;
+        rawEnvironments?: string;
     }) {
         this.entry = config.document;
         this.compileAll = config.compiler.compileAll;
@@ -194,6 +201,8 @@ export class Compiler {
 
         this.conservative = conservative ?? false;
 
+        this.rawEnvironments = rawEnvironments ?? '';
+
         this.logger = new ParserLogger({
             onError: message => {
                 consola.error(messageText(message));
@@ -210,8 +219,45 @@ export class Compiler {
         });
     }
 
-    processTree() {
-        this.collectDefinitions();
+    // Custom environments will always come with an optional title argument:
+    // \begin{custom}[Title]
+    // This brings in a problem: I need to parse the code to figure out what the custom environments are.
+    // But if I don't know what the custom environments are, then the parser will not capture the argument
+    // as part of the environment.
+    // The solution: during a parsing process, collect the code responsible for generating the environments
+    // and store them in the database. In future passes, as long as the code didn't change, I will be able to
+    // structure my block types using the stored code.
+    // In the event that these do change, I will unfortunately have to restart the compiler **in its entirety**.
+    // It is quite expensive, but I doubt anyone does this often.
+    setupEnvironments() {
+        const definitionLogger = new ParserLogger({ parent: this.logger });
+        definitionLogger.info('Setting up custom environment parsing from stored preamble.');
+
+        const envCollector = new BlockTypeCollector({ countManager: this.countManager, logger: definitionLogger });
+        envCollector.process(parse(this.rawEnvironments));
+
+        this.blockTypes = envCollector.blockTypes;
+
+        definitionLogger.report(`Loaded ${this.blockTypes.size} custom environment types.`);
+    }
+
+    // Here is where I handle the optional arguments for each custom environment.
+    getParser(): Parser {
+        const existingEnvironments = new Set<string>(Object.values(environmentInfo).flatMap(Object.keys));
+
+        return getParser({
+            environments: {
+                ...Object.fromEntries(this.blockTypes.keys().filter((t) => !existingEnvironments.has(t))
+                    .map((t) => [t, { signature: 'o' }])),
+            }
+        });
+    }
+
+    // Returns false if the parsing process needs to restart.
+    processTree(): boolean {
+        if (!this.collectDefinitions()) {
+            return false;
+        }
 
         this.assignLabelsAndNumbers();
         this.assignTags();
@@ -225,20 +271,29 @@ export class Compiler {
         this.computeUnitReferences();
 
         this.createRenderer();
+
+        return true;
     }
 
     async compileFile(file: string): Promise<CompileResult> {
         consola.start(`Starting the compiler on ${file}.`);
 
+        // Use the predefined macros to anticipate custom environments.
+        this.setupEnvironments();
+
         await this.collectContent(file);
 
-        this.processTree();
+        // processTree returns false if restart is required.
+        if (!this.processTree()) {
+            return await this.compileFile(file);
+        }
 
         const result = {
             ...await this.copyGraphics(),
             ...await this.renderUnits(),
             bibliography: this.bibliographyData,
-            preamble: [...this.rawMacros.values()].join('\n')
+            preamble: [...this.rawMacros.values()].join('\n'),
+            rawEnvironments: this.rawEnvironments
         };
 
         this.logger.report("Finished compiling the project.");
@@ -247,7 +302,9 @@ export class Compiler {
     }
 
     async compileText(text: string): Promise<string> {
-        this.documentRoot = parse(text);
+        this.setupEnvironments();
+
+        this.documentRoot = this.getParser().parse(text);
 
         this.processTree();
 
@@ -545,7 +602,7 @@ export class Compiler {
         const loadingLogger = new ParserLogger({ parent: this.logger });
         loadingLogger.info('Starting to load files.');
 
-        const loader = new Loader({ logger: loadingLogger });
+        const loader = new Loader({ logger: loadingLogger, parser: this.getParser() });
         this.documentRoot = await loader.process(file);
 
         const bibliographyLoader = new BibliographyLoader({
@@ -564,19 +621,33 @@ export class Compiler {
 
 
     // Collects custom user macros and custom environments.
-    collectDefinitions() {
+    // Returns false if a "restart" is required.
+    collectDefinitions(): boolean {
         const definitionLogger = new ParserLogger({ parent: this.logger });
         definitionLogger.info('Collecting custom macros and environments.');
 
-        const envCollector = new BlockTypeCollector({ countManager: this.countManager, logger: definitionLogger });
+        const envCollector = new BlockTypeCollector({ countManager: new CountManager(), logger: definitionLogger });
+        // There are more advanced ways of detecting changes in custom macros and environments, but the simplest way to
+        // do so is by the source code. While this produces false positives for restarts, it is not too heavy a cost
+        // to bear.
         envCollector.process(this.documentRoot!);
-        this.blockTypes = envCollector.blockTypes;
+
+        // If there is a mismatch, update the definitions and reset the parsing system.
+        if (envCollector.blockTypeDefinitions.join('\n') !== this.rawEnvironments) {
+            this.rawEnvironments = envCollector.blockTypeDefinitions.join('\n');
+            this.countManager = new CountManager();
+
+            definitionLogger.info("Detected changes in custom environments, restarting the parser.");
+            return false;
+        }
 
         const macroCollector = new CustomMacroCollector({ logger: definitionLogger });
         macroCollector.process(this.documentRoot!);
         this.rawMacros = macroCollector.rawMacros;
 
         definitionLogger.report(`Collected ${this.blockTypes.size} custom environment types and ${macroCollector.rawMacros.size} custom macros.`);
+
+        return true;
     }
 
     assignTags() {

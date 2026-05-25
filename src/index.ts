@@ -21,7 +21,6 @@ export interface CompilerOptionOverride {
 }
 
 
-
 export async function getCompiler({compileAll, conservative, targetFile, loadExistingUnits}: CompilerOptionOverride, log: boolean, fillDefaultConfig: boolean) {
     let config = await loadConfig(defaultConfigPath, fillDefaultConfig);
     if (!config) {
@@ -43,6 +42,7 @@ export async function getCompiler({compileAll, conservative, targetFile, loadExi
     let existingUnits: UnitData[] = [];
     let existingBibliography: BibliographyData[] = [];
     let existingGraphics: GraphicData[] = [];
+    let rawEnvironments: string = '';
 
     if (config.compiler.redoTags) {
         consola.info('Deleting all existing units from the database.');
@@ -65,6 +65,8 @@ export async function getCompiler({compileAll, conservative, targetFile, loadExi
             existingGraphics = await graphicsDataRepository.find({
                 select: { path: true, hash: true },
             });
+            rawEnvironments = await AppDataSource.getRepository(AuxData)
+                .findOneBy({ key: 'environments' }).then((e) => e?.value ?? '')
         } catch (e) {
             consola.error('Failed to load existing units from the database.');
             console.error(e);
@@ -97,6 +99,7 @@ export async function getCompiler({compileAll, conservative, targetFile, loadExi
         graphicPathHash,
         conservative,
         unitLabelLink: loadExistingUnits ? unitLabelLink : undefined,
+        rawEnvironments
     });
 }
 
@@ -173,8 +176,10 @@ export async function runCompiler({compileAll, conservative, targetFile}: Compil
         if (!conservative) {
             consola.info('Updating the project preamble.');
             await AppDataSource.getRepository(AuxData).upsert({
-                key: 'preamble',
-                value: result.preamble,
+                key: 'preamble', value: result.preamble,
+            }, ['key']);
+            await AppDataSource.getRepository(AuxData).upsert({
+                key: 'environments', value: result.rawEnvironments
             }, ['key']);
         }
 

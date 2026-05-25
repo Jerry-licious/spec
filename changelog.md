@@ -1,4 +1,8 @@
-# Unreleased
+# v0.3.0-pre, 2026-04-23
+
+This update introduces a handful of breaking changes and new configurations. Please review the 
+[config list](./doc/config.md) to understand their behaviour. If you experience a crash on the first compile attempt,
+consider deleting the old database file. 
 
 ### Features
 

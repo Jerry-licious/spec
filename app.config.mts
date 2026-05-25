@@ -42,6 +42,7 @@ export default defineConfig({
         plugins: [
             babel({
                 include: /src\/db\/.*\.ts$/,
+                filter: /src\/db\/.*\.ts$/,
                 babelConfig: {
                     babelrc: false,
                     configFile: false,
@@ -57,4 +58,5 @@ export default defineConfig({
         ]
     }
 });
+
 

@@ -75,6 +75,7 @@
   "overrides": {
     "vite": "^6.0.0",
     "rehype-raw": "^7.0.0",
-    "hast-util-raw": "^9.0.0"
+    "hast-util-raw": "^9.0.0",
+    "prettier": "^3.0.0"
   }
 }

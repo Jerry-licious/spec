@@ -1,10 +1,15 @@
 # Unreleased
 
-- Fixed styling for itemize.
-- Watch mode now refreshes pages after compile. 
-- The `documentclass` macro is now hidden from the main page.
-- Added the comments feature. 
+### Features
+
+- Added the comments system. 
 - Reorganised the usage documentation to not remain on one page. 
+
+### Bug Fixes
+
+- Watch mode now refreshes pages after compile instead of before.
+- `itemize` environments now have the same styling as `enumerate`s.
+- The `documentclass` macro is now hidden from the main page.
 - Fixed a bug where enumerates require an additional line break after.
 - Fixed a bug where Firefox would not load XyPic properly due to not trusting a non-npm jsdelivr link. 
 - Fixed a bug where using hyphens in the search bar crashes the website.

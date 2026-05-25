@@ -31,7 +31,8 @@ import {
     EnvironmentLabelAssigner,
     EquationLabelAssigner,
     FigureCaptionNumberer,
-    GraphicsPathAssigner, LinkInfoCollector,
+    GraphicsPathAssigner,
+    LinkInfoCollector,
     MacroLabelAssigner,
     Numberer,
     RefAssigner,
@@ -69,9 +70,9 @@ import {Sema} from "async-sema";
 import {GraphicData} from "../db/graphic-data";
 import {AppDataSource} from "../db";
 import {getParser, parse} from "@unified-latex/unified-latex-util-parse";
-import rehypeSanitize, { defaultSchema } from 'rehype-sanitize'
+import rehypeSanitize, {defaultSchema} from 'rehype-sanitize'
 import {LinkInfo} from "../db/link-target";
-import { environmentInfo } from "@unified-latex/unified-latex-ctan";
+import {environmentInfo} from "@unified-latex/unified-latex-ctan";
 
 
 const divisionMarkers = new Set<string>(documentDividers);

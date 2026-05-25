@@ -3,7 +3,6 @@ import {Macro, Node, Root} from "@unified-latex/unified-latex-types";
 import {match} from "@unified-latex/unified-latex-util-match";
 import path, {join} from "node:path";
 import {readFile} from "node:fs/promises";
-import {parse} from "@unified-latex/unified-latex-util-parse";
 import {visit} from "@unified-latex/unified-latex-util-visit";
 import {printRaw} from "@unified-latex/unified-latex-util-print-raw";
 import {Parser} from "./util";

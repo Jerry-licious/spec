@@ -1,4 +1,4 @@
-import type { APIEvent } from "@solidjs/start/server";
+import type {APIEvent} from "@solidjs/start/server";
 import xypicSource from "../../mathjax/xypic.js?raw";
 
 const files: Record<string, string> = {

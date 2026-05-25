@@ -1,6 +1,6 @@
 import {DocumentVisitor} from "../visitor";
 import {SKIP, VisitInfo} from "@unified-latex/unified-latex-util-visit";
-import {DisplayMath, Environment, Macro, Node} from "@unified-latex/unified-latex-types";
+import {Node} from "@unified-latex/unified-latex-types";
 import {LinkInfo} from "../../db/link-target";
 import {capitaliseFirstLetter, TaggableNode} from "../util";
 import {match} from "@unified-latex/unified-latex-util-match";

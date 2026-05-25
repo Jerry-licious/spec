@@ -1,11 +1,10 @@
 import './CommentSection.css'
-import {createSignal, Ref, Suspense} from "solid-js";
-import {createForm, SubmitHandler, zodForm} from "@modular-forms/solid";
+import {createSignal, Ref} from "solid-js";
+import {createForm, reset, SubmitHandler, zodForm} from "@modular-forms/solid";
 import {fromTagString, toTagString} from "../tag";
 import {commentFormSchema, compileCommentQuery, isLocalhostQuery, submitCommentAction} from "../comment";
 import {createAsync, useAction} from "@solidjs/router";
 import {z} from "zod";
-import { reset } from "@modular-forms/solid";
 import {CommentData} from "../db/comment";
 import {getConfig} from "../app-data";
 import {CommentBlock} from "./CommentBlock";

@@ -6,6 +6,7 @@ export interface LinkListItem {
     href: string;
 
     children: LinkListItem[];
+    defaultCollapsed?: boolean,
 }
 
 
@@ -34,7 +35,7 @@ export function LinkList(props: LinkListProps) {
                 }
                 <Show when={item.children.length && !collapsed()}>
                     {
-                        item.children.length ? <LinkList items={item.children}/> : null
+                        item.children.length ? <LinkList items={item.children} defaultCollapsed={item.defaultCollapsed}/> : null
                     }
                 </Show>
             </li>)}

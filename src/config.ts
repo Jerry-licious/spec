@@ -28,6 +28,8 @@ export const SpecConfigSchema = z.object({
 
         recentChanges: z.number().int().min(0).max(32).default(10),
         tableOfContentsDepth: z.number().int().min(0).max(4).default(2),
+        tableOfContentsUnfoldDepth: z.number().int().min(0).max(4).default(2),
+        tableOfContentsShortDepth: z.number().int().min(0).max(4).default(1),
 
         hoverPreview: z.boolean().default(true),
         copyLabelButton: z.boolean().default(false),

@@ -3,6 +3,8 @@
 ### Features
 
 - Added the comments system. 
+- Added customisation for the display and collapse of tables of contents via the configurations 
+`tableOfContentsUnfoldDepth` and `tableOfContentsShortDepth`. 
 - Reorganised the usage documentation to not remain on one page. 
 
 ### Bug Fixes

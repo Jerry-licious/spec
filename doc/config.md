@@ -78,14 +78,23 @@ advertiseSpec = true
 - `searchLimit`: Maximum amount of search results to display per page.
 - `maxSearchPages`: Maximum number of pages for searches.
 
+
 - `recentChanges`: The number of recent changes to show on the sidebar of the main page. If set to `0`, the recent changes section will never show up.
+
+
 - `tableOfContentsDepth`: How many additional layers to display in the table of contents. For example, setting it to `1` will display all chapters on the main page, setting it to `2` will display all sections on the main page, and so on.
+- `tableOfContentsUnfoldDepth`: Layers behind this number will start off folded in the table of contents. 
+- `tableOfContentsShortDepth`: Layers behind this number will omit their name (section/subsection/etc) in the table of
+contents. 
+
 
 - `hoverPreview`: When hovering links, preview the target.
 - `copyLabelButton`: Add a button next to theorems to copy their label.
 
+
 - `displayComments`: Display comments under each unit.
 - `allowComments`: Allow visitors to put down comments.
+
 
 - `advertiseSpec`: Attribute spec in the sidebar.
 

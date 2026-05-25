@@ -35,7 +35,9 @@ export class Division extends IRUnit {
             ...args,
             sourceNodeType: "macro",
             parasitic: false,
-            isDivision: true
+            isDivision: true,
+            // Always display the highest two.
+            prefersLong: args.sourceNodeName === 'part' || args.sourceNodeName === 'chapter'
         });
 
         this.children = args.children ?? [];

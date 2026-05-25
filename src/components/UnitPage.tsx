@@ -84,7 +84,10 @@ export function UnitPage(props: UnitPageProps) {
                 props.unit.children && props.unit.children.length > 0 ?
                     // Only say "content" if there is a need to separate this portion from the previous.
                     <UnitLinkList title={props.unit.contentHTML.trim() ? 'Contents' : ''}
-                                  items={props.unit.children} depth={config()?.website.tableOfContentsDepth ?? 0}/> : null
+                                  items={props.unit.children} depth={config()?.website.tableOfContentsDepth ?? 0}
+                                  unfoldDepth={config()?.website.tableOfContentsUnfoldDepth ?? 0}
+                                  shortDepth={config()?.website.tableOfContentsShortDepth ?? 0}
+                    /> : null
             }
             <FootnoteSection footnotes={props.unit.footnotes ?? null}/>
             <CommentSection tag={props.unit.tag} comments={props.unit.comments}/>

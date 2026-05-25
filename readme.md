@@ -51,9 +51,7 @@ The following are features that I am _considering_ to add to the project in the 
 due to reasons ranging from being occupied to being incompetent. 
 
 - Server side MathJax rendering option.
-- Left side bar as index?
 - Better parasitic links in MathJax. 
 - Better SVG colour scaling. 
 - Leaf entries can expand in the table of contents. 
 - Omit division types in deeply nested sections. 
-- Parbreak after enumerates. 

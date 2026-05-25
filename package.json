@@ -19,7 +19,6 @@
     "dist"
   ],
   "scripts": {
-    "index": "tsx bin/cli.ts compile --all",
     "compile": "tsx bin/cli.ts compile --all",
     "build": "tsc --project tsconfig.cli.json && vinxi build",
     "start": "vinxi start",

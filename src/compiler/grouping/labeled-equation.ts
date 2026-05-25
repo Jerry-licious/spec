@@ -14,7 +14,7 @@ export class LabeledEquation extends IRUnit {
             parent, mainContent: environment ? [environment] : [],
             sourceNodeType: 'environment', sourceNodeName: 'equation',
             name: 'Equation', label, title: [], tag, numbering, parasitic: true,
-            isDivision: false
+            isDivision: false, prefersLong: true
         });
     }
 }

@@ -56,13 +56,14 @@ export abstract class IRUnit {
 
     parasitic: boolean;
     isDivision: boolean;
+    prefersLong: boolean;
 
     footnotes: Map<number, Node[]>;
     // Mapping from global footnote numbering to local footnote numbering.
     footnoteNumbers: Map<number, number>;
 
     constructor({parent, mainContent, sourceNodeType, sourceNodeName, name, label, title, tag, numbering,
-                    parasitic, isDivision, additionalContent}: {
+                    parasitic, isDivision, additionalContent, prefersLong}: {
         parent?: IRUnit;
         mainContent?: Node[];
 
@@ -80,6 +81,9 @@ export abstract class IRUnit {
         // A *parasitic* node is one that isn't "supposed" to live on its own page.
         parasitic: boolean;
         isDivision: boolean;
+
+        // See LinkTarget.
+        prefersLong?: boolean;
     }) {
         this.parent = parent;
         this.mainContent = mainContent ?? [];
@@ -97,6 +101,7 @@ export abstract class IRUnit {
 
         this.parasitic = parasitic;
         this.isDivision = isDivision;
+        this.prefersLong = !!prefersLong;
 
         this.titleText = this.title.map((n) => printRaw(n)).join('');
 
@@ -174,7 +179,8 @@ export abstract class IRUnit {
             titleHtml: this.title.length ? await this.buildRenderer(builder)({
                 type: 'root',
                 content: this.title
-            }) : undefined
+            }) : undefined,
+            prefersLong: this.prefersLong,
         };
     }
 
@@ -222,6 +228,7 @@ export abstract class IRUnit {
 
             parasitic: this.parasitic,
             isDivision: this.isDivision,
+            prefersLong: this.prefersLong,
         });
     }
 

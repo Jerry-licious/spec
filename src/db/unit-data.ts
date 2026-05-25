@@ -57,6 +57,8 @@ export class UnitData {
     parasitic!: boolean | null;
     @Column('boolean', { nullable: true, default: false })
     isDivision!: boolean | null;
+    @Column('boolean', { nullable: true, default: false })
+    prefersLong!: boolean | null;
 
     @OneToMany(() => CommentData, (comment) => comment.unit)
     comments!: CommentData[];
@@ -69,7 +71,8 @@ export function toLinkTarget(unit: UnitData): LinkTarget {
         numberingText: unit.numberingText,
         unitType: unit.unitType,
         unitName: unit.unitName,
-        titleHtml: unit.titleHTML ?? undefined
+        titleHtml: unit.titleHTML ?? undefined,
+        prefersLong: !!unit.prefersLong
     };
 }
 

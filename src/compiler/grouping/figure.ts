@@ -14,7 +14,7 @@ export class Figure extends IRUnit {
             parent, mainContent: environment ? [environment] : [],
             sourceNodeType: 'environment', sourceNodeName: 'figure',
             name: 'Figure', label, title: environment.meta?.title ?? [], tag, numbering, parasitic: true,
-            isDivision: false
+            isDivision: false, prefersLong: true
         });
     }
 }

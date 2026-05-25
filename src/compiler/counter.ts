@@ -85,9 +85,9 @@ export class CountManager {
 
     equals(other: CountManager) {
         if (this.counters.size !== other.counters.size) return false;
-        if (!this.counters.keys().every(key => other.counters.has(key))) return false;
+        if (![...this.counters.keys()].every(key => other.counters.has(key))) return false;
 
-        return this.counters.keys().every(key => {
+        return [...this.counters.keys()].every(key => {
             const thisCounter = this.counters.get(key)!;
             const otherCounter = other.counters.get(key)!;
 

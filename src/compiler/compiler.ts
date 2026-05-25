@@ -243,7 +243,7 @@ export class Compiler {
 
         return getParser({
             environments: {
-                ...Object.fromEntries(this.blockTypes.keys().filter((t) => !existingEnvironments.has(t))
+                ...Object.fromEntries([...this.blockTypes.keys()].filter((t) => !existingEnvironments.has(t))
                     .map((t) => [t, { signature: 'o' }])),
             }
         });

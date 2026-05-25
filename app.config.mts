@@ -41,7 +41,7 @@ export default defineConfig({
     vite: {
         plugins: [
             babel({
-                filter: /src\/db\/.*\.ts$/,
+                include: /src\/db\/.*\.ts$/,
                 babelConfig: {
                     babelrc: false,
                     configFile: false,
@@ -57,3 +57,4 @@ export default defineConfig({
         ]
     }
 });
+

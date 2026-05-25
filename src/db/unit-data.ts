@@ -32,9 +32,11 @@ export class UnitData {
     @Column('simple-json', { nullable: true })
     footnotes!: Record<number, string> | null;
 
-    @Index()
     @Column('datetime')
     lastRendered!: Date;
+    @Index()
+    @Column('datetime', { nullable: true })
+    lastModified!: Date;
 
     @Column('simple-json')
     parentChain!: LinkTarget[];

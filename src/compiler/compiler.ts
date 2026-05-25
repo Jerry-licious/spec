@@ -123,6 +123,7 @@ export class Compiler {
     unitLabelTags: Map<string, number>;
     // Hash of the existing units.
     unitTagHash: Map<number, string>;
+    unitTagLastModified: Map<number, Date>;
     // Mapping from unit tags to their nodes.
     unitTagNode: Map<number, TaggableNode>;
     unitLabelLink?: Map<string, LinkInfo>;
@@ -159,12 +160,13 @@ export class Compiler {
     conservative: boolean;
 
     constructor({config, unitLabelTags, bibliographyLabelTags, nextAvailableTag, unitTagHash, graphicPathHash,
-                    conservative, unitLabelLink, rawEnvironments}: {
+                    conservative, unitLabelLink, rawEnvironments, unitTagLastModified}: {
         config: SpecConfig;
         unitLabelTags: Map<string, number>;
         bibliographyLabelTags: Map<string, number>;
         nextAvailableTag: number;
         unitTagHash: Map<number, string>;
+        unitTagLastModified: Map<number, Date>;
         graphicPathHash: Map<string, string>;
         conservative?: boolean;
         unitLabelLink?: Map<string, LinkInfo>;
@@ -177,6 +179,7 @@ export class Compiler {
 
         this.unitLabelTags = unitLabelTags;
         this.unitTagHash = unitTagHash;
+        this.unitTagLastModified = unitTagLastModified;
         this.graphicPathHash = graphicPathHash;
         this.unitLabelLink = unitLabelLink;
         this.unitTagNode = new Map<number, TaggableNode>();
@@ -204,18 +207,10 @@ export class Compiler {
         this.rawEnvironments = rawEnvironments ?? '';
 
         this.logger = new ParserLogger({
-            onError: message => {
-                consola.error(messageText(message));
-            },
-            onSuccess: message => {
-                consola.success(messageText(message));
-            },
-            onWarning: message => {
-                consola.warn(messageText(message));
-            },
-            onInfo: message => {
-                consola.info(messageText(message));
-            }
+            onError: message => { consola.error(messageText(message)); },
+            onSuccess: message => { consola.success(messageText(message)); },
+            onWarning: message => { consola.warn(messageText(message)); },
+            onInfo: message => { consola.info(messageText(message)); }
         });
     }
 
@@ -497,8 +492,10 @@ export class Compiler {
         const toUpdate: UnitData[] = [];
         for (const unit of this.units.values()) {
             // Skip any node with the same hash as the stored.
-
-            if (!this.compileAll && this.unitTagHash.has(unit.tag) && unit.hash() === this.unitTagHash.get(unit.tag)) continue;
+            if (this.unitTagHash.has(unit.tag) && this.unitTagLastModified.has(unit.tag) && unit.hash() === this.unitTagHash.get(unit.tag)) {
+                unit.lastModified = this.unitTagLastModified.get(unit.tag);
+                if (!this.compileAll) continue;
+            }
 
             toUpdate.push(await unit.renderToUnitData(this.units, this.rendererBuilder));
         }

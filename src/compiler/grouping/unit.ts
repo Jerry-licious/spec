@@ -52,6 +52,7 @@ export abstract class IRUnit {
 
     // All the information needed to represent a link to this unit.
     linkTarget?: LinkTarget;
+    lastModified?: Date;
 
     parasitic: boolean;
     isDivision: boolean;
@@ -210,6 +211,7 @@ export abstract class IRUnit {
             footnotes: await this.renderFootnotes(builder),
 
             lastRendered: new Date(),
+            lastModified: this.lastModified ?? new Date(),
 
             parentChain: [...this.parentTagChain()].map((r) => allUnits.get(r)!.linkTarget!),
 

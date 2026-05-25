@@ -149,7 +149,7 @@ export const getRecentChanges = query(async () => {
 
     return dataSource.getRepository(UnitData).find({
         where: { parasitic: false },
-        order: { lastRendered: "desc" },
+        order: { lastModified: "desc" },
         take: config.website.recentChanges
     }).then((entries) => entries
         .sort((a, b) => Number(a.isDivision) - Number(b.isDivision))

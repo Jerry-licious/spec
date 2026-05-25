@@ -78,6 +78,7 @@ export async function getCompiler({compileAll, conservative, targetFile, loadExi
     const unitLabelTags = new Map<string, number>(existingUnits.filter((u) => u.label)
         .map((u) => [u.label!, u.tag]));
     const unitTagHash = new Map<number, string>(existingUnits.map((u) => [u.tag, u.hash]));
+    const unitTagLastModified = new Map<number, Date>(existingUnits.map((u) => [u.tag, u.lastModified]));
     const unitLabelLink = new Map<string, LinkInfo>(existingUnits.filter((u) => u.label)
         .map((u) => [u.label!, toLinkTarget(u)]))
 
@@ -91,15 +92,9 @@ export async function getCompiler({compileAll, conservative, targetFile, loadExi
     );
 
     return new Compiler({
-        config,
-        unitLabelTags,
-        bibliographyLabelTags,
-        nextAvailableTag,
-        unitTagHash,
-        graphicPathHash,
-        conservative,
+        config, unitLabelTags, bibliographyLabelTags, nextAvailableTag, unitTagHash,
+        unitTagLastModified, graphicPathHash, conservative, rawEnvironments,
         unitLabelLink: loadExistingUnits ? unitLabelLink : undefined,
-        rawEnvironments
     });
 }
 

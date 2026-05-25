@@ -10,6 +10,7 @@
 - Fixed a bug where using hyphens in the search bar crashes the website.
 - Fixed a bug where conservative mode does not recognise custom environments.
 - Fixed a bug where custom environments do not accept its optional argument. 
+- The "recent changes" feature will now tracks when a unit is changed rather than when it is compiled.
 
 
 # v0.2.3, 2026-04-23

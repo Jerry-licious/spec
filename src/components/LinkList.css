@@ -7,10 +7,10 @@
 .link-list {
     padding-left: 1rem;
     margin: 0;
+    list-style: none;
 }
 
 .link-list-item {
-    line-height: 1.2;
 }
 
 .collapse-button {
@@ -24,7 +24,20 @@
     padding: 0;
     line-height: inherit;
     display: inline;
-    vertical-align: -0.2em;
+    vertical-align: -0.22em;
+    color: var(--text-color);
+}
+.link-list-marker {
+    user-select: none;
+
+    margin-right: 0.5rem;
+
+    font-family: "Material Icons", "Comic Sans MS", serif;
+
+    font-size: 0.5rem;
+    padding: 0;
+    line-height: inherit;
+    display: inline;
     color: var(--text-color);
 }
 

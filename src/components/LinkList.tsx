@@ -27,7 +27,7 @@ export function LinkList(props: LinkListProps) {
                     item.children.length ? <button class={'collapse-button'}
                                                    onClick={() => setCollapsed((c) => !c)}>{
                         collapsed() ? 'keyboard_arrow_right' : 'keyboard_arrow_down'
-                    }</button> : null
+                    }</button> : <span class={'link-list-marker'}>circle</span>
                 }
                 {
                     typeof item.content === 'string' ? <a href={item.href} class={'link-primary'} innerHTML={item.content}/> :

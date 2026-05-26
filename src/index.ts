@@ -99,7 +99,7 @@ export async function getCompiler({compileAll, conservative, targetFile, loadExi
 }
 
 export async function runCompiler({compileAll, conservative, targetFile}: CompilerOptionOverride ) {
-    const compiler = await getCompiler({compileAll, conservative, targetFile}, true, false);
+    const compiler = await getCompiler({compileAll, conservative, targetFile, loadExistingUnits: true}, true, false);
     const config = await loadConfig(defaultConfigPath);
     if (!config) {
         process.exit(0);

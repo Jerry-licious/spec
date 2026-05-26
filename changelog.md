@@ -1,3 +1,11 @@
+# Unreleased
+
+### Bug Fixes
+
+- References should now work in conservative mode. 
+
+
+
 # v0.3.0, 2026-04-23
 
 This update introduces a handful of breaking changes and new configurations. Please review the 

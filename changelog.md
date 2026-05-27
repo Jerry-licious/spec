@@ -4,7 +4,7 @@
 
 - References should now work in conservative mode. 
 - Itemize environments now display their markers within enumerate environments. 
-
+- Enumerate items now have proper paragraph spacing.
 
 
 # v0.3.0, 2026-04-23

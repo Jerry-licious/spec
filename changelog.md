@@ -3,6 +3,7 @@
 ### Bug Fixes
 
 - References should now work in conservative mode. 
+- Itemize environments now display their markers within enumerate environments. 
 
 
 

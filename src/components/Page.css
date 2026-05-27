@@ -251,10 +251,14 @@ On tables:
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+
+    list-style: disc;
+    overflow: visible;
 }
 
 .itemize li > * {
     margin-bottom: 0.5rem;
+    display: list-item;
 }
 
 

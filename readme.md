@@ -3,7 +3,7 @@
 ![Pack](https://github.com/Jerry-licious/spec/actions/workflows/pack.yml/badge.svg)
 
 
-Spec is a limited latex to website compiler heavily, heavily by [Gerby](https://gerby-project.github.io/), 
+Spec is a limited latex to website compiler heavily inspired by [Gerby](https://gerby-project.github.io/), 
 offering an online tag-based view for a LaTeX document. Each part/chapter/section/theorem is assigned a unique _tag_ 
 associated to its label, and each tag gets its own webpage. 
 
@@ -12,10 +12,10 @@ associated to its label, and each tag gets its own webpage.
 
 - [Gerby](https://gerby-project.github.io/) and the [Stacks Project](https://stacks.math.columbia.edu/): I took the idea of 
 organising a large document under tags and presenting it as a website from this system. Originally, I intended on using
-Gerby directly to compile my own notes, and adjusted Gerby slightly for my own purposes. Eventually, the desire for some
+Gerby directly to compile my own notes, and adjusted it slightly for my own purposes. Eventually, the desire for some
 additional features, faster compile times, and a lack of understanding of Gerby prompted me to
-start this project. The layout of pages and styling of certain elements are copied from the Gerby project. So needless 
-to say, this project would not be possible without Gerby.
+start this project. In the development of this project, I copied the layout of pages and styling of certain elements from Gerby. So needless 
+to say, this project would not be possible without it.
 - [Unified JS](https://unifiedjs.com/), [Unified LaTeX](https://github.com/siefkenj/unified-latex), and 
 [hast](https://github.com/siefkenj/unified-latex): The compiler uses Unified LaTeX to parse LaTeX source code, runs 
 multiple passes through the syntax tree to gather and create metadata, and output HTML.

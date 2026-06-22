@@ -14,6 +14,7 @@ export interface LinkListProps {
     title?: string,
     items: LinkListItem[],
     defaultCollapsed?: boolean,
+    invisible?: boolean,
 }
 
 function LinkedListItem(item: LinkListItem) {
@@ -30,9 +31,9 @@ function LinkedListItem(item: LinkListItem) {
             typeof item.content === 'string' ? <a href={item.href} class={'link-primary'} innerHTML={item.content}/> :
                 <a href={item.href} class={'link-primary'}>{item.content}</a>
         }
-        <Show when={item.children.length && !collapsed()}>
+        <Show when={item.children.length}>
             {
-                item.children.length ? <LinkList items={item.children} defaultCollapsed={item.defaultCollapsed}/> : null
+                item.children.length ? <LinkList invisible={collapsed()} items={item.children} defaultCollapsed={item.defaultCollapsed}/> : null
             }
         </Show>
     </li>)
@@ -40,7 +41,7 @@ function LinkedListItem(item: LinkListItem) {
 
 
 export function LinkList(props: LinkListProps) {
-    return <div class={'link-list-container'}>
+    return <div class={`link-list-container ${props.invisible ? 'invisible' : ''}`}>
         { props.title? <h3>{props.title}</h3> : null }
         <ul class={'link-list'}>
             {props.items.map(item => <LinkedListItem {...item}/>)}

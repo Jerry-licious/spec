@@ -4,6 +4,10 @@
     gap: 5px;
 }
 
+.link-list-container.invisible {
+    display: none;
+}
+
 .link-list {
     padding-left: 1rem;
     margin: 0;

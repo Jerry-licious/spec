@@ -5,6 +5,7 @@
 - References should now work in conservative mode. 
 - Itemize environments now display their markers within enumerate environments. 
 - Enumerate items now have proper paragraph spacing.
+- Math in block titles now correctly render in indexes, even if they have been collapsed. 
 
 
 # v0.3.0, 2026-04-23

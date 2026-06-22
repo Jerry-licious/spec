@@ -1,7 +1,7 @@
 import {createAsync} from "@solidjs/router";
 import {getConfig} from "../app-data";
 import {SearchResult, searchUnits} from "../app-data-cache";
-import {createMemo, ErrorBoundary, JSX, Show} from "solid-js";
+import {createEffect, createMemo, ErrorBoundary, JSX, on, Show} from "solid-js";
 import {Page} from "../components/Page";
 import {UnitLinkList} from "../components/UnitLinkList";
 import './SearchPage.css'
@@ -82,6 +82,17 @@ export function SearchPage(props: SearchPageProps) {
 
     const description = createMemo(() => `${searchResult()?.results} results found.`)
 
+    let containerRef: HTMLDivElement | undefined;
+
+    createEffect(on(searchResult, () => {
+        // @ts-ignore
+        if (!containerRef || !window.MathJax) return;
+        // @ts-ignore
+        window.MathJax.typesetClear?.([containerRef]);
+        // @ts-ignore
+        window.MathJax.typesetPromise([containerRef]).catch(console.error);
+    }));
+
     return (
         <ErrorBoundary fallback={
             <Page titleText={`Search Failed | ${config()?.siteTitle}`}
@@ -95,12 +106,14 @@ export function SearchPage(props: SearchPageProps) {
                       title={`Search: ${props.query}`}
                       description={description()}
                       displayTitle={true}>
-                    {
-                        searchResult()!.totalResults ? searchResultsText(searchResult()!, props.page) : null
-                    }
-                    {
-                        searchResult()!.totalResults ? <UnitLinkList items={searchResult()!.results}/> : 'No results found.'
-                    }
+                    <div ref={containerRef}>
+                        {
+                            searchResult()!.totalResults ? searchResultsText(searchResult()!, props.page) : null
+                        }
+                        {
+                            searchResult()!.totalResults ? <UnitLinkList items={searchResult()!.results}/> : 'No results found.'
+                        }
+                    </div>
                     <div style={'flex: 1'}/>
                     {
                         searchResult()!.totalPages > 1 ?

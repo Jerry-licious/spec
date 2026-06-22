@@ -6,6 +6,7 @@
 - Itemize environments now display their markers within enumerate environments. 
 - Enumerate items now have proper paragraph spacing.
 - Math in block titles now correctly render in indexes, even if they have been collapsed. 
+- Math in block titles now correctly render in search results. 
 
 
 # v0.3.0, 2026-04-23

@@ -13,9 +13,27 @@ export class CiteRenderer extends NodeRenderer {
             this.addError('Missing arguments for citation macro.');
             return;
         }
-        if (!node.refMeta) {
+
+        let linkPart = htmlLike({
+            tag: 'a',
+            attributes: {
+                class: classes.citeRef,
+                href: `/404`
+            },
+            content: s('Unknown')
+        });
+
+        if (node.refMeta) {
+            linkPart = htmlLike({
+                tag: 'a',
+                attributes: {
+                    class: classes.citeRef,
+                    href: `/b/${toTagString(node.refMeta.targetTag)}`
+                },
+                content: typeof node.refMeta.text === 'string' ? s(node.refMeta.text) : node.refMeta.text
+            });
+        } else {
             this.addError('Missing metadata for citation macro.');
-            return;
         }
 
         return htmlLike({
@@ -35,14 +53,7 @@ export class CiteRenderer extends NodeRenderer {
                     }),
                     s(', ')
                 ] : []),
-                htmlLike({
-                    tag: 'a',
-                    attributes: {
-                        class: classes.citeRef,
-                        href: `/b/${toTagString(node.refMeta.targetTag)}`
-                    },
-                    content: typeof node.refMeta.text === 'string' ? s(node.refMeta.text) : node.refMeta.text
-                }),
+                linkPart,
                 s(']')
             ]
         });

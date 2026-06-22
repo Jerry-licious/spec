@@ -12,6 +12,7 @@
     "emitDecoratorMetadata": true,
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
+    "sourceMap": true
   },
   "include": ["src", "bin"]
 }

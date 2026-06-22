@@ -398,7 +398,10 @@ export class Compiler {
             const hash = crypto.createHash('sha256').update(buffer).digest('hex');
 
             // Skip copying the graphic if the hash already matches up.
-            if (!this.compileAll && this.graphicPathHash.has(graphicPath) && this.graphicPathHash.get(graphicPath) === hash) return;
+            if (!this.compileAll && this.graphicPathHash.has(graphicPath) && this.graphicPathHash.get(graphicPath) === hash) {
+                copySema.release();
+                return;
+            }
 
             try {
                 const targetLocation = path.join(graphicsRoot, graphicPath);
@@ -711,7 +714,6 @@ export class Compiler {
             linkCollector.process(this.documentRoot!);
             this.unitLabelLink = linkCollector.unitLabelLink;
         }
-
 
         const refAssigner = new RefAssigner({
             logger: linkLogger,

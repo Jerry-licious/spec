@@ -200,6 +200,13 @@ export abstract class IRUnit {
 
     // Renders the IR unit as a unit data instance.
     async renderToUnitData(allUnits: Map<number, IRUnit>, builder: RendererBuilder): Promise<UnitData> {
+        // In conservative mode, the all units pool is unavailable.
+        // For simplicity, these errors will be ignored.
+        function getLinkTarget(r: number) {
+            if (allUnits.has(r)) return [allUnits.get(r)!.linkTarget!];
+            return [];
+        }
+
         return AppDataSource.manager.create(UnitData, {
             tag: this.tag,
             hash: this.hash(),
@@ -221,10 +228,10 @@ export abstract class IRUnit {
 
             parentChain: [...this.parentTagChain()].map((r) => allUnits.get(r)!.linkTarget!),
 
-            directlyReferences: [...this.directReferences].map((r) => allUnits.get(r)!.linkTarget!),
-            indirectlyReferences: this.indirectReferences ? [...this.indirectReferences].map((r) => allUnits.get(r)!.linkTarget!) : [],
-            directlyReferencedBy: [...this.directlyReferencedBy].map((r) => allUnits.get(r)!.linkTarget!),
-            indirectlyReferencedBy: [...this.indirectlyReferencedBy].map((r) => allUnits.get(r)!.linkTarget!),
+            directlyReferences: [...this.directReferences].flatMap(getLinkTarget),
+            indirectlyReferences: this.indirectReferences ? [...this.indirectReferences].flatMap(getLinkTarget) : [],
+            directlyReferencedBy: [...this.directlyReferencedBy].flatMap(getLinkTarget),
+            indirectlyReferencedBy: [...this.indirectlyReferencedBy].flatMap(getLinkTarget),
 
             parasitic: this.parasitic,
             isDivision: this.isDivision,

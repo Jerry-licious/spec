@@ -7,6 +7,9 @@
 - Enumerate items now have proper paragraph spacing.
 - Math in block titles now correctly render in indexes, even if they have been collapsed. 
 - Math in block titles now correctly render in search results. 
+- Existing labels are no longer mistaken as undefined when compiling for the first time. 
+- The compiler no longer silently crashes in conservative mode. 
+- The compiler no longer crashes randomly in conservative mode.
 
 
 # v0.3.0, 2026-04-23

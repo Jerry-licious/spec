@@ -6,6 +6,7 @@
 There is currently a bug related to bad gateways ([$6](https://github.com/Jerry-licious/spec/issues/6)). Some changes
 are addressed at, but not guaranteed to, fix it:
 - The database now journals in WAL mode.
+- The invalidate listener will only be active on localhost. 
 
 
 # v0.3.1, 2026-06-22

@@ -1,3 +1,13 @@
+# Unreleased
+
+
+### Bug Fixes
+
+There is currently a bug related to bad gateways ([$6](https://github.com/Jerry-licious/spec/issues/6)). Some changes
+are addressed at, but not guaranteed to, fix it:
+- The database now journals in WAL mode.
+
+
 # v0.3.1, 2026-06-22
 
 ### Features
@@ -7,12 +17,12 @@
 
 ### Bug Fixes
 
-- Itemize environments now display their markers within enumerate environments. 
+- Itemize environments now display their markers within enumerate environments.
 - Enumerate items now have proper paragraph spacing.
-- Math in block titles now correctly render in indexes, even if they have been collapsed. 
-- Math in block titles now correctly render in search results. 
-- Existing labels are no longer mistaken as undefined when compiling for the first time. 
-- The compiler no longer silently crashes in conservative mode. 
+- Math in block titles now correctly render in indexes, even if they have been collapsed.
+- Math in block titles now correctly render in search results.
+- Existing labels are no longer mistaken as undefined when compiling for the first time.
+- The compiler no longer silently crashes in conservative mode.
 - The compiler no longer crashes randomly in conservative mode.
 
 

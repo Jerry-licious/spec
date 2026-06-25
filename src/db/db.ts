@@ -36,6 +36,7 @@ export async function initialiseDatabase(dbPath: string): Promise<DataSource> {
             database: dbPath,
             entities: [UnitData, BibliographyData, AuxData, GraphicData, CommentData],
             synchronize: true,
+            enableWAL: true
         });
         const result = await AppDataSource.initialize();
 

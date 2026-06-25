@@ -26,7 +26,7 @@ export const getBibliography = query(async (tag: string | number) => {
     const entry = await dataSource.getRepository(BibliographyData).findOneBy({ tag: tag });
 
     if (!entry) {
-        new Error('Bibliography entry not found.');
+        throw new Error('Bibliography entry not found.');
     }
 
     // Strip the unit of all non-serialisable data.
